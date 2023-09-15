@@ -6,11 +6,12 @@
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-    "postinstall": "nuxt prepare"
+    "postinstall": "nuxt prepare && prisma generate"
   },
   "devDependencies": {
     "@nuxt/devtools": "latest",
     "@nuxtjs/eslint-config-typescript": "^12.1.0",
+    "@prisma/client": "^5.3.1",
     "@typescript-eslint/parser": "^6.7.0",
     "autoprefixer": "^10.4.15",
     "eslint": "^8.49.0",
