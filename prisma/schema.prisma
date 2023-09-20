@@ -1,11 +1,63 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
+// Commented-out code for the prisma generation
+// Put this wherever you need to use and edit the database!
+// import { PrismaClient } from '@prisma/client'
+// const prisma = new PrismaClient()
+
+// Default generator to transform Prisma-specific code to something usable
+// prisma-client-js is the default and what we need
 generator client {
   provider = "prisma-client-js"
 }
 
+// Where we define what db provider we have and link our db
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+}
+
+// Model, or a table of info stored, for a User
+model User {
+  id             String   @id @default(uuid())
+  name           String
+  email          String
+  password       String
+  age            Int
+  languages      String[]
+  numHours       Decimal
+  isAdmin        Boolean
+  qualifications String[]
+  userNotes      String[]
+  eventHistory   Event[]  @relation("EventHistory")
+  signedUpEvents Event[]  @relation("SignedUpEvents")
+  // Note: since user's can sign up for many events and events can have
+  // many users signed up, they have a many to many relationship and thus
+  // the eventHistory and signedUpEvents fields only need a relationship attribute
+  // to disambiguate them
+}
+
+// Model for an Event
+model Event {
+  id                 String   @id @default(uuid())
+  name               String
+  organizer          String
+  location           String
+  dateAndTime        DateTime
+  duration           Decimal
+  languages          String[]
+  thumbnail          String
+  hoursOffered       Decimal
+  prerequisites      String[]
+  volunteerPositions String[]
+  phoneNumber        String
+  email              String
+  // Whether the sign up for the event is still available
+  isSignUpAvailable  Boolean
+  capacity           Int
+  attendees          User[]   @relation("EventHistory")
+  signedUpUsers      User[]   @relation("SignedUpEvents")
+  // As described in the User model, User and Event have a many to many relationship
+  // so we only need a relationship attribute to disambiguate attendees and signedUpUsers
 }
