@@ -1,6 +1,6 @@
 <script setup lang="ts">
 const route = useRoute()
-const { data } = await useFetch(`/api/events/${route.params.id}`)
+const { data } = await useFetch(`/api/event/${route.params.id}`)
 </script>
 
 <template>
