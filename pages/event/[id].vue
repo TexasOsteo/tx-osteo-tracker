@@ -1,4 +1,5 @@
 <script setup lang="ts">
+// useRoute allows for the id parameter to be accessed
 const route = useRoute()
 const { data } = await useFetch(`/api/event/${route.params.id}`)
 </script>
