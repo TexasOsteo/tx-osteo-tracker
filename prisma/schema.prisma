@@ -61,3 +61,12 @@ model Event {
   // As described in the User model, User and Event have a many to many relationship
   // so we only need a relationship attribute to disambiguate attendees and signedUpUsers
 }
+// this table will store new future events, input by TOF admin
+model eventCreation {
+  id            Int           @id @default(autoincrement())
+  name          String[]
+  organizer     String[]
+ dateTime       String
+  location      String[]
+  description   String[]
+}
