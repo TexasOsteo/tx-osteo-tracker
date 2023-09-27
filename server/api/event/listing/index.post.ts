@@ -4,6 +4,7 @@
       -Location
       -Date
       -Description of the event 
+      -... etc
 
   - UI may look like:
         ------------------
@@ -16,45 +17,50 @@
         Event Description.........
 */
 
-//install joi library: npm install joi
-//install joi/date extensionlibrary: npm install @joi/date
-import DateExtension from '@joi/date'
-import JoiImport from 'joi'
+import { string, object, number, date, bool, array } from 'yup'
 
 import { PrismaClient } from '@prisma/client'
+import { parseIDsToPrismaConnectObject } from '~/utils/prisma-parsing'
 
-const Joi = JoiImport.extend(DateExtension) as typeof JoiImport
 const prisma = new PrismaClient()
-//validate data
-const schema = Joi.object({
-  name: Joi.array().items(Joi.string()).required(),
-  organizer: Joi.array().items(Joi.string()).required(),
-  dateTime: Joi.date().format('DD-MM-YYYY').greater('now').required(),
-  location: Joi.array().items(Joi.string()).required(),
-  description: Joi.array().items(Joi.string()).required(),
+
+const schema = object({
+  id: string().optional(),
+  name: string().required(),
+  organizer: string().required(),
+  location: string().required(),
+  dateAndTime: date().required(),
+  duration: number().required(),
+  thumbnail: string().required(),
+  hoursOffered: number().required(),
+  phoneNumber: string().required(),
+  email: string().required(),
+  isSignUpAvailable: bool().required(),
+  capacity: number().required(),
+  languages: array(string().defined()).defined(),
+  prerequisites: array(string().defined()).defined(),
+  volunteerPositions: array(string().defined()).defined(),
+  attendees: array(string().defined()).defined(),
+  signedUpUsers: array(string().defined()).defined(),
 })
 
 export default defineEventHandler(async (event) => {
-  const body = await readBody(event)
+  const rawBody = await readBody(event)
 
-  const { error, value } = await schema.validate(body)
-
-  if (error) {
+  try {
+    const body = await schema.validate(rawBody)
+    const eventListing = await prisma.event.create({
+      data: {
+        ...body,
+        attendees: parseIDsToPrismaConnectObject(body.attendees),
+        signedUpUsers: parseIDsToPrismaConnectObject(body.attendees),
+      },
+    })
+    return eventListing
+  } catch (error: any) {
     throw createError({
       statusCode: 412,
-      statusMessage: error.message,
+      statusMessage: error.toString(),
     })
   }
-  const { name, organizer, dateTime, location, description } = body
-
-  const eventListing = await prisma.eventCreation.create({
-    data: {
-      name,
-      organizer,
-      dateTime,
-      location,
-      description,
-    },
-  })
-  return eventListing
 })
