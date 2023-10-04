@@ -59,7 +59,7 @@ export default defineEventHandler(async (event) => {
     return eventListing
   } catch (error: any) {
     throw createError({
-      statusCode: 412,
+      statusCode: 412, // Precondition Failed Error
       statusMessage: error.toString(),
     })
   }
