@@ -2,6 +2,7 @@
 // useFetch will request the data as the server and forward it to the client
 // data will contain the event or null if there was an error
 const { data } = await useFetch('/api/events')
+const { value } = useCookie(useRuntimeConfig().public.cookie_token)
 </script>
 
 <template>
@@ -18,4 +19,8 @@ const { data } = await useFetch('/api/events')
       </NuxtLink>
     </li>
   </ul>
+  <p v-if="value">
+    Authenticated! Here is your token: <br />
+    {{ value }}
+  </p>
 </template>

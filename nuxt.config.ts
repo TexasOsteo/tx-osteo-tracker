@@ -8,4 +8,27 @@ export default defineNuxtConfig({
       autoprefixer: {},
     },
   },
+  runtimeConfig: {
+    AUTH0_DOMAIN: ensureEnv('AUTH0_DOMAIN'),
+    AUTH0_CLIENTID: ensureEnv('AUTH0_CLIENTID'),
+    AUTH0_SECRET: ensureEnv('AUTH0_SECRET'),
+    public: {
+      cookie_token: 'txosteo_token',
+    },
+  },
 })
+
+function ensureEnv(envName: string): string {
+  if (!process || !process.env) {
+    throw new Error(
+      'Attempted to get environment variable from client. This should not happen',
+    )
+  }
+  const value = process.env[envName]
+  if (!value) {
+    throw new Error(
+      `Missing environment variable "${envName}." Please define it in .env`,
+    )
+  }
+  return value
+}
