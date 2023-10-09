@@ -13,7 +13,8 @@ export default defineNuxtConfig({
     AUTH0_CLIENTID: ensureEnv('AUTH0_CLIENTID'),
     AUTH0_SECRET: ensureEnv('AUTH0_SECRET'),
     public: {
-      cookie_token: 'txosteo_token',
+      auth0_token: 'txosteo_volunteer_auth0_token',
+      txosteo_token: 'txosteo_volunteer_token',
     },
   },
 })

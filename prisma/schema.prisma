@@ -21,9 +21,9 @@ datasource db {
 // Model, or a table of info stored, for a User
 model User {
   id             String   @id @default(uuid())
+  auth0_id       String   @unique
   name           String
   email          String
-  password       String
   age            Int
   languages      String[]
   numHours       Decimal
