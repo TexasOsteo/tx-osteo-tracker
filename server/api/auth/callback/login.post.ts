@@ -23,6 +23,7 @@ export default defineEventHandler(async (event) => {
 
   const cookieOptions = {
     expires: new Date(claims.exp * 1000), // Auth0 returns date in seconds since UNIX epoch, but JS needs milliseconds
+    secure: true,
   }
   const cookieName = useRuntimeConfig().public.auth0_token
   setCookie(event, cookieName, body.id_token, cookieOptions)
