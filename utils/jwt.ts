@@ -29,7 +29,7 @@ type Auth0Claims = InferType<typeof Auth0ClaimsSchema>
  * Yup schema for checking if our JWT is valid
  */
 const TXOsteoClaimsSchema = object({
-  isAdmin: boolean().required(),
+  admin: boolean().required(),
   exp: number().required(),
   sub: string().required(),
   sid: string().required(),
@@ -100,7 +100,7 @@ export function generateTXOsteoJWT(
   const payload: TXOsteoClaims = {
     exp: auth0Claims.exp,
     sid: auth0Claims.sid,
-    isAdmin: user.isAdmin,
+    admin: user.isAdmin,
     sub: user.id,
   }
 

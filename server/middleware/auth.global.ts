@@ -1,17 +1,32 @@
 import { getLoginRedirect } from '~/utils/auth'
 import { getAuth0Claims, getTXOsteoJWTClaims } from '~/utils/jwt'
 
+type PathFilter = {
+  path: string | RegExp
+  methods?: string[] // GET by default
+}
+
 /**
  * Paths that do not require authentication.
  * Strings are only allowed if it is an exact match
  */
-const publicPaths = [/\/api\/auth\/.+/, '/']
+const publicPaths: PathFilter[] = [
+  { path: /^\/api\/auth\/.+/, methods: ['GET', 'POST'] },
+  { path: '/' },
+]
+
+/**
+ * Paths that require the user to have admin privileges
+ */
+const adminPaths: PathFilter[] = [{ path: /^\/.+/, methods: ['DELETE'] }]
 
 export default defineEventHandler(async (event) => {
   const currentUrl = getRequestURL(event)
 
   // Skip authentication if the path matches a public path filter
-  if (publicPaths.some((path) => comparePaths(path, currentUrl.pathname))) {
+  if (
+    publicPaths.some((p) => comparePaths(event.method, p, currentUrl.pathname))
+  ) {
     return
   }
 
@@ -34,12 +49,32 @@ export default defineEventHandler(async (event) => {
       await sendRedirect(event, getLoginRedirect(event))
     }
   }
+
+  // Check if the page is admin-only
+  if (
+    adminPaths.some((p) => comparePaths(event.method, p, currentUrl.pathname))
+  ) {
+    if (!txOsteoClaims?.admin) {
+      throw createError({
+        statusCode: 401,
+        statusMessage: `You are unauthorized to access this endpoint (must be admin): ${currentUrl.pathname}`,
+      })
+    }
+  }
 })
 
 function comparePaths(
-  filterPath: string | RegExp,
+  method: string,
+  pathFilter: PathFilter,
   currentPath: string,
 ): boolean {
-  if (typeof filterPath === 'string') return filterPath === currentPath
-  return filterPath.test(currentPath)
+  if (
+    (pathFilter.path instanceof RegExp && pathFilter.path.test(currentPath)) ||
+    currentPath === pathFilter.path
+  ) {
+    // Allow GET request through unless specified
+    if (!pathFilter.methods && method === 'GET') return true
+    if (pathFilter.methods && pathFilter.methods.includes(method)) return true
+  }
+  return false
 }
