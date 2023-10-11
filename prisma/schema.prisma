@@ -24,7 +24,7 @@ model User {
   name           String
   email          String
   password       String
-  age            Int
+  dateOfBirth    DateTime @db.Date // @db is a Prisma-specific annotation, it will store only the date portion of the DateTime
   languages      String[]
   numHours       Decimal
   isAdmin        Boolean
