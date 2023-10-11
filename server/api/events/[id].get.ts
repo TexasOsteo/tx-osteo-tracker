@@ -1,3 +1,10 @@
+/**
+ * --- API INFO
+ * GET /api/events/[id]
+ * Returns the event with id
+ * ---
+ */
+
 export default defineEventHandler(async (event) => {
   // Get the id parameter (the last part of this url)
   const id = getRouterParam(event, 'id')

@@ -62,12 +62,14 @@ function getAuth0Domain(): string {
  * with admin privileges
  * @param event H3 Event
  */
-export function throwErrorIfNotAdmin(event: DefaultEvent) {
+export function throwErrorIfNotAdmin(event: DefaultEvent, message?: string) {
   if (!event.context.txOsteoClaims || !event.context.txOsteoClaims.admin) {
     const currentUrl = getRequestURL(event)
     throw createError({
       statusCode: 401,
-      message: `You must be an admin to access this endpoint: ${currentUrl.pathname}`,
+      message:
+        message ??
+        `You must be an admin to access this endpoint: ${currentUrl.pathname}`,
     })
   }
 }

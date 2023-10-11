@@ -1,8 +1,17 @@
-import { PrismaClient } from '@prisma/client'
+import { throwErrorIfNotAdmin } from '~/utils/auth'
 
-const prisma = new PrismaClient()
+/**
+ * --- API INFO
+ * DELETE /api/events/[id]
+ * Deletes an event with the id
+ * Returns the deleted event's info
+ * ---
+ */
 
 export default defineEventHandler(async (event) => {
+  throwErrorIfNotAdmin(event) // Check if user is admin
+
+  // Get the id parameter (the last part of this url)
   const id = getRouterParam(event, 'id')
   if (!id) {
     // If there is no id, throw a 400 (BAD REQUEST) error
@@ -12,12 +21,12 @@ export default defineEventHandler(async (event) => {
     })
   }
   try {
-    const userDeletion = await prisma.user.delete({
+    const deleteEvent = await event.context.prisma.event.delete({
       where: {
         id,
       },
     })
-    return userDeletion
+    return deleteEvent
   } catch (error: any) {
     throw createError({
       statusCode: 412, // Precondition Failed Error
