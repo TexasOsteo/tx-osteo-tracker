@@ -1,6 +1,8 @@
-import { PrismaClient } from '@prisma/client'
-const prisma = new PrismaClient()
+import { throwErrorIfNotAdmin } from '~/utils/auth'
+
 export default defineEventHandler(async (event) => {
+  throwErrorIfNotAdmin(event) // Check if user is admin
+
   // Get the id parameter (the last part of this url)
   const id = getRouterParam(event, 'id')
   if (!id) {
@@ -11,7 +13,7 @@ export default defineEventHandler(async (event) => {
     })
   }
   try {
-    const deleteEvent = await prisma.event.delete({
+    const deleteEvent = await event.context.prisma.event.delete({
       where: {
         id,
       },
