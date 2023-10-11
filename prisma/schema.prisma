@@ -24,7 +24,8 @@ model User {
   auth0_id       String   @unique
   name           String
   email          String
-  age            Int
+  password       String
+  dateOfBirth    DateTime @db.Date // @db is a Prisma-specific annotation, it will store only the date portion of the DateTime
   languages      String[]
   numHours       Decimal
   isAdmin        Boolean
