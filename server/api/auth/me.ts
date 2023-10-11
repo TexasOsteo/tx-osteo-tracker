@@ -10,7 +10,6 @@ export default defineEventHandler(async (event) => {
   const user = await event.context.prisma.user.findUnique({
     where: { auth0_id: claims.sub },
   })
-  console.log(user, claims.sub)
 
   if (!user) {
     throw createError({
