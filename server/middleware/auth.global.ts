@@ -1,3 +1,4 @@
+import { PrismaClient } from '@prisma/client'
 import { getLoginRedirect } from '~/utils/auth'
 import { getAuth0Claims, getTXOsteoJWTClaims } from '~/utils/jwt'
 
@@ -16,11 +17,24 @@ const publicPaths: PathFilter[] = [
 ]
 
 /**
- * Paths that require the user to have admin privileges
+ * Ideally, this client will be used by every API endpoint by using
+ * "event.context.prisma" instead of making a new instance every time
  */
-const adminPaths: PathFilter[] = [{ path: /^\/.+/, methods: ['DELETE'] }]
+const prismaClient = new PrismaClient()
 
 export default defineEventHandler(async (event) => {
+  // Add reference to prisma client for easy access later
+  event.context.prisma = prismaClient
+
+  // Get tokens from cookies, verify them, and cache their results in the context
+  const auth0Cookie = getCookie(event, useRuntimeConfig().public.auth0_token)
+  const auth0Claims = auth0Cookie ? getAuth0Claims(auth0Cookie) : null
+  event.context.auth0Claims = auth0Claims
+
+  const osteoCookie = getCookie(event, useRuntimeConfig().public.txosteo_token)
+  const txOsteoClaims = osteoCookie ? getTXOsteoJWTClaims(osteoCookie) : null
+  event.context.txOsteoClaims = txOsteoClaims
+
   const currentUrl = getRequestURL(event)
 
   // Skip authentication if the path matches a public path filter
@@ -29,9 +43,6 @@ export default defineEventHandler(async (event) => {
   ) {
     return
   }
-
-  const auth0Claims = getAuth0Claims(event)
-  const txOsteoClaims = getTXOsteoJWTClaims(event)
 
   // If no Auth0 claims, they're unauthenticated
   if (!auth0Claims) {
@@ -47,18 +58,6 @@ export default defineEventHandler(async (event) => {
       await sendRedirect(event, getLoginRedirect(event))
     } else {
       await sendRedirect(event, getLoginRedirect(event))
-    }
-  }
-
-  // Check if the page is admin-only
-  if (
-    adminPaths.some((p) => comparePaths(event.method, p, currentUrl.pathname))
-  ) {
-    if (!txOsteoClaims?.admin) {
-      throw createError({
-        statusCode: 401,
-        statusMessage: `You are unauthorized to access this endpoint (must be admin): ${currentUrl.pathname}`,
-      })
     }
   }
 })

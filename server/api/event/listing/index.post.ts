@@ -19,10 +19,8 @@
 
 import { string, object, number, date, bool, array } from 'yup'
 
-import { PrismaClient } from '@prisma/client'
 import { parseIDsToPrismaConnectObject } from '~/utils/prisma-parsing'
-
-const prisma = new PrismaClient()
+import { throwErrorIfNotAdmin } from '~/utils/auth'
 
 const schema = object({
   id: string().optional(),
@@ -45,11 +43,13 @@ const schema = object({
 })
 
 export default defineEventHandler(async (event) => {
+  throwErrorIfNotAdmin(event) // Check if user is admin
+
   const rawBody = await readBody(event)
 
   try {
     const body = await schema.validate(rawBody)
-    const eventListing = await prisma.event.create({
+    const eventListing = await event.context.prisma.event.create({
       data: {
         ...body,
         attendees: parseIDsToPrismaConnectObject(body.attendees),

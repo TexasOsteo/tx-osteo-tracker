@@ -56,3 +56,18 @@ function getAuth0Domain(): string {
   const domain = useRuntimeConfig().AUTH0_DOMAIN
   return domain.startsWith('https://') ? domain : `https://${domain}`
 }
+
+/**
+ * Will throw a 401 (Unauthorized) error if the user does not have a verified TXOsteo JWT token
+ * with admin privileges
+ * @param event H3 Event
+ */
+export function throwErrorIfNotAdmin(event: DefaultEvent) {
+  if (!event.context.txOsteoClaims || !event.context.txOsteoClaims.admin) {
+    const currentUrl = getRequestURL(event)
+    throw createError({
+      statusCode: 401,
+      message: `You must be an admin to access this endpoint: ${currentUrl.pathname}`,
+    })
+  }
+}

@@ -1,8 +1,5 @@
-import { PrismaClient } from '@prisma/client'
-import { getAuth0Claims } from '~/utils/jwt'
-
 export default defineEventHandler(async (event) => {
-  const claims = getAuth0Claims(event)
+  const claims = event.context.auth0Claims
   if (!claims) {
     throw createError({
       statusCode: 401,
@@ -10,8 +7,11 @@ export default defineEventHandler(async (event) => {
     })
   }
 
-  const prisma = new PrismaClient()
-  const user = await prisma.user.findUnique({ where: { auth0_id: claims.sub } })
+  const user = await event.context.prisma.user.findUnique({
+    where: { auth0_id: claims.sub },
+  })
+  console.log(user, claims.sub)
+
   if (!user) {
     throw createError({
       statusCode: 404,

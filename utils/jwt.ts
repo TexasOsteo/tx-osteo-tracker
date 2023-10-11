@@ -7,15 +7,14 @@ import {
   string,
   ObjectSchema,
   type AnyObject,
-  type InferType,
 } from 'yup'
 import type { User } from '@prisma/client'
-import type { DefaultEvent } from './types'
+import type { Auth0Claims, TXOsteoClaims } from './types'
 
 /**
  * Yup schema for checking the Auth0 JWT has all of the required fields
  */
-const Auth0ClaimsSchema = object({
+export const Auth0ClaimsSchema = object({
   email: string().required(),
   email_verified: boolean().required(),
   exp: number().required(),
@@ -23,19 +22,15 @@ const Auth0ClaimsSchema = object({
   sid: string().required(),
 })
 
-type Auth0Claims = InferType<typeof Auth0ClaimsSchema>
-
 /**
  * Yup schema for checking if our JWT is valid
  */
-const TXOsteoClaimsSchema = object({
+export const TXOsteoClaimsSchema = object({
   admin: boolean().required(),
   exp: number().required(),
   sub: string().required(),
   sid: string().required(),
 })
-
-type TXOsteoClaims = InferType<typeof TXOsteoClaimsSchema>
 
 /**
  * Attempts to verify and parse a JWT for its claims based on a yup schema.
@@ -57,34 +52,20 @@ export function validateJWT<T extends AnyObject>(
 
 /**
  * Returns the claims from the Auth0 JWT
- * @param info H3 request event with cookie info, or a token string
+ * @param info JWT string
  * @returns null if claims are invalid
  */
-export function getAuth0Claims(
-  info: DefaultEvent | string,
-): Auth0Claims | null {
-  if (typeof info !== 'string') {
-    const cookie = getCookie(info, useRuntimeConfig().public.auth0_token)
-    if (!cookie) return null
-    info = cookie
-  }
-  return validateJWT(info, Auth0ClaimsSchema)
+export function getAuth0Claims(token: string): Auth0Claims | null {
+  return validateJWT(token, Auth0ClaimsSchema)
 }
 
 /**
  * Returns the claims from the JWT for our TXOsteo system
- * @param info H3 request event with cookie info, or a token string
+ * @param info JWT string
  * @returns null if claims are invalid
  */
-export function getTXOsteoJWTClaims(
-  info: DefaultEvent | string,
-): TXOsteoClaims | null {
-  if (typeof info !== 'string') {
-    const cookie = getCookie(info, useRuntimeConfig().public.txosteo_token)
-    if (!cookie) return null
-    info = cookie
-  }
-  return validateJWT(info, TXOsteoClaimsSchema)
+export function getTXOsteoJWTClaims(token: string): TXOsteoClaims | null {
+  return validateJWT(token, TXOsteoClaimsSchema)
 }
 
 /**
