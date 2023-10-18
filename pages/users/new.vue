@@ -30,6 +30,7 @@ async function handleSubmit(fields: any) {
 <template>
   <div class="flex justify-center">
     <div class="w-full max-w-lg h-full mt-10">
+      <h1 class="font-bold text-4xl mb-8">Welcome!</h1>
       <FormKit type="form" :errors="formErrors" @submit="handleSubmit">
         <FormKit
           type="text"
@@ -44,7 +45,6 @@ async function handleSubmit(fields: any) {
           label="Date of Birth"
           name="dateOfBirth"
           :validation="`required|date_before:${todayString}`"
-          validation-visibility="live"
         />
 
         <LanguageSelect />

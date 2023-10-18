@@ -25,6 +25,9 @@ defineProps<{
       type="text"
       :placeholder="placeholder"
       validation="required"
+      :validation-messages="{
+        required: 'Please fill out this field or remove it',
+      }"
       suffix-icon="trash"
       :index="index"
       suffix-icon-class="!p-0"
