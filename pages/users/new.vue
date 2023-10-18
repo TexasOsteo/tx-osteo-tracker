@@ -1,0 +1,56 @@
+<script setup lang="ts">
+const todayString = new Date().toDateString()
+
+async function handleSubmit(fields: any) {
+  const { data, error } = await useFetch('/api/users', {
+    method: 'POST',
+    body: {
+      ...fields,
+      numHours: 0,
+      isAdmin: false,
+      userNotes: [],
+      signedUpEvents: [],
+      eventHistory: [],
+    },
+  })
+
+  if (!data) {
+    alert(error.value?.message ?? 'Unknown error')
+  } else {
+    window.location.replace(new URL('/api/auth/login', window.location.origin))
+  }
+}
+</script>
+
+<template>
+  <div class="flex justify-center">
+    <div class="w-full max-w-lg h-full mt-10">
+      <FormKit type="form" @submit="handleSubmit">
+        <FormKit
+          type="text"
+          name="name"
+          validation="required"
+          label="Name"
+          placeholder="First and Last Name"
+        />
+
+        <FormKit
+          type="date"
+          label="Date of Birth"
+          name="dateOfBirth"
+          :validation="`required|date_before:${todayString}`"
+          validation-visibility="live"
+        />
+
+        <LanguageSelect />
+        <TextMultiple
+          title="Qualifications"
+          placeholder="Enter qualification description"
+          add-text="Add new qualification"
+          name="qualifications"
+          empty
+        />
+      </FormKit>
+    </div>
+  </div>
+</template>

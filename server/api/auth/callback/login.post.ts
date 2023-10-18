@@ -37,8 +37,7 @@ export default defineEventHandler(async (event) => {
   }).catch(() => null)
 
   if (!user) {
-    // TODO: Send to new user page
-    await sendRedirect(event, '/')
+    await sendRedirect(event, '/users/new')
   } else {
     // Create a JWT that represents the user in our system
     const jwt = generateTXOsteoJWT(user, claims)
