@@ -14,6 +14,6 @@ const languageOptions = Object.fromEntries(
     add-text="Add new language"
     default-value="en"
     name="languages"
-    no-duplicates
+    validation="noDuplicates|required"
   />
 </template>

@@ -5,7 +5,7 @@ defineProps<{
   name: string
   placeholder: string
   empty?: boolean
-  noDuplicates?: boolean
+  validation?: string
 }>()
 </script>
 
@@ -17,7 +17,7 @@ defineProps<{
     :name="name"
     default-value=""
     :empty="empty"
-    :no-duplicates="noDuplicates"
+    :validation="validation"
   >
     <FormKit
       v-for="(item, index) in items"

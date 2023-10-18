@@ -11,7 +11,7 @@ const props = defineProps<{
   name: string
   defaultValue: string
   empty?: boolean
-  noDuplicates?: boolean
+  validation?: string
 }>()
 
 const values = ref<string[]>(props.empty ? [] : [props.defaultValue])
@@ -31,7 +31,7 @@ function duplicateValidator(node: FormKitNode<unknown>) {
     :name="name"
     type="list"
     :validation-rules="{ noDuplicates: duplicateValidator }"
-    :validation="noDuplicates ? 'noDuplicates' : ''"
+    :validation="validation"
     :validation-messages="{ noDuplicates: 'No duplicates' }"
     validation-visibility="live"
     dynamic
