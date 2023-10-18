@@ -1,8 +1,10 @@
 <script setup lang="ts">
 const todayString = new Date().toDateString()
 
+const formErrors = ref<string[]>()
+
 async function handleSubmit(fields: any) {
-  const { data, error } = await useFetch('/api/users', {
+  const { error } = await useFetch('/api/users', {
     method: 'POST',
     body: {
       ...fields,
@@ -14,8 +16,11 @@ async function handleSubmit(fields: any) {
     },
   })
 
-  if (!data) {
-    alert(error.value?.message ?? 'Unknown error')
+  if (error.value) {
+    formErrors.value = [
+      'There was an error creating your profile. Do you already have one?',
+      error.value.message,
+    ]
   } else {
     window.location.replace(new URL('/api/auth/login', window.location.origin))
   }
@@ -25,7 +30,7 @@ async function handleSubmit(fields: any) {
 <template>
   <div class="flex justify-center">
     <div class="w-full max-w-lg h-full mt-10">
-      <FormKit type="form" @submit="handleSubmit">
+      <FormKit type="form" :errors="formErrors" @submit="handleSubmit">
         <FormKit
           type="text"
           name="name"
