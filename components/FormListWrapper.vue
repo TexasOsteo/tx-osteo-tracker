@@ -24,23 +24,34 @@ function duplicateValidator(node: FormKitNode<unknown>) {
 </script>
 
 <template>
-  <h1 class="block mb-1 font-bold">{{ title }}</h1>
-  <FormKit
-    v-slot="{ items }"
-    v-model="values"
-    :name="name"
-    type="list"
-    :validation-rules="{ noDuplicates: duplicateValidator }"
-    :validation="validation"
-    :validation-messages="{ noDuplicates: 'No duplicates' }"
-    validation-visibility="live"
-    dynamic
+  <div
+    class="flex relative flex-wrap flex-col justify-center items-center w-4/5"
   >
-    <slot :items="items" :values="values" />
-    <FormKitMessages />
-    <button class="mb-2 mt-0" type="button" @click="values.push(defaultValue)">
-      <b class="font-bold">+</b>
-      {{ addText }}
-    </button>
-  </FormKit>
+    <div className="w-full">
+      <h1 class="block mb-1 font-bold text-left">{{ title }}</h1>
+
+      <FormKit
+        v-slot="{ items }"
+        v-model="values"
+        :name="name"
+        type="list"
+        :validation-rules="{ noDuplicates: duplicateValidator }"
+        :validation="validation"
+        :validation-messages="{ noDuplicates: 'No duplicates' }"
+        validation-visibility="live"
+        dynamic
+      >
+        <slot :items="items" :values="values" />
+        <FormKitMessages />
+        <button
+          class="mb-2 mt-0"
+          type="button"
+          @click="values.push(defaultValue)"
+        >
+          <b class="font-bold">+</b>
+          {{ addText }}
+        </button>
+      </FormKit>
+    </div>
+  </div>
 </template>

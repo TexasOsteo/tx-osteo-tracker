@@ -39,10 +39,11 @@ export default {
   },
   'family:button': {
     input:
-      '$reset inline-flex items-center bg-blue-600 text-white text-sm font-normal py-3 px-6 rounded focus-visible:outline-2 focus-visible:outline-blue-600 focus-visible:outline-offset-2 formkit-disabled:bg-gray-400 formkit-loading:before:w-4 formkit-loading:before:h-4 formkit-loading:before:mr-2 formkit-loading:before:border formkit-loading:before:border-2 formkit-loading:before:border-r-transparent formkit-loading:before:rounded-3xl formkit-loading:before:border-white formkit-loading:before:animate-spin',
+      '$reset inline-flex justify-center items-center bg-[#F0CC5A] disabled:bg-slate-50 disabled:text-slate-500 hover:bg-white hover:text-black text-white w-full text-end text-lg font-normal py-3 px-6 rounded-lg transition duration-300 ease-in-out focus-visible:outline-2 focus-visible:outline-blue-600 focus-visible:outline-offset-2 formkit-disabled:bg-gray-400 formkit-loading:before:w-4 formkit-loading:before:h-4 formkit-loading:before:mr-2 formkit-loading:before:border formkit-loading:before:border-2 formkit-loading:before:border-r-transparent formkit-loading:before:rounded-3xl formkit-loading:before:border-white formkit-loading:before:animate-spin rounded-30',
     wrapper: 'mb-1',
     prefixIcon: '$reset block w-4 -ml-2 mr-2 stretch',
     suffixIcon: '$reset block w-4 ml-2 stretch',
+    outer: 'pt-10',
   },
   'family:dropdown': {
     dropdownWrapper:
@@ -50,7 +51,7 @@ export default {
     emptyMessageInner:
       'flex items-center justify-center text-sm p-2 text-center w-full text-gray-500 [&>span]:mr-3 [&>span]:ml-0',
     inner:
-      'max-w-md relative flex ring-1 ring-gray-400 focus-within:ring-blue-500 focus-within:ring-2 rounded mb-2 formkit-disabled:focus-within:ring-gray-400 formkit-disabled:focus-within:ring-1 [&>span:first-child]:focus-within:text-blue-500',
+      'max-w-md relative flex ring-1 ring-gray-400 focus-within:ring-blue-500 focus-within:ring-2 rounded mb-2  formkit-disabled:focus-within:ring-gray-400 formkit-disabled:focus-within:ring-1 [&>span:first-child]:focus-within:text-blue-500',
     input: 'w-full px-3 py-2',
     listbox: 'bg-white shadow-lg rounded overflow-hidden',
     listboxButton: 'flex w-12 self-stretch justify-center mx-auto',
@@ -71,9 +72,11 @@ export default {
   },
   'family:text': {
     inner:
-      'flex items-center max-w-md ring-1 ring-gray-400 focus-within:ring-blue-500 focus-within:ring-2 [&>label:first-child]:focus-within:text-blue-500 rounded mb-1',
+      'items-center rounded-md mb-1 ring-1 ring-gray-400 focus-within:ring-blue-500 focus-within:ring-2 [&>span:first-child]:focus-within:text-blue-500',
     input:
       'w-full px-3 py-2 border-none text-base text-gray-700 placeholder-gray-400',
+    outer: 'mb-5 ',
+    help: 'text-xs text-gray-500',
   },
   'family:date': {
     inner:
@@ -98,10 +101,9 @@ export default {
     fileRemove:
       'relative z-[2] ml-auto text-[0px] hover:text-red-500 pl-2 peer-data-[has-multiple=true]:text-sm peer-data-[has-multiple=true]:text-blue-500 peer-data-[has-multiple=true]:ml-3 peer-data-[has-multiple=true]:mb-2 formkit-multiple:bottom-[0.15em] formkit-multiple:pl-0 formkit-multiple:ml-0 formkit-multiple:left-[1em] formkit-multiple:formkit-prefix-icon:left-[3.75em]',
     fileRemoveIcon: 'block text-base w-3 relative z-[2]',
-    inner:
-      'relative max-w-md cursor-pointer formkit-multiple:[&>button]:absolute',
+    inner: 'relative cursor-pointer formkit-multiple:[&>button]:absolute',
     input:
-      'cursor-pointer text-transparent absolute top-0 right-0 left-0 bottom-0 opacity-0 z-[2]',
+      'w-full cursor-pointer text-transparent absolute top-0 right-0 left-0 bottom-0 opacity-0 z-[2]',
     noFiles: 'flex w-full items-center px-3 py-2 text-gray-400',
     noFilesIcon: 'w-4 mr-2',
   },
@@ -119,11 +121,13 @@ export default {
   },
   select: {
     inner:
-      'flex relative max-w-md items-center rounded mb-1 ring-1 ring-gray-400 focus-within:ring-blue-500 focus-within:ring-2 [&>span:first-child]:focus-within:text-blue-500',
+      'flex relative w-full items-center rounded-md mb-1 ring-1 ring-gray-400 focus-within:ring-blue-500 focus-within:ring-2 [&>span:first-child]:focus-within:text-blue-500',
     input:
       'w-full pl-3 pr-8 py-2 border-none text-base text-gray-700 placeholder-gray-400 formkit-multiple:p-0 data-[placeholder="true"]:text-gray-400 formkit-multiple:data-[placeholder="true"]:text-inherit',
+    outer: 'mb-5 ',
+    help: 'text-xs text-gray-500',
     selectIcon:
-      'flex p-[3px] shrink-0 w-5 mr-2 -ml-[1.5em] h-full pointer-events-none [&>svg]:w-[1em]',
+      'flex p-[3px] shrink-0 w-5 mr-2 -ml-[1.5em] h-full pointer-events-none [&>svg]:w-[1em] color-gray-500',
     option: 'formkit-multiple:p-3 formkit-multiple:text-sm text-gray-700',
   },
   textarea: {

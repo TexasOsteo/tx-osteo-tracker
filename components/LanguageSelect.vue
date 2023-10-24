@@ -15,5 +15,6 @@ const languageOptions = Object.fromEntries(
     default-value="en"
     name="languages"
     validation="noDuplicates|required"
+    
   />
 </template>
