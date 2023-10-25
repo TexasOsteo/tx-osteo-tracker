@@ -10,7 +10,6 @@ import { validateBody } from '~/utils/validation'
  * Creates a new event with a generated id
  * The body is a prisma user object, except the 'attendees' and 'signedUpUsers' fields accepts user ids
  * Returns the newly created event
- * ---
  */
 
 export const eventSchema = object({
@@ -24,7 +23,7 @@ export const eventSchema = object({
   hoursOffered: number().required(),
   phoneNumber: string().required(),
   email: string().required(),
-  isSignUpAvailable: bool().required(),
+  description: string().required(),
   capacity: number().required(),
   languages: array(string().defined()).defined(),
   prerequisites: array(string().defined()).defined(),

@@ -17,4 +17,10 @@ const volunteerCookie = useCookie(useRuntimeConfig().public.txosteo_token)
   </div>
   <p v-if="volunteerCookie">You have an account in the system!</p>
   <p v-if="!volunteerCookie">You have do not have an account in the system</p>
+
+  <NuxtLink>
+    <a href="/event/new" class="text-blue-500 p-1 underline"
+      >Event Creation Page</a
+    >
+  </NuxtLink>
 </template>

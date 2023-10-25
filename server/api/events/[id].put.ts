@@ -34,7 +34,7 @@ const schema: ObjectSchema<Partial<InferType<typeof eventSchema>>> = object({
   hoursOffered: number().optional(),
   phoneNumber: string().optional(),
   email: string().optional(),
-  isSignUpAvailable: bool().optional(),
+  description: string().optional(),
   capacity: number().optional(),
   attendees: array(string().defined()).optional(),
   signedUpUsers: array(string().defined()).optional(),

@@ -17,6 +17,10 @@ export default defineNuxtConfig({
       txosteo_token: 'txosteo_volunteer_token',
     },
   },
+  modules: ['@formkit/nuxt'],
+  formkit: {
+    autoImport: true,
+  },
 })
 
 function ensureEnv(envName: string): string {

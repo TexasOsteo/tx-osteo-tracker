@@ -14,6 +14,8 @@ type PathFilter = {
 const publicPaths: PathFilter[] = [
   { path: /^\/api\/auth\/.+/, methods: ['GET', 'POST'] },
   { path: '/' },
+  { path: '/users/new' },
+  { path: '/api/users', methods: ['POST'] },
 ]
 
 /**
@@ -53,12 +55,13 @@ export default defineEventHandler(async (event) => {
         statusCode: 401,
         statusMessage: `You are unauthorized to access this endpoint: ${currentUrl.pathname}`,
       })
-    } else if (!txOsteoClaims) {
-      // TODO: Send them to new user page
-      await sendRedirect(event, getLoginRedirect(event))
-    } else {
-      await sendRedirect(event, getLoginRedirect(event))
     }
+
+    await sendRedirect(event, getLoginRedirect(event))
+  }
+
+  if (!txOsteoClaims) {
+    await sendRedirect(event, '/users/new')
   }
 })
 
