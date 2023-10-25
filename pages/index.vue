@@ -15,7 +15,7 @@ const volunteerCookie = useCookie(useRuntimeConfig().public.txosteo_token)
     You are not authenticated
     <a href="/api/auth/login" class="text-blue-500 p-1 underline">Login</a>
   </div>
-  <a href="/eventList">what</a>
+  <a href="/eventList">Event Listings</a>
   <p v-if="volunteerCookie">You have an account in the system!</p>
   <p v-if="!volunteerCookie">You have do not have an account in the system</p>
 </template>
