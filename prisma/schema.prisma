@@ -53,8 +53,7 @@ model Event {
   volunteerPositions String[]
   phoneNumber        String
   email              String
-  // Whether the sign up for the event is still available
-  isSignUpAvailable  Boolean
+  description        String
   capacity           Int
   attendees          User[]   @relation("EventHistory")
   signedUpUsers      User[]   @relation("SignedUpEvents")
