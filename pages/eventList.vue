@@ -14,28 +14,29 @@ export default {
 </script>
 
 <template>
-  <div className="h-screen w-screen bg-slate-500">
-    <div className="bg-white mx-20 p-5 rounded-md shadow-xl flex flex-wrap">
-      <div className="flex flex-wrap mb-5 w-[90%]">
-        <div className="flex flex-wrap items-end">
-          <h1 className="text-4xl font-bold font-sans mr-10">Event Name</h1>
-          <h3 className="mr-20 mt-5">Capacity</h3>
+  <div class="h-screen w-screen bg-slate-500">
+    <div></div>
+    <div class="bg-white mx-20 p-5 rounded-md shadow-xl flex flex-wrap">
+      <div class="flex flex-wrap mb-5 w-[90%]">
+        <div class="flex flex-wrap items-end">
+          <h1 class="text-4xl font-bold font-sans mr-10">Event Name</h1>
+          <h3 class="mr-20 mt-5">Capacity</h3>
         </div>
-        <div v-if="!isExpanded" className="flex flex-wrap mt-5">
-          <h3 className="mr-20 mt-5">Organizer</h3>
-          <h3 className="mr-20 mt-5">Location</h3>
-          <h3 className="mr-20 mt-5">Date and Time</h3>
+        <div v-if="!isExpanded" class="flex flex-wrap mt-5">
+          <h3 class="mr-20 mt-5">Organizer</h3>
+          <h3 class="mr-20 mt-5">Location</h3>
+          <h3 class="mr-20 mt-5">Date and Time</h3>
         </div>
         <div
           v-if="isExpanded"
-          className="flex flex-wrap transform translate-y-5 bg-slate-200 px-5 pb-5 rounded-lg"
+          class="flex flex-wrap transform translate-y-5 bg-slate-200 px-5 pb-5 rounded-lg"
         >
-          <h3 className="mr-20 mt-5">Organizer</h3>
+          <h3 class="mr-20 mt-5">Organizer</h3>
 
-          <h3 className="mr-20 mt-5">Date and Time</h3>
+          <h3 class="mr-20 mt-5">Date and Time</h3>
           <h3 class="mr-20 mt-5">Hours Offered</h3>
 
-          <div className="flex flex-wrap items-center mt-5">
+          <div class="flex flex-wrap items-center mt-5">
             <svg
               width="24"
               height="24"
@@ -51,7 +52,7 @@ export default {
             <h3 class="mr-20 ml-3">Location</h3>
           </div>
 
-          <div className="flex flex-wrap items-center mt-5">
+          <div class="flex flex-wrap items-center mt-5">
             <svg
               width="24"
               height="24"
@@ -69,7 +70,7 @@ export default {
             <h3 class="mr-20 ml-3">Phone Number</h3>
           </div>
 
-          <div className="flex flex-wrap items-center mt-5">
+          <div class="flex flex-wrap items-center mt-5">
             <svg
               width="24"
               height="24"
@@ -87,7 +88,7 @@ export default {
 
           <h3 class="mr-20 mt-5">Volunteer Positions</h3>
 
-          <div className="flex flex-wrap items-center mt-5">
+          <div class="flex flex-wrap items-center mt-5">
             <svg
               width="24"
               height="24"
@@ -107,17 +108,14 @@ export default {
           </div>
 
           <button
-            className="w-full bg-[#0DA49B] text-white hover:bg-white hover:text-black py-3 mt-5 rounded-md"
+            class="w-full bg-[#0DA49B] text-white hover:bg-white hover:text-black py-3 mt-5 rounded-md"
           >
             REGISTER
           </button>
         </div>
       </div>
-      <div className="w-[10%] flex align-bottom justify-center">
-        <button
-          className="text-blue-500 hover:underline"
-          @click="toggleExpanded"
-        >
+      <div class="w-[10%] flex align-bottom justify-center">
+        <button class="text-blue-500 hover:underline" @click="toggleExpanded">
           <svg
             v-if="!isExpanded"
             width="28"
