@@ -1,15 +1,45 @@
+<script setup lang="ts">
+const formErrors = ref<string[]>()
+
+async function handleSubmit(fields: any) {
+  const { error } = await useFetch('/api/events', {
+    method: 'POST',
+    body: {
+      ...fields,
+      attendees: [],
+      signedUpUsers: [],
+      thumbnail: 'no file', // TODO: this
+    },
+  })
+
+  if (error.value) {
+    formErrors.value = [
+      'There was an error creating this event.',
+      error.value.message,
+    ]
+  } else {
+    window.location.replace(new URL('/api/auth/login', window.location.origin))
+  }
+}
+</script>
+
 <!--Form-->
 <template>
   <div class="py-20 flex justify-center flex-wrap items-center">
     <CurveBackground />
 
     <div
-      class="w-1/2 bg-gray-100 opacity-95 rounded-3xl shadow-xl z-30 p-10 flex justify-center flex-wrap items-center"
+      class="max-w-screen-lg bg-gray-100 opacity-95 rounded-3xl shadow-xl z-30 p-10 flex justify-center flex-wrap items-center"
     >
       <h1 class="title font-sans font-bold text-5xl text-center mb-10">
         CREATE EVENT
       </h1>
-      <FormKit type="form" class-name="items-center" @submit="submitEvent">
+      <FormKit
+        type="form"
+        :errors="formErrors"
+        class-name="items-center"
+        @submit="handleSubmit"
+      >
         <!--Title of Event -->
         <div class="flex justify-center items-center flex-wrap">
           <FormKit
@@ -19,10 +49,7 @@
             label="Name"
             help="Type event name here."
             placeholder="Event Name"
-            inner-class=""
-            input-class=""
             outer-class="mb-5 w-4/5"
-            help-class=""
           />
 
           <!--Name of Organizer-->
@@ -33,10 +60,7 @@
             label="Organizer"
             help="Type organization name here."
             placeholder="Organization Name"
-            inner-class=""
-            input-class=""
             outer-class="mb-5 w-4/5"
-            help-class=""
           />
 
           <!--Location-->
@@ -47,10 +71,7 @@
             label="Location"
             help="Enter the street address followed by the city, state, and zipcode."
             placeholder="3333 Bones St, Austin, TX 77777"
-            inner-class=""
-            input-class=""
             outer-class="mb-5 w-4/5"
-            help-class=""
           />
 
           <!--Date-->
@@ -61,11 +82,7 @@
             label="Date and Time"
             help="Enter the date and time of the event"
             validation="required|date_after"
-            validation-visibility="live"
-            inner-class=""
-            input-class=""
             outer-class="mb-5 w-4/5"
-            help-class=""
             :validation-messages="{
               date_after: 'Enter a date that has not yet occurred',
             }"
@@ -78,12 +95,21 @@
             help="Enter the duration of the event (around how many hours?)"
             label="Duration"
             name="duration"
-            value="2"
+            placeholder="6"
             step="0.5"
-            inner-class=""
-            input-class=""
             outer-class="mb-5 w-4/5"
-            help-class=""
+          />
+
+          <!--HoursOffered -->
+          <FormKit
+            id="hoursOffered"
+            type="number"
+            help="How many hours can a volunteer earn at this event?"
+            label="Volunteer Hours Offered"
+            name="hoursOffered"
+            placeholder="2"
+            step="0.5"
+            outer-class="mb-5 w-4/5"
           />
 
           <!--Thumbnail-->
@@ -91,16 +117,12 @@
             id="thumbnail"
             type="file"
             label="Thumbnail"
+            name="thumbnail"
             accept=".png,.pdf,.jpeg"
             help="Upload a thumbnail for the event listing. Accepted formats: .png, .pdf, .jpeg."
             multiple="false"
-            inner-class=""
-            input-class=""
             outer-class="mb-5 w-4/5"
-            help-class=""
           />
-
-          <div></div>
 
           <!--Phone Number-->
           <FormKit
@@ -109,10 +131,7 @@
             name="phoneNumber"
             label="Organization Phone Number"
             help="Type the phone number of the event organizer"
-            inner-class=""
-            input-class=""
             outer-class="mb-5 w-4/5"
-            help-class=""
             placeholder="(+X) XXX-XXX-XXXX"
           />
 
@@ -124,10 +143,7 @@
             label="Organization Email"
             help="Type the email of the event organizer"
             placeholder="emailexample@domain.com"
-            inner-class=""
-            input-class=""
             outer-class="mb-5 w-4/5"
-            help-class=""
           />
 
           <!--Capacity-->
@@ -138,14 +154,37 @@
             label="Capacity"
             help="Type the maximum capacity of volunteers for this event"
             step="1"
-            inner-class=""
-            input-class=""
             outer-class="mb-5 w-4/5"
-            help-class=""
             placeholder="5"
           />
 
           <LanguageSelect />
+
+          <!--Description-->
+          <FormKit
+            id="description"
+            type="textarea"
+            name="description"
+            label="Description"
+            help="Type a description of this event"
+            outer-class="mb-5 w-4/5"
+          />
+
+          <TextMultiple
+            title="Volunteer Prerequisites"
+            placeholder="Enter new prerequisite"
+            add-text="Add new prerequisite"
+            name="prerequisites"
+            empty
+          />
+
+          <TextMultiple
+            title="Volunteer Positions"
+            placeholder="Enter new position"
+            add-text="Add new position"
+            name="volunteerPositions"
+            empty
+          />
         </div>
       </FormKit>
     </div>

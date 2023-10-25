@@ -28,33 +28,56 @@ async function handleSubmit(fields: any) {
 </script>
 
 <template>
-  <div class="flex justify-center">
-    <div class="w-full max-w-lg h-full mt-10">
-      <h1 class="font-bold text-4xl mb-8">Welcome!</h1>
-      <FormKit type="form" :errors="formErrors" @submit="handleSubmit">
-        <FormKit
-          type="text"
-          name="name"
-          validation="required"
-          label="Name"
-          placeholder="First and Last Name"
-        />
+  <div class="py-20 flex justify-center flex-wrap items-center">
+    <CurveBackground />
 
-        <FormKit
-          type="date"
-          label="Date of Birth"
-          name="dateOfBirth"
-          :validation="`required|date_before:${todayString}`"
-        />
+    <div
+      class="max-w-screen-lg bg-gray-100 opacity-95 rounded-3xl shadow-xl z-30 p-10 flex justify-center flex-wrap items-center"
+    >
+      <h1 class="title font-sans font-bold text-5xl text-center mb-10 w-full">
+        Welcome!
+      </h1>
+      <FormKit
+        type="form"
+        :errors="formErrors"
+        class-name="items-center"
+        @submit="handleSubmit"
+      >
+        <div class="flex justify-center items-center flex-wrap">
+          <FormKit
+            id="name"
+            type="text"
+            name="name"
+            label="Name"
+            help="Type your first and last name."
+            placeholder="First and Last name"
+            outer-class="mb-5 w-4/5"
+          />
 
-        <LanguageSelect />
-        <TextMultiple
-          title="Qualifications"
-          placeholder="Enter qualification description"
-          add-text="Add new qualification"
-          name="qualifications"
-          empty
-        />
+          <FormKit
+            id="date_of_birth"
+            type="date"
+            name="dateOfBirth"
+            label="Date of Birth"
+            help="Enter your date of birth"
+            :validation="`required|date_before`"
+            outer-class="mb-5 w-4/5"
+            :validation-messages="{
+              date_after: 'Enter a date that has occurred',
+            }"
+          />
+
+          <LanguageSelect />
+
+          <TextMultiple
+            title="Qualifications"
+            placeholder="Enter qualification description"
+            add-text="Add new qualification"
+            name="qualifications"
+            outer-class="mb-5 w-4/5"
+            empty
+          />
+        </div>
       </FormKit>
     </div>
   </div>
