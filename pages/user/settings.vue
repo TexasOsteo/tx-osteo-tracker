@@ -89,15 +89,23 @@ const eventData = events.data
     class="w-[352.90px] h-[69.76px] left-[600px] top-[200px] absolute text-black text-xl font-light font-['Work Sans'] tracking-[4px]"
   >
     UPCOMING EVENTS:
-    <div v-if="eventData != null">
-      <h1 v-for="event in eventData" :key="event.id">{{ event.name }}</h1>
+    <div
+      v-if="eventData != null"
+      class="w-[600px] h-[50px] text-align:right bg-[#F8F8F8]"
+    >
+      <h1 style="text-align:" v-for="event in eventData" :key="event.id">
+        {{ event.name.toUpperCase() }}
+      </h1>
     </div>
   </div>
   <div
     class="w-[352.90px] h-[69.76px] left-[600px] top-[300px] absolute text-black text-xl font-light font-['Work Sans'] tracking-[4px]"
   >
     PAST EVENTS:
-    <div v-if="eventData != null">
+    <div
+      v-if="eventData != null"
+      class="w-[600px] h-[50px] text-align:right bg-[#F8F8F8]"
+    >
       <h1 v-for="event in eventData" :key="event.id">
         {{ !event.isSignUpAvailable }}
       </h1>
