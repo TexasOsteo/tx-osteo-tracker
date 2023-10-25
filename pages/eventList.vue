@@ -34,7 +34,21 @@ export default {
           <h3 class="mr-20 mt-5">Organizer</h3>
 
           <h3 class="mr-20 mt-5">Date and Time</h3>
-          <h3 class="mr-20 mt-5">Hours Offered</h3>
+          <div class="flex flex-wrap items-center mt-5">
+            <svg
+              width="16"
+              height="20"
+              viewBox="0 0 16 20"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M0 20V18H2V15C2 13.9833 2.23767 13.029 2.713 12.137C3.18833 11.245 3.85067 10.5327 4.7 10C3.85 9.46667 3.18767 8.754 2.713 7.862C2.23833 6.97 2.00067 6.016 2 5V2H0V0H16V2H14V5C14 6.01667 13.7623 6.971 13.287 7.863C12.8117 8.755 12.1493 9.46733 11.3 10C12.15 10.5333 12.8127 11.246 13.288 12.138C13.7633 13.03 14.0007 13.984 14 15V18H16V20H0Z"
+                fill="black"
+              />
+            </svg>
+            <h3 class="mr-20 ml-3">Hours Offered</h3>
+          </div>
 
           <div class="flex flex-wrap items-center mt-5">
             <svg
