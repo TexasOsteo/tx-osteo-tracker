@@ -2,13 +2,21 @@
 const formErrors = ref<string[]>()
 
 async function handleSubmit(fields: any) {
+  const thumbnailData = await new Promise<string>((resolve) => {
+    // TODO: Make this not cursed
+    const file: File = fields.thumbnail[0].file
+    const reader = new FileReader()
+    reader.onload = () => resolve(reader.result as string)
+    reader.readAsDataURL(file)
+  })
+
   const { error } = await useFetch('/api/events', {
     method: 'POST',
     body: {
       ...fields,
       attendees: [],
       signedUpUsers: [],
-      thumbnail: 'no file', // TODO: this
+      thumbnail: thumbnailData,
     },
   })
 
@@ -18,7 +26,8 @@ async function handleSubmit(fields: any) {
       error.value.message,
     ]
   } else {
-    window.location.replace(new URL('/api/auth/login', window.location.origin))
+    const router = useRouter()
+    router.go(-1)
   }
 }
 </script>
@@ -127,7 +136,7 @@ async function handleSubmit(fields: any) {
           <!--Phone Number-->
           <FormKit
             id="phone_number"
-            type="text"
+            type="tel"
             name="phoneNumber"
             label="Organization Phone Number"
             help="Type the phone number of the event organizer"
@@ -138,7 +147,7 @@ async function handleSubmit(fields: any) {
           <!--Email-->
           <FormKit
             id="email"
-            type="text"
+            type="email"
             name="email"
             label="Organization Email"
             help="Type the email of the event organizer"
@@ -155,7 +164,7 @@ async function handleSubmit(fields: any) {
             help="Type the maximum capacity of volunteers for this event"
             step="1"
             outer-class="mb-5 w-4/5"
-            placeholder="5"
+            placeholder="50"
           />
 
           <LanguageSelect />
