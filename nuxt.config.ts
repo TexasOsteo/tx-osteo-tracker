@@ -21,6 +21,11 @@ export default defineNuxtConfig({
   formkit: {
     autoImport: true,
   },
+  app: {
+    head: {
+      title: 'Volunteer At Texas Osteoporosis Foundation',
+    },
+  },
 })
 
 function ensureEnv(envName: string): string {
