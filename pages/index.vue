@@ -1,50 +1,21 @@
-<script setup lang="ts">
-
-const auth0Cookie = useCookie(useRuntimeConfig().public.auth0_token)
-const volunteerCookie = useCookie(useRuntimeConfig().public.txosteo_token)
-
-</script>
-
-<!-- Not sure if yall wanted to keep this code <template>
-  <h1 class="mb-5">
-    This is the landing page for all users :P (unauthenticated and authenticated)
-  </h1>
-  <div v-if="auth0Cookie">
-    You are authenticated!
-    <a href="/api/auth/logout" class="text-blue-500 p-1 underline">Logout</a>
-  </div>
-  <div v-if="!auth0Cookie">
-    You are not authenticated
-    <a href="/api/auth/login" class="text-blue-500 p-1 underline">Login</a>
-  </div>
-  <p v-if="volunteerCookie">You have an account in the system!</p>
-  <p v-if="!volunteerCookie">You have do not have an account in the system</p>
-
-  <NuxtLink>
-    <a href="/event/new" class="text-blue-500 p-1 underline"
-      >Event Creation Page</a
-    >
-  </NuxtLink>
-</template> -->
-
 <template>
   <div
     class="h-20 w-[100%] bg-white flex absolute items-center shadow z-10 overflow-hidden-x-hidden mx-auto"
   >
     <div class="h-full w-1/2 flex items-center justify-left ml-10">
-      <h1 class="text-xl hidden sm:block">TEXAS OSTEOPOROSIS FOUNATION</h1>
+      <h1 class="text-xl hidden sm:block">TEXAS OSTEOPOROSIS FOUNDATION</h1>
       <h1 class="text-3xl block sm:hidden">TOF</h1>
     </div>
     <div class="h-full w-1/2 flex items-center justify-end">
       <button
         class="py-5 px-10 mr-5 bg-white rounded-md hover:bg-[#F0CC5A] hover:text-white transition duration-300 ease-in-out hidden sm:block"
       >
-        SIGN UP
+        <a href="/api/auth/login">SIGN UP</a>
       </button>
       <button
         class="py-5 px-10 mr-5 bg-white rounded-md hover:bg-[#F0CC5A] hover:text-white transition duration-300 ease-in-out hidden sm:block"
       >
-        LOG IN
+        <a href="/api/auth/login">LOG IN</a>
       </button>
     </div>
   </div>
@@ -52,7 +23,7 @@ const volunteerCookie = useCookie(useRuntimeConfig().public.txosteo_token)
     <div
       class="h-screen max-w-screen-xl mx-auto my-auto flex flex-wrap-reverse items-center justify-center text-center pt-20"
     >
-      <div class="text-center items-center justify-center  lg:mr-20">
+      <div class="text-center items-center justify-center lg:mr-20">
         <h1 class="text-5xl font-bold font-sans">VOLUNTEER AT TOF</h1>
         <p class="py-5 text-xl">
           Start volunteering and make a change in the world today!
