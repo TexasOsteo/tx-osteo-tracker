@@ -1,114 +1,98 @@
 <script setup lang="ts">
+import osteoLogo from '~/components/osteoLogo.vue'
 const { data } = await useFetch('/api/auth/me')
+const DOB = ref(data.value?.dateOfBirth)
+const formattedDOB = DOB.value?.split('T')[0]
 const events = await useFetch('/api/events/')
 const eventData = events.data
+const isExpanded1 = ref(false)
+const isExpanded2 = ref(false)
+
+const togglePresentUpcoming = () => {
+  isExpanded1.value = !isExpanded1.value
+}
+
+const togglePast = () => {
+  isExpanded2.value = !isExpanded2.value
+}
+
 </script>
+
 <template>
-  <div class="w-[426px] h-[1219px] relative">
-    <div class="w-[426px] h-[1219px] left-0 top-0 absolute bg-white"></div>
-    <div class="w-[426px] h-[1219px] left-0 top-0 absolute bg-white"></div>
-    <div class="w-[352.90px] h-[834.76px] left-[37px] top-[62px] absolute">
-      <div class="w-[225px] h-[225px] left-[59px] top-0 absolute">
-        <div
-          class="w-[225px] h-[225px] left-0 top-0 absolute bg-zinc-300 rounded-full"
-        ></div>
-        <div class="w-[135px] h-[135px] left-[45px] top-[45px] absolute"></div>
+  
+  <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 md:gap-8 grid-flow-row-dense mt-4 ml-4 mr-4">
+    
+    <div id='ProfilePic' class="bg-red-500 items-center justify-center rounded-lg shadow-xl min-h-[50px] row-span-4 hidden sm:block md:block items-center justify-center">
+      <osteoLogo />
+    </div>
+
+    <div id='UserInfo' class="flex flex-col bg-white rounded-lg shadow-xl min-h-[50px] sm:col-start-1 pl-8 pr-4">
+      <p class="mt-3 mb-2 text-gray-700 text-large font-['Work Sans']">Total Hours: {{ data?.numHours }}</p>
+      <p class="mt-3 mb-2 text-gray-700 text-large font-['Work Sans']">NAME: {{ data?.name }}</p>
+      <p class="mb-1 text-gray-700 text-large font-['Work Sans']">EMAIL: {{ data?.email }}</p>
+      <p class="mb-1 text-gray-700 text-large font-['Work Sans']">
+        <span class="text-gray-700">Birthday </span> 
+        <span class="text-gray-400">(YYYY/MM/DD)</span>
+        <span class="text-gray-700">: {{ formattedDOB }}</span>
+      </p>
+      <p class="mt-3 mb-1 text-gray-700 text-large font-['Work Sans']">
+        Language(s): {{ data?.languages && data?.languages.length > 0 ? data?.languages.join(', ') : 'None' }}
+      </p>
+      <div class="mb-1 text-gray-700 text-large font-['Work Sans']">
+        <p>User Notes:
+          <span v-if="!(data?.userNotes && data.userNotes.length > 0)">None</span>
+        </p>
+        <ul v-if="data?.userNotes && data.userNotes.length > 0">
+          <li v-for="(note, index) in data.userNotes" :key="index" class="ml-5">
+            • {{ note }}
+          </li>
+        </ul>
       </div>
-      <div class="w-[352.90px] h-[477.76px] left-0 top-[357px] absolute">
-        <div
-          class="w-[342px] h-8 left-[3px] top-[47px] absolute text-black text-xl font-light font-['Work Sans'] tracking-[4px]"
-        >
-          NAME:{{ data?.name }}
-        </div>
 
-        <div
-          class="w-[341.51px] h-[50.48px] left-[3px] top-[158px] absolute text-black text-xl font-light font-['Work Sans'] tracking-[4px]"
-        >
-          EMAIL:{{ data?.email }}
-        </div>
-        <div
-          class="w-[341.51px] h-[50.48px] left-0 top-[246px] absolute text-black text-xl font-light font-['Work Sans'] tracking-[4px]"
-        >
-          PHONE NUMBER:
-        </div>
-        <div
-          class="w-[341.51px] h-[50.48px] left-[3px] top-[349px] absolute text-black text-xl font-light font-['Work Sans'] tracking-[4px]"
-        >
-          LANGUAGES: {{ data?.languages }}
-
-          <div
-            class="w-[352.90px] h-[35.80px] left-0 top-[207px] absolute text-black text-xl font-light font-['Work Sans'] underline tracking-[4px]"
-          ></div>
-          <div
-            class="w-[352.90px] h-[35.80px] left-0 top-[305px] absolute text-black text-xl font-light font-['Work Sans'] tracking-[4px]"
-          ></div>
-          <div
-            class="w-[352.90px] h-[69.76px] left-0 top-[408px] absolute text-black text-xl font-light font-['Work Sans'] tracking-[4px]"
-          ></div>
-        </div>
+      <div class="mb-3 text-gray-700 text-large font-['Work Sans']">
+        <p>Qualifications:
+          <span v-if="!(data?.qualifications && data.qualifications.length > 0)">None</span>
+        </p>
+        <ul v-if="data?.qualifications && data.qualifications.length > 0">
+          <li v-for="(qual, index) in data.qualifications" :key="index" class="ml-5">
+            • {{ qual }}
+          </li>
+        </ul>
       </div>
-      <div
-        class="w-[350px] h-[54px] left-[38px] top-[1100px] absolute bg-white rounded-[20px] border border-teal-500"
-      ></div>
-      <div
-        class="w-[350px] h-[54px] left-[36px] top-[1200px] absolute bg-teal-500 rounded-[20px]"
-      ></div>
-      <div
-        class="w-[350px] h-[54px] left-[36px] top-[1300px] absolute bg-red-600 rounded-[20px]"
-      ></div>
-      <button
-        class="w-[191px] h-7 left-[115px] top-[1110px] absolute text-center text-teal-500 text-xl font-light font-['Work Sans'] tracking-[4px]"
-      >
-        EDIT ACCOUNT
-      </button>
-      <button
-        class="w-[191px] h-7 left-[115px] top-[1210px] absolute text-center text-white text-xl font-normal font-['Work Sans'] tracking-[4px]"
-      >
-        SIGN OUT
-      </button>
-      <button
-        class="w-[236px] h-7 left-[95px] top-[1310px] absolute text-center text-white text-xl font-normal font-['Work Sans'] tracking-[4px]"
-      >
-        DELETE ACCOUNT
-      </button>
     </div>
-  </div>
-  <div
-    class="w-[352.90px] h-[69.76px] left-[40px] top-[900px] absolute text-black text-xl font-light font-['Work Sans'] tracking-[4px]"
-  >
-    USER NOTES: {{ data?.userNotes }}
-  </div>
 
-  <div
-    class="w-[352.90px] h-[69.76px] left-[40px] top-[1000px] absolute text-black text-xl font-light font-['Work Sans'] tracking-[4px]"
-  >
-    QUALIFICATIONS: {{ data?.qualifications }}
-  </div>
 
-  <div
-    class="w-[352.90px] h-[69.76px] left-[600px] top-[200px] absolute text-black text-xl font-light font-['Work Sans'] tracking-[4px]"
-  >
-    UPCOMING EVENTS:
-    <div
-      v-if="eventData != null"
-      class="w-[600px] h-[50px] text-align:right bg-[#F8F8F8]"
-    >
-      <h1 style="text-align:" v-for="event in eventData" :key="event.id">
-        {{ event.name.toUpperCase() }}
-      </h1>
+
+    <div id='P&UEvents' class="bg-gray-200 rounded-lg shadow-xl min-h-[50px] sm:col-start-2 md:col-span-2">
+      <header class="flex items-center mt-3">
+        <p class="pl-8 pr-4 text-gray-700 text-large font-['Work Sans']">Present & Upcoming Events</p>
+        <button @click="togglePresentUpcoming">
+          <span v-if="isExpanded1">🔼</span>
+          <span v-else>🔽</span>
+        </button>
+
+      </header>
     </div>
-  </div>
-  <div
-    class="w-[352.90px] h-[69.76px] left-[600px] top-[300px] absolute text-black text-xl font-light font-['Work Sans'] tracking-[4px]"
-  >
-    PAST EVENTS:
-    <div
-      v-if="eventData != null"
-      class="w-[600px] h-[50px] text-align:right bg-[#F8F8F8]"
-    >
-      <h1 v-for="event in eventData" :key="event.id">
-        {{ !event.isSignUpAvailable }}
-      </h1>
+
+    <div id='PastEvents' class="bg-gray-200 rounded-lg shadow-xl min-h-[50px] sm:col-start-2 md:col-span-2">
+      <header class="flex items-center mt-3">
+        <p class="pl-8 pr-4 text-gray-700 text-large font-['Work Sans']">Past Events</p>
+        <button @click="togglePast">
+          <span v-if="isExpanded2">🔼</span>
+          <span v-else>🔽</span>
+        </button>
+
+      </header>
     </div>
+
+    <div id='AccountInteraction' class="flex flex-col items-center bg-white rounded-lg shadow-xl min-h-[50px] sm:col-start-1">
+
+      <!-- font-light makes the font malnourished-->
+      <button class="rounded-lg bg-teal-500 w-1/2 p-1.5 mt-4 mb-4 text-white text-large font-['Work Sans'] hover:bg-teal-600">Sign Out</button>
+      <button class="rounded-lg bg-yellow-500 w-1/2 p-1.5 mb-4 text-white text-large font-['Work Sans'] hover:bg-yellow-600">Edit Account</button>
+      <button class="rounded-lg bg-red-500 w-1/2 p-1.5 mb-4 text-white text-large font-['Work Sans'] hover:bg-red-600">Delete Account</button>
+
+    </div>
+
   </div>
 </template>
