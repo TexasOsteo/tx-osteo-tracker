@@ -22,7 +22,7 @@ const togglePast = () => {
   
   <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 md:gap-8 grid-flow-row-dense mt-4 ml-4 mr-4">
     
-    <div id='ProfilePic' class="bg-red-500 items-center justify-center rounded-lg shadow-xl min-h-[50px] row-span-4 hidden sm:block md:block items-center justify-center">
+    <div id='ProfilePic' class="bg-red-500 items-center justify-center rounded-lg shadow-xl min-h-[50px] row-span-4 hidden sm:block md:block items-center justify-center mx-auto">
       <osteoLogo />
     </div>
 
