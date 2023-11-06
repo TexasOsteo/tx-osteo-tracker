@@ -15,7 +15,7 @@ export default {
 
 <template>
   <div
-    class="bg-white mx-20 p-5 my-10 rounded-lg shadow-xl flex flex-wrap block lg:w-1/2 lg:w-1/2"
+    class="bg-white mx-20 p-5 my-10 rounded-lg shadow-xl flex flex-wrap block lg:w-1/8 lg:w-1/8"
   >
     <div class="flex flex-wrap mb-5 w-[90%]">
       <div class="flex flex-wrap items-center">

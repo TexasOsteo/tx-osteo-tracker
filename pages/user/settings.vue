@@ -103,7 +103,7 @@ const togglePast = () => {
         </p>
         <button @click="togglePresentUpcoming">
           <span v-if="isExpanded1">🔼</span>
-          <span v-else>🔽<UserSettingsEventList /></span>
+          <span v-else><UserSettingsEventList />🔽</span>
         </button>
       </header>
       <div v-if="isExpanded1">
