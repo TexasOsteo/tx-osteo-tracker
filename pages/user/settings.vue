@@ -108,11 +108,7 @@ const togglePast = () => {
       </header>
       <div v-if="isExpanded1">
         <!-- Your event divs go here -->
-        <div
-          class="bg-white mx-20 p-5 rounded-md shadow-xl flex flex-wrap mt-10"
-        >
-          <h1>test</h1>
-        </div>
+        <div></div>
       </div>
     </div>
 
@@ -140,11 +136,6 @@ const togglePast = () => {
       </header>
       <div v-if="isExpanded2">
         <!-- Your event divs go here -->
-        <div
-          class="bg-white mx-20 p-5 rounded-md shadow-xl flex flex-wrap mt-10"
-        >
-          <h1>test</h1>
-        </div>
       </div>
     </div>
 
