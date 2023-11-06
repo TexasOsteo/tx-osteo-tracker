@@ -7,7 +7,7 @@ const events = await useFetch('/api/events/')
 const eventData = events.data
 const isExpanded1 = ref(false)
 const isExpanded2 = ref(false)
-const date = new Date()
+
 const togglePresentUpcoming = () => {
   isExpanded1.value = !isExpanded1.value
 }
@@ -18,19 +18,19 @@ const togglePast = () => {
 </script>
 
 <template>
-  
-  <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 md:gap-8 grid-flow-row-dense mt-4 ml-4 mr-4">
-    
-    <div id='ProfilePic' class="bg-red-500 items-center justify-center rounded-lg shadow-xl min-h-[50px] row-span-4 hidden sm:block md:block items-center justify-center mx-auto">
+  <div class="w-full h-12 bg-gray-200">
+    <!-- Navbar content goes here -->
+    NavBar
+  </div>
+
   <div
+    id="Leftside-Grid"
     class="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 md:gap-8 grid-flow-row-dense mt-4 ml-4 mr-4"
   >
     <div
       id="ProfilePic"
-      class="bg-red-500 items-center justify-center rounded-lg shadow-xl min-h-[50px] row-span-4 hidden sm:block md:block items-center justify-center"
+      class="relative bg-white items-center justify-center rounded-lg shadow-xl min-h-[50px] hidden sm:block md:block items-center justify-center mx-auto"
     >
-
-    <div id='ProfilePic' class="bg-white items-center justify-center rounded-lg shadow-xl min-h-[50px] row-span-4 hidden sm:block md:block items-center justify-center mx-auto">
       <osteoLogo />
     </div>
 
@@ -42,10 +42,10 @@ const togglePast = () => {
         Total Hours: {{ data?.numHours }}
       </p>
       <p class="mt-3 mb-2 text-gray-700 text-large font-['Work Sans']">
-        NAME: {{ data?.name }}
+        Name: {{ data?.name }}
       </p>
       <p class="mb-1 text-gray-700 text-large font-['Work Sans']">
-        EMAIL: {{ data?.email }}
+        Email: {{ data?.email }}
       </p>
       <p class="mb-1 text-gray-700 text-large font-['Work Sans']">
         <span class="text-gray-700">Birthday </span>
@@ -62,7 +62,7 @@ const togglePast = () => {
       </p>
       <div class="mb-1 text-gray-700 text-large font-['Work Sans']">
         <p>
-          User Notes:
+          My Notes:
           <span v-if="!(data?.userNotes && data.userNotes.length > 0)"
             >None</span
           >
@@ -103,9 +103,17 @@ const togglePast = () => {
         </p>
         <button @click="togglePresentUpcoming">
           <span v-if="isExpanded1">🔼</span>
-          <span v-else>🔽<eventList /></span>
+          <span v-else>🔽<UserSettingsEventList /></span>
         </button>
       </header>
+      <div v-if="isExpanded1">
+        <!-- Your event divs go here -->
+        <div
+          class="bg-white mx-20 p-5 rounded-md shadow-xl flex flex-wrap mt-10"
+        >
+          <h1>test</h1>
+        </div>
+      </div>
     </div>
 
     <div
@@ -130,6 +138,14 @@ const togglePast = () => {
           </span>
         </button>
       </header>
+      <div v-if="isExpanded2">
+        <!-- Your event divs go here -->
+        <div
+          class="bg-white mx-20 p-5 rounded-md shadow-xl flex flex-wrap mt-10"
+        >
+          <h1>test</h1>
+        </div>
+      </div>
     </div>
 
     <div
