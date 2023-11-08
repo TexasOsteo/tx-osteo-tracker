@@ -20,11 +20,11 @@ const classes = computed(() => {
 
 async function buttonPress() {
   if (deregister.value) {
-    await useFetch(`/api/events/${props.id}/register`, {
+    await useFetch(`/api/events/${props.id}/register/me`, {
       method: 'DELETE',
     })
   } else {
-    await useFetch(`/api/events/${props.id}/register`, {
+    await useFetch(`/api/events/${props.id}/register/me`, {
       method: 'POST',
     })
   }
