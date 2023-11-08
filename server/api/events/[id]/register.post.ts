@@ -42,16 +42,19 @@ export default defineEventHandler(async (event) => {
     })
   }
 
-  if (eventData.signedUpUsers.length === eventData.capacity) {
+  if (eventData.capacity === 0) {
     throw createError({
       status: 400,
-      message: `This event is at capacity: ${eventData.capacity} signed up users`,
+      message: `This event is at capacity`,
     })
   }
 
   const newEvent = await event.context.prisma.event.update({
     where: { id },
     data: {
+      capacity: {
+        decrement: 1,
+      },
       signedUpUsers: {
         connect: {
           id: userId,

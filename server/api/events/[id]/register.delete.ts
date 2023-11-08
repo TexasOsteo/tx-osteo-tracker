@@ -24,6 +24,9 @@ export default defineEventHandler(async (event) => {
   const newEvent = await event.context.prisma.event.update({
     where: { id },
     data: {
+      capacity: {
+        increment: 1,
+      },
       signedUpUsers: {
         disconnect: {
           id: userId,
