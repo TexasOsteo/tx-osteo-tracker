@@ -1,27 +1,97 @@
-<script setup lang="ts">
-const auth0Cookie = useCookie(useRuntimeConfig().public.auth0_token)
-const volunteerCookie = useCookie(useRuntimeConfig().public.txosteo_token)
-</script>
-
 <template>
-  <h1 class="mb-5">
-    This is the landing page for all users (unauthenticated and authenticated)
-  </h1>
-  <div v-if="auth0Cookie">
-    You are authenticated!
-    <a href="/api/auth/logout" class="text-blue-500 p-1 underline">Logout</a>
+  <div
+    class="h-20 w-[100%] bg-white flex absolute items-center shadow z-10 overflow-hidden-x-hidden mx-auto"
+  >
+    <div class="h-full w-1/2 flex items-center justify-left ml-10">
+      <h1 class="text-xl hidden sm:block">TEXAS OSTEOPOROSIS FOUNDATION</h1>
+      <h1 class="text-3xl block sm:hidden">TOF</h1>
+    </div>
+    <div class="h-full w-1/2 flex items-center justify-end">
+      <button
+        class="py-5 px-10 mr-5 bg-white rounded-md hover:bg-[#F0CC5A] hover:text-white transition duration-300 ease-in-out hidden sm:block"
+      >
+        <a href="/api/auth/login">SIGN UP</a>
+      </button>
+      <button
+        class="py-5 px-10 mr-5 bg-white rounded-md hover:bg-[#F0CC5A] hover:text-white transition duration-300 ease-in-out hidden sm:block"
+      >
+        <a href="/api/auth/login">LOG IN</a>
+      </button>
+    </div>
   </div>
-  <div v-if="!auth0Cookie">
-    You are not authenticated
-    <a href="/api/auth/login" class="text-blue-500 p-1 underline">Login</a>
-  </div>
-  <a href="/event/listings">Event Listings</a>
-  <p v-if="volunteerCookie">You have an account in the system!</p>
-  <p v-if="!volunteerCookie">You have do not have an account in the system</p>
-
-  <NuxtLink>
-    <a href="/event/new" class="text-blue-500 p-1 underline"
-      >Event Creation Page</a
+  <div class="flex flex-wrap z-0 overflow-x-hidden overflow-y-hidden">
+    <div
+      class="h-screen max-w-screen-xl mx-auto my-auto flex flex-wrap-reverse items-center justify-center text-center pt-20"
     >
-  </NuxtLink>
+      <div class="text-center items-center justify-center lg:mr-20">
+        <h1 class="text-5xl font-bold font-sans">VOLUNTEER AT TOF</h1>
+        <p class="py-5 text-xl">
+          Start volunteering and make a change in the world today!
+        </p>
+        <div class="flex flex-wrap items-center justify-center">
+          <button
+            class="py-5 px-10 mr-5 bg-[#0DA49B] text-white rounded-md hover:bg-[#F0CC5A] hover:text-white transition duration-300 ease-in-out text-2xl mb-20"
+          >
+            <a href="/api/auth/login">Sign Up</a>
+          </button>
+
+          <button
+            class="py-5 px-10 mr-5 bg-[#0DA49B] text-white rounded-md hover:bg-[#F0CC5A] hover:text-white transition duration-300 ease-in-out text-2xl mb-20"
+          >
+            <a href="/api/auth/login">Log In</a>
+          </button>
+        </div>
+      </div>
+      <CompanyLogo />
+    </div>
+
+    <div
+      class="w-full bg-[#0DA49B] flex flex-wrap-reverse items-center justify-center"
+    >
+      <div>
+        <div class="container flex my-10 text-white">
+          <div class="px-5">
+            <h4>Texas Osteoporosis Foundation ©</h4>
+          </div>
+          <div class="mr-10">
+            <h2 class="text-lg font-bold">ABOUT</h2>
+            <ul>
+              <li>
+                <a href="https://www.texasosteo.org/about-us">About US</a>
+              </li>
+              <li>
+                <a href="https://www.texasosteo.org/osteo-101-bone-health"
+                  >Osteo 101</a
+                >
+              </li>
+              <li>
+                <a href="https://www.texasosteo.org/take-the-test"
+                  >Take the Test</a
+                >
+              </li>
+              <li><a href="https://www.texasosteo.org/">Homepage</a></li>
+            </ul>
+          </div>
+
+          <div class="mr-10">
+            <h2 class="text-lg font-bold">VOLUNTEER</h2>
+            <ul>
+              <li><a href="/api/auth/login">Sign In</a></li>
+              <li><a href="/api/auth/login">Log In</a></li>
+              <li><a href="https://www.texasosteo.org/donate">Donate</a></li>
+            </ul>
+          </div>
+
+          <div class="mr-10">
+            <h2 class="text-lg font-bold">HELP</h2>
+            <ul>
+              <li>
+                <a href="https://www.texasosteo.org/get-involved">Contact Us</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
