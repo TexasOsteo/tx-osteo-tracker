@@ -47,6 +47,6 @@ export default defineEventHandler(async (event) => {
       jwt,
       cookieOptions,
     )
-    await sendRedirect(event, '/')
+    await sendRedirect(event, '/event/listings')
   }
 })
