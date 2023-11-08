@@ -62,16 +62,18 @@ const eventData = events.data
       <div
         class="w-[350px] h-[54px] left-[36px] top-[1096px] absolute bg-red-600 rounded-[20px]"
       ></div>
-      <button
+      <NuxtLink
         class="w-[191px] h-7 left-[115px] top-[949px] absolute text-center text-teal-500 text-xl font-light font-['Work Sans'] tracking-[4px]"
+        to="/users/me/settings"
       >
         EDIT ACCOUNT
-      </button>
-      <button
+      </NuxtLink>
+      <a
+        href="/api/auth/logout"
         class="w-[191px] h-7 left-[115px] top-[1029px] absolute text-center text-white text-xl font-normal font-['Work Sans'] tracking-[4px]"
       >
         SIGN OUT
-      </button>
+      </a>
       <button
         class="w-[236px] h-7 left-[95px] top-[1109px] absolute text-center text-white text-xl font-normal font-['Work Sans'] tracking-[4px]"
       >
