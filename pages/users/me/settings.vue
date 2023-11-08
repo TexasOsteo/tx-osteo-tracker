@@ -126,7 +126,7 @@ const togglePast = () => {
             >🔽
             <EventListing
               v-for="event in eventData?.filter(
-                (ev) => new Date(ev.dateAndTime) > date,
+                (ev) => new Date(ev.dateAndTime) > new Date(),
               )"
               :key="event.id"
               :event="event"

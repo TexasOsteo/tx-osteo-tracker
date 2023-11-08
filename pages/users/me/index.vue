@@ -3,6 +3,7 @@ const { data } = await useFetch('/api/auth/me')
 const events = await useFetch('/api/events/')
 const eventData = events.data
 </script>
+
 <template>
   <div class="w-[426px] h-[1219px] relative">
     <div class="w-[426px] h-[1219px] left-0 top-0 absolute bg-white"></div>
@@ -87,7 +88,7 @@ const eventData = events.data
   <h1><u>Past Events</u></h1>
   <div v-if="eventData != null">
     <h1 v-for="event in eventData" :key="event.id">
-      {{ !event.isSignUpAvailable }}
+      {{ !(new Date(event.dateAndTime) > new Date()) }}
     </h1>
   </div>
 </template>
