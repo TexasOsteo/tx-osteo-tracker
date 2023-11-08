@@ -1,3 +1,9 @@
+/**
+ * --- API INFO
+ * GET /auth/me
+ * Returns the currently signed in user
+ */
+
 export default defineEventHandler(async (event) => {
   const claims = event.context.auth0Claims
   if (!claims) {
@@ -9,6 +15,10 @@ export default defineEventHandler(async (event) => {
 
   const user = await event.context.prisma.user.findUnique({
     where: { auth0_id: claims.sub },
+    include: {
+      eventHistory: true,
+      signedUpEvents: true,
+    },
   })
 
   if (!user) {
