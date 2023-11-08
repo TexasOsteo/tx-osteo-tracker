@@ -1,3 +1,9 @@
+<script setup lang="ts">
+definePageMeta({
+  layout: false,
+})
+</script>
+
 <template>
   <div
     class="h-20 w-[100%] bg-white flex absolute items-center shadow z-10 overflow-hidden-x-hidden mx-auto"

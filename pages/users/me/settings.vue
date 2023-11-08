@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import osteoLogo from '~/components/osteoLogo.vue'
 const { data } = await useFetch('/api/auth/me')
 const DOB = ref(data.value?.dateOfBirth)
 const formattedDOB = DOB.value?.split('T')[0]
@@ -18,11 +17,6 @@ const togglePast = () => {
 </script>
 
 <template>
-  <div class="w-full h-12 bg-gray-200">
-    <!-- Navbar content goes here -->
-    NavBar
-  </div>
-
   <div
     id="Leftside-Grid"
     class="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 md:gap-8 grid-flow-row-dense mt-4 ml-4 mr-4"

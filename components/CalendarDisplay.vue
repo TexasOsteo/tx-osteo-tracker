@@ -26,6 +26,7 @@ const toggleModal = () => {
 }
 
 const modalEvent = ref({
+  id: '',
   title: '',
   date: '',
   organization: '',
@@ -61,6 +62,7 @@ const calendarOptions = ref<CalendarOptions>({
     minute: '2-digit',
   },
   eventClick: (info: any) => {
+    modalEvent.value.id = info.event.extendedProps.id
     modalEvent.value.title = info.event.title
     modalEvent.value.date = info.event.start
     modalEvent.value.location = info.event.extendedProps.location
@@ -101,6 +103,7 @@ const fetchEvents = async () => {
         volunteerPositions: event.volunteerPositions,
         phoneNumber: event.phoneNumber,
         capacity: event.capacity,
+        id: event.id,
       },
     }))
     cities.value = Array.from(new Set(events.map((event) => event.location)))
@@ -244,7 +247,11 @@ fetchEvents()
     <FullCalendar ref="calendar" :options="calendarOptions" />
   </div>
   <div>
-    <EventModal :modal-active="modalActive" @close-modal="toggleModal">
+    <EventModal
+      :id="modalEvent.id"
+      :modal-active="modalActive"
+      @close-modal="toggleModal"
+    >
       <!--Modal Header -->
       <div
         class="flex items-start justify-between p-4 border-b rounded-t dark:border-gray-600"
@@ -291,9 +298,7 @@ fetchEvents()
         </p>
         <p class="text-base leading-relaxed text-cyan-900">
           Thumbnail:
-          <span id="modalDate" class="font-sans text-cyan-950">{{
-            modalEvent.thumbnail
-          }}</span>
+          <img :src="modalEvent.thumbnail" />
         </p>
         <p class="text-base leading-relaxed text-cyan-900">
           Hour Offered:

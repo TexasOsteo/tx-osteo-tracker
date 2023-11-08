@@ -306,11 +306,7 @@ function toggleExpanded() {
 
         <p>{{ event.description }}</p>
 
-        <button
-          class="w-full bg-[#0DA49B] text-white hover:bg-white hover:text-black py-3 mt-5 rounded-md"
-        >
-          REGISTER
-        </button>
+        <EventRegisterButton :id="event.id" />
       </div>
     </div>
     <div class="w-[10%] flex align-bottom justify-center">

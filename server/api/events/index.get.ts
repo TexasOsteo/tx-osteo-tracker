@@ -2,7 +2,6 @@
  * --- API INFO
  * GET /api/events
  * Returns a list of all events
- * ---
  * --- QUERY PARAMETERS
  * ?after={DATE} - Returns only events after this date
  */
