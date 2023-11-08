@@ -1,3 +1,24 @@
+<script setup lang="ts">
+import type { User } from '@prisma/client'
+import { format } from 'date-fns'
+
+function formatDate(dateString: string) {
+  const date = new Date(dateString)
+  date.setUTCHours(0, 0, 0, 0)
+  date.setDate(date.getDate() + 1)
+  return format(date, 'yyyy-MM-dd')
+}
+
+const users = ref<SerializeObject<User>[]>([])
+users.value = await getUsers()
+// console.log(users.users)
+
+async function getUsers() {
+  const { data } = await useFetch('/api/users')
+  return data.value ?? []
+}
+</script>
+
 <template>
   <div>
     <h1
@@ -43,7 +64,7 @@
       </tr>
     </thead>
     <tbody class="bg-white divide-y divide-gray-200">
-      <tr v-for="(user, index) in users.users" :key="index">
+      <tr v-for="(user, index) in users" :key="index">
         <td class="px-6 py-4 whitespace-nowrap">
           <div class="text-sm font-medium text-gray-900">{{ user.name }}</div>
         </td>
@@ -85,22 +106,3 @@
     </tbody>
   </table>
 </template>
-
-<script setup>
-import { format } from 'date-fns'
-
-function formatDate(dateString) {
-  const date = new Date(dateString)
-  date.setUTCHours(0, 0, 0, 0)
-  date.setDate(date.getDate() + 1)
-  return format(date, 'yyyy-MM-dd')
-}
-
-let users = ref(null)
-users = await getUsers()
-// console.log(users.users)
-
-async function getUsers() {
-  return await $fetch('/api/users')
-}
-</script>

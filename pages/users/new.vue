@@ -1,6 +1,4 @@
 <script setup lang="ts">
-const todayString = new Date().toDateString()
-
 const formErrors = ref<string[]>()
 
 async function handleSubmit(fields: any) {
