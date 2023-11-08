@@ -291,9 +291,7 @@ fetchEvents()
         </p>
         <p class="text-base leading-relaxed text-cyan-900">
           Thumbnail:
-          <span id="modalDate" class="font-sans text-cyan-950">{{
-            modalEvent.thumbnail
-          }}</span>
+          <img :src="modalEvent.thumbnail" />
         </p>
         <p class="text-base leading-relaxed text-cyan-900">
           Hour Offered:
