@@ -4,7 +4,9 @@ import { throwErrorIfNotAdmin } from '~/utils/auth'
  * --- API INFO
  * GET /api/users/[id]
  * Returns the user with the id
- * ---
+ * --- QUERY PARAMETERS
+ * ?includeAttended={true/false} - If true, includes all events that this user attended
+ * ?includeSignedUp={true/false} - If true, includes all events that this user has signed up for
  */
 
 // api/user/profile/[id]
@@ -26,10 +28,18 @@ export default defineEventHandler(async (event) => {
     throwErrorIfNotAdmin(event) // Check if user is admin
   }
 
+  const url = getRequestURL(event)
+  const includeAttended = url.searchParams.get('includeAttended') === 'true'
+  const includeSignedUp = url.searchParams.get('includeSignedUp') === 'true'
+
   const userInfo = await event.context.prisma.user.findFirst({
     where: {
       id,
     },
+    include:
+      includeAttended || includeSignedUp
+        ? { eventHistory: includeAttended, signedUpEvents: includeSignedUp }
+        : undefined,
   })
 
   if (userInfo == null) {
