@@ -17,7 +17,7 @@ const eventFilter = ref({
   selectedOrganization: 'all',
   selectedTime: '',
 })
-const cities = ref<Array<string>>([])
+const cityStates = ref<Array<string>>([])
 const organizations = ref<Array<string>>([])
 
 const modalActive = ref(false)
@@ -103,7 +103,19 @@ const fetchEvents = async () => {
         capacity: event.capacity,
       },
     }))
-    cities.value = Array.from(new Set(events.map((event) => event.location)))
+    cityStates.value = Array.from(
+      new Set(
+        events.map((event) => {
+          const address = event.location
+          const addressParts = address.split(', ')
+          const cityStateWithZip = addressParts.slice(-2).join(', ')
+          const cityStateRemovedZip = cityStateWithZip.split(' ')
+          cityStateRemovedZip.pop()
+          const cityState = cityStateRemovedZip.join(' ')
+          return cityState
+        }),
+      ),
+    )
     organizations.value = Array.from(
       new Set(events.map((event) => event.organizer)),
     )
@@ -127,6 +139,14 @@ const filterEvents = () => {
   } else {
     // Filter events by the selected location, time, and organization
     calendarOptions.value.events = eventsData.value.filter((event) => {
+      // extract location, return only city and state
+      const address = event.extendedProps.location
+      const addressParts = address.split(', ')
+      const cityStateWithZip = addressParts.slice(-2).join(', ')
+      const cityStateRemovedZip = cityStateWithZip.split(' ')
+      cityStateRemovedZip.pop()
+      const cityState = cityStateRemovedZip.join(' ')
+
       if (location === 'all' && organization === 'all' && selectedTimeDate) {
         // timefilter
         return new Date(event.start) >= selectedTimeDate
@@ -137,8 +157,7 @@ const filterEvents = () => {
         selectedTimeDate
       ) {
         return (
-          event.extendedProps.location === location &&
-          new Date(event.start) >= selectedTimeDate
+          cityState === location && new Date(event.start) >= selectedTimeDate
         )
       } else if (
         // organization and date time filter
@@ -156,18 +175,18 @@ const filterEvents = () => {
         organization !== 'all' &&
         !selectedTimeDate
       ) {
-        return event.extendedProps.organization === organization
+        return event.extendedProps.organization.include(organization)
       } else if (
         // location filter
         location !== 'all' &&
         organization === 'all' &&
         !selectedTimeDate
       ) {
-        return event.extendedProps.location === location
+        return cityState === location
       } else {
         return (
           // location or organization filter
-          event.extendedProps.location === location ||
+          cityState === location ||
           event.extendedProps.organization === organization
         )
       }
@@ -193,11 +212,15 @@ fetchEvents()
             id="locationFilter"
             v-model="eventFilter.selectedLocation"
             class="text-center"
-            @change="filterEvents"
+            @input="filterEvents"
           >
             <option value="all">All</option>
-            <option v-for="city in cities" :key="city" :value="city">
-              {{ city }}
+            <option
+              v-for="cityState in cityStates"
+              :key="cityState"
+              :value="cityState"
+            >
+              {{ cityState }}
             </option>
           </select>
         </th>
@@ -212,7 +235,7 @@ fetchEvents()
             id="organizationFilter"
             v-model="eventFilter.selectedOrganization"
             class="text-center"
-            @change="filterEvents"
+            @input="filterEvents"
           >
             <option value="all">All</option>
             <option
@@ -236,7 +259,7 @@ fetchEvents()
             v-model="eventFilter.selectedTime"
             type="datetime-local"
             class="text-center"
-            @change="filterEvents"
+            @input="filterEvents"
           />
         </th>
       </tr>
