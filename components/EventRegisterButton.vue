@@ -13,7 +13,7 @@ const deregister = computed(
 )
 
 const classes = computed(() => {
-  const baseClasses = ' text-white w-full py-3 rounded-md'
+  const baseClasses = ' text-white w-full py-3 rounded-md shadow'
   if (deregister.value) return 'bg-red-500 hover:bg-red-800' + baseClasses
   return 'bg-[#0DA49B] hover:bg-white hover:text-black' + baseClasses
 })
