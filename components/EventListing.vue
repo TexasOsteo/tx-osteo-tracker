@@ -3,6 +3,8 @@ import ISO6391 from 'iso-639-1'
 import type { Event } from '@prisma/client'
 import type { SerializeObject } from '~/utils/types'
 
+const isAdmin = isSignedInUserAdmin()
+
 // Define event prop
 defineProps<{
   // event can either be a normal Event object or a SerializedObject Event
@@ -304,9 +306,18 @@ function toggleExpanded() {
           </li>
         </ul>
 
-        <p>{{ event.description }}</p>
+        <div class="w-full space-y-4">
+          <p class="mb-5">{{ event.description }}</p>
+          <NuxtLink v-if="isAdmin" to="/event/edit">
+            <div
+              class="w-full p-3 text-center bg-[#F0CC5A] text-white rounded-md hover:bg-white hover:text-black shadow"
+            >
+              SEE MORE
+            </div>
+          </NuxtLink>
 
-        <EventRegisterButton :id="event.id" />
+          <EventRegisterButton :id="event.id" />
+        </div>
       </div>
     </div>
     <div class="w-[10%] flex align-bottom justify-center">

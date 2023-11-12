@@ -2,6 +2,9 @@
 // Fetch API call by destructing the events response object into its data
 const { data: events } = await useFetch(`/api/events?after=${Date.now()}`)
 // Define a ref variable to store the user-inputted date
+
+
+
 const filterOrg = ref('')
 
 const filterDate = ref('')
