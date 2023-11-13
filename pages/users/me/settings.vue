@@ -1,10 +1,7 @@
 <script setup lang="ts">
 const { data } = await useFetch('/api/auth/me')
-console.log(data)
 const DOB = ref(data.value?.dateOfBirth)
 const formattedDOB = DOB.value?.split('T')[0]
-const events = await useFetch('/api/events/')
-const eventData = events.data
 const isExpanded1 = ref(false)
 const isExpanded2 = ref(false)
 const showPopup = ref(false)
@@ -18,7 +15,7 @@ const togglePast = () => {
   isExpanded2.value = !isExpanded2.value
 }
 
-const openPopup = (event) => {
+const openPopup = (event: any) => {
   currentEvent.value = event
   showPopup.value = true
 }
@@ -27,14 +24,14 @@ const closePopup = () => {
   showPopup.value = false
 }
 
-function displayDate(dateTime) {
+function displayDate(dateTime: string) {
   const d = new Date(dateTime)
   const year = d.getUTCFullYear()
   const month = ('0' + (d.getUTCMonth() + 1)).slice(-2)
   const day = ('0' + d.getUTCDate()).slice(-2)
 
   let hours = d.getUTCHours()
-  let minutes = ('0' + d.getUTCMinutes()).slice(-2)
+  const minutes = ('0' + d.getUTCMinutes()).slice(-2)
   const ampm = hours >= 12 ? 'pm' : 'am'
 
   hours = hours % 12
