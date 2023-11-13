@@ -2,10 +2,10 @@
 const { data } = await useFetch('/api/auth/me')
 const DOB = ref(data.value?.dateOfBirth)
 const formattedDOB = DOB.value?.split('T')[0]
-const events = await useFetch('/api/events/')
-const eventData = events.data
 const isExpanded1 = ref(false)
 const isExpanded2 = ref(false)
+const showPopup = ref(false)
+const currentEvent = ref(null)
 
 const togglePresentUpcoming = () => {
   isExpanded1.value = !isExpanded1.value
@@ -14,145 +14,228 @@ const togglePresentUpcoming = () => {
 const togglePast = () => {
   isExpanded2.value = !isExpanded2.value
 }
+
+const openPopup = (event: any) => {
+  currentEvent.value = event
+  showPopup.value = true
+}
+
+const closePopup = () => {
+  showPopup.value = false
+}
+
+function displayDate(dateTime: string) {
+  const d = new Date(dateTime)
+  const year = d.getUTCFullYear()
+  const month = ('0' + (d.getUTCMonth() + 1)).slice(-2)
+  const day = ('0' + d.getUTCDate()).slice(-2)
+
+  let hours = d.getUTCHours()
+  const minutes = ('0' + d.getUTCMinutes()).slice(-2)
+  const ampm = hours >= 12 ? 'pm' : 'am'
+
+  hours = hours % 12
+  hours = hours ? hours : 12 // the hour '0' should be '12'
+
+  return `${year}-${month}-${day} @ ${hours}:${minutes} ${ampm}`
+}
 </script>
 
 <template>
-  <div
-    id="Leftside-Grid"
-    class="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 md:gap-8 grid-flow-row-dense mt-4 ml-4 mr-4"
-  >
-    <div
-      id="ProfilePic"
-      class="relative bg-white items-center justify-center rounded-lg shadow-xl min-h-[50px] hidden sm:block md:block items-center justify-center mx-auto"
+  <div id="WholePage" class="min-h-screen flex">
+    <nav
+      id="AccountInfo"
+      class="shadow-sm w-2/5 p-2 flex-none bg-[#EEE] border-2 border-teal-200 border-t-gray-200 border-r-gray-200 justify-center lg:w-1/4"
     >
-      <osteoLogo />
-    </div>
-
-    <div
-      id="UserInfo"
-      class="flex flex-col bg-white rounded-lg shadow-xl min-h-[50px] sm:col-start-1 pl-8 pr-4"
-    >
-      <p class="mt-3 mb-2 text-gray-700 text-large font-['Work Sans']">
-        Total Hours: {{ data?.numHours }}
-      </p>
-      <p class="mt-3 mb-2 text-gray-700 text-large font-['Work Sans']">
-        Name: {{ data?.name }}
-      </p>
-      <p class="mb-1 text-gray-700 text-large font-['Work Sans']">
-        Email: {{ data?.email }}
-      </p>
-      <p class="mb-1 text-gray-700 text-large font-['Work Sans']">
-        <span class="text-gray-700">Birthday </span>
-        <span class="text-gray-400">(YYYY/MM/DD)</span>
-        <span class="text-gray-700">: {{ formattedDOB }}</span>
-      </p>
-      <p class="mt-3 mb-1 text-gray-700 text-large font-['Work Sans']">
-        Language(s):
-        {{
-          data?.languages && data?.languages.length > 0
-            ? data?.languages.join(', ')
-            : 'None'
-        }}
-      </p>
-      <div class="mb-1 text-gray-700 text-large font-['Work Sans']">
-        <p>
-          My Notes:
-          <span v-if="!(data?.userNotes && data.userNotes.length > 0)"
-            >None</span
-          >
-        </p>
-        <ul v-if="data?.userNotes && data.userNotes.length > 0">
-          <li v-for="(note, index) in data.userNotes" :key="index" class="ml-5">
-            • {{ note }}
-          </li>
-        </ul>
+      <div id="OsteoLogoFiller" class="">
+        <OsteoLogo />
       </div>
 
-      <div class="mb-3 text-gray-700 text-large font-['Work Sans']">
-        <p>
-          Qualifications:
-          <span v-if="!(data?.qualifications && data.qualifications.length > 0)"
-            >None</span
-          >
+      <div id="UserInfo" class="p-3 my-2 bg-[#FFF] rounded-sm">
+        <p id="MyHours" class="text-gray-700 text-xl font-['Work Sans']">
+          Total Hours: {{ data?.numHours }}
         </p>
-        <ul v-if="data?.qualifications && data.qualifications.length > 0">
-          <li
-            v-for="(qual, index) in data.qualifications"
+        <br />
+        <p id="MyName" class="text-gray-700 text-large font-['Work Sans']">
+          Name: {{ data?.name }}
+        </p>
+        <p id="MyEmail" class="text-gray-700 text-large font-['Work Sans']">
+          Email: {{ data?.email }}
+        </p>
+        <p id="MyBirthday" class="text-gray-700 text-large font-['Work Sans']">
+          <span class="text-gray-700">Birthday </span>
+          <span class="text-gray-400">(YYYY/MM/DD)</span>
+          <span class="text-gray-700">: {{ formattedDOB }}</span>
+        </p>
+
+        <br />
+
+        <div
+          id="MyLanguages"
+          class="text-gray-700 text-large font-['Work Sans']"
+        >
+          <p>
+            Languages:
+            <span v-if="!(data?.languages && data.languages.length > 0)"
+              >None</span
+            >
+          </p>
+          <ul v-if="data?.languages && data.languages.length > 0">
+            <li
+              v-for="(lang, index) in data.languages"
+              :key="index"
+              class="ml-5"
+            >
+              • {{ lang }}
+            </li>
+          </ul>
+        </div>
+
+        <div id="MyNotes" class="text-gray-700 text-large font-['Work Sans']">
+          <p>
+            Notes:
+            <span v-if="!(data?.userNotes && data.userNotes.length > 0)"
+              >None</span
+            >
+          </p>
+          <ul v-if="data?.userNotes && data.userNotes.length > 0">
+            <li
+              v-for="(note, index) in data.userNotes"
+              :key="index"
+              class="ml-5"
+            >
+              • {{ note }}
+            </li>
+          </ul>
+        </div>
+
+        <div
+          id="MyQualifications"
+          class="mb-3 text-gray-700 text-large font-['Work Sans']"
+        >
+          <p>
+            Qualifications:
+            <span
+              v-if="!(data?.qualifications && data.qualifications.length > 0)"
+              >None</span
+            >
+          </p>
+          <ul v-if="data?.qualifications && data.qualifications.length > 0">
+            <li
+              v-for="(qual, index) in data.qualifications"
+              :key="index"
+              class="ml-5"
+            >
+              • {{ qual }}
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div
+        id="AccountInteraction"
+        class="flex flex-col items-center bg-white rounded-sm shadow-xl"
+      >
+        <!-- font-light makes the font malnourished-->
+        <button
+          class="rounded-lg bg-teal-500 w-1/2 p-1.5 mt-4 mb-4 text-white text-large font-['Work Sans'] hover:bg-teal-600"
+        >
+          Sign Out
+        </button>
+        <button
+          class="rounded-lg bg-yellow-500 w-1/2 p-1.5 mb-4 text-white text-large font-['Work Sans'] hover:bg-yellow-600"
+        >
+          Edit Account
+        </button>
+        <button
+          class="rounded-lg bg-red-500 w-1/2 p-1.5 mb-4 text-white text-large font-['Work Sans'] hover:bg-red-600"
+        >
+          Delete Account
+        </button>
+      </div>
+    </nav>
+
+    <main
+      id="MyEvents"
+      class="w-3/5 flex flex-col overflow-auto bg-gray-100 border-2 border-gray-100 border-t-gray-200 border-l-[#EEE] lg:w-3/4"
+    >
+      <!--
+        <div id="MyStatus">
+          <header>My Status</header>
+        </div>
+      -->
+
+      <div id="UFEvents" class="flex-1 overflow-y-auto bg-[#EEE]">
+        <button
+          class="flex items-center w-full sticky top-0 border-2 border-gray-200 border-t-gray-100 bg-[#FFF] rounded-sm p-2"
+          @click="togglePresentUpcoming"
+        >
+          <h1 class="mr-2">Present & Upcoming Events</h1>
+          <img v-if="isExpanded1" src="/icon-park_down.jpg" class="w-5 h-5" />
+          <img v-else src="/icon-park_up.jpg" class="w-5 h-5" />
+        </button>
+
+        <div v-if="isExpanded1">
+          <div
+            v-for="(event, index) in data.signedUpEvents"
             :key="index"
-            class="ml-5"
+            class="bg-[#F8F8F8] flex items-center p-2 m-2 rounded-xl lg:w-7/12"
           >
-            • {{ qual }}
-          </li>
-        </ul>
-      </div>
-    </div>
+            <h1 class="mr-4">{{ event.name }}</h1>
+            <h1 class="mr-4">{{ displayDate(event.dateAndTime) }}</h1>
 
-    <div
-      id="P&UEvents"
-      class="bg-gray-200 rounded-lg shadow-xl min-h-[50px] sm:col-start-2 md:col-span-2"
-    >
-      <header class="flex items-center mt-3">
-        <p class="pl-8 pr-4 text-gray-700 text-large font-['Work Sans']">
-          Present & Upcoming Events
-        </p>
-        <button @click="togglePresentUpcoming">
-          <span v-if="isExpanded1">🔼</span>
-          <span v-else><UserSettingsEventList />🔽</span>
+            <button
+              class="bg-teal-400 hover:bg-teal-500 p-2 rounded-xl"
+              @click="openPopup(event)"
+            >
+              View
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div id="PEvents" class="flex-1 overflow-y-auto bg-[#EEE]">
+        <button
+          class="flex items-center w-full sticky top-0 border-2 border-gray-200 border-t-gray-200 bg-[#FFF] rounded-sm p-2"
+          @click="togglePast"
+        >
+          <h1 class="mr-2">Past Events</h1>
+          <img v-if="isExpanded2" src="/icon-park_down.jpg" class="w-5 h-5" />
+          <img v-else src="/icon-park_up.jpg" class="w-5 h-5" />
         </button>
-      </header>
-      <div v-if="isExpanded1">
-        <!-- Your event divs go here -->
-        <div></div>
-      </div>
-    </div>
 
-    <div
-      id="PastEvents"
-      class="bg-gray-200 rounded-lg shadow-xl min-h-[50px] sm:col-start-2 md:col-span-2"
-    >
-      <header class="flex items-center mt-3">
-        <p class="pl-8 pr-4 text-gray-700 text-large font-['Work Sans']">
-          Past Events
-        </p>
-        <button @click="togglePast">
-          <span v-if="isExpanded2">🔼</span>
-          <span v-else
-            >🔽
-            <EventListing
-              v-for="event in eventData?.filter(
-                (ev) => new Date(ev.dateAndTime) > new Date(),
-              )"
-              :key="event.id"
-              :event="event"
-            ></EventListing>
-          </span>
-        </button>
-      </header>
-      <div v-if="isExpanded2">
-        <!-- Your event divs go here -->
-      </div>
-    </div>
+        <div v-if="isExpanded2">
+          <div
+            v-for="(event, index) in data.eventHistory"
+            :key="index"
+            class="bg-[#F8F8F8] flex items-center p-2 m-2 rounded-xl lg:w-7/12"
+          >
+            <h1 class="mr-4">{{ event.name }}</h1>
+            <h1 class="mr-4">{{ displayDate(event.dateAndTime) }}</h1>
 
-    <div
-      id="AccountInteraction"
-      class="flex flex-col items-center bg-white rounded-lg shadow-xl min-h-[50px] sm:col-start-1"
-    >
-      <!-- font-light makes the font malnourished-->
-      <button
-        class="rounded-lg bg-teal-500 w-1/2 p-1.5 mt-4 mb-4 text-white text-large font-['Work Sans'] hover:bg-teal-600"
+            <button
+              class="bg-teal-400 hover:bg-teal-500 p-2 rounded-xl"
+              @click="openPopup(event)"
+            >
+              View
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div
+        v-if="showPopup"
+        class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 bg-opacity-50"
       >
-        Sign Out
-      </button>
-      <button
-        class="rounded-lg bg-yellow-500 w-1/2 p-1.5 mb-4 text-white text-large font-['Work Sans'] hover:bg-yellow-600"
-      >
-        Edit Account
-      </button>
-      <button
-        class="rounded-lg bg-red-500 w-1/2 p-1.5 mb-4 text-white text-large font-['Work Sans'] hover:bg-red-600"
-      >
-        Delete Account
-      </button>
-    </div>
+        <div class="rounded-lg p-1 bg-[#EEE]">
+          <div class="flex justify-end">
+            <button class="bg-[#FF0000]" @click="closePopup">
+              <img src="/icon-park_x.jpg" class="w-5 h-5" />
+            </button>
+          </div>
+          <EventListing :event="currentEvent"> </EventListing>
+        </div>
+      </div>
+    </main>
   </div>
 </template>
