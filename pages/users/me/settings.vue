@@ -233,9 +233,8 @@ function displayDate(dateTime: string) {
               <img src="/icon-park_x.jpg" class="w-5 h-5" />
             </button>
           </div>
-          <h1>Popup Content</h1>
-          <!--TODO: Add popup content (<EventListing> <EventListing />) here -->
-          <h1>{{ displayDate(currentEvent.dateAndTime) }}</h1>
+
+          <EventListing :event="currentEvent"> </EventListing>
         </div>
       </div>
     </main>
