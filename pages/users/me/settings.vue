@@ -227,13 +227,12 @@ function displayDate(dateTime: string) {
         v-if="showPopup"
         class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 bg-opacity-50"
       >
-        <div class="bg-white rounded-lg p-8">
+        <div class="rounded-lg p-1 bg-[#EEE]">
           <div class="flex justify-end">
             <button class="bg-[#FF0000]" @click="closePopup">
               <img src="/icon-park_x.jpg" class="w-5 h-5" />
             </button>
           </div>
-
           <EventListing :event="currentEvent"> </EventListing>
         </div>
       </div>
