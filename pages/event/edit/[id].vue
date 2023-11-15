@@ -3,6 +3,10 @@ import ISO6391 from 'iso-639-1'
 import type { Event } from '@prisma/client'
 import type { SerializeObject } from '~/utils/types'
 
+const route = useRoute()
+const { data } = await useFetch(`/api/events/${route.params.id}`)
+console.log(data)
+// const nameRef = ref({data?.name})
 const props = defineProps<{
   id: string
 }>()
@@ -29,11 +33,12 @@ const props = defineProps<{
             <div class="flex justify-center items-center flex-wrap">
               <FormKit
                 id="title"
+                v-model="nameRef"
                 type="text"
                 name="name"
                 label="Name"
                 help="Type event name here."
-                placeholder="Event Name"
+                placeholder={{data.name}}
                 outer-class="mb-5 w-4/5"
               />
 
@@ -44,7 +49,7 @@ const props = defineProps<{
                 name="organizer"
                 label="Organizer"
                 help="Type organization name here."
-                placeholder="Organization Name"
+                placeholder="data.organizer"
                 outer-class="mb-5 w-4/5"
               />
 
@@ -55,7 +60,7 @@ const props = defineProps<{
                 name="location"
                 label="Location"
                 help="Enter the street address followed by the city, state, and zipcode."
-                placeholder="3333 Bones St, Austin, TX 77777"
+                placeholder="data.location"
                 outer-class="mb-5 w-4/5"
               />
 
@@ -80,7 +85,7 @@ const props = defineProps<{
                 help="Enter the duration of the event (around how many hours?)"
                 label="Duration"
                 name="duration"
-                placeholder="6"
+                placeholder="event.duration"
                 step="0.5"
                 outer-class="mb-5 w-4/5"
               />
@@ -92,7 +97,7 @@ const props = defineProps<{
                 help="How many hours can a volunteer earn at this event?"
                 label="Volunteer Hours Offered"
                 name="hoursOffered"
-                placeholder="2"
+                placeholder="event.hoursOffered"
                 step="0.5"
                 outer-class="mb-5 w-4/5"
               />
@@ -117,7 +122,7 @@ const props = defineProps<{
                 label="Organization Phone Number"
                 help="Type the phone number of the event organizer"
                 outer-class="mb-5 w-4/5"
-                placeholder="(+X) XXX-XXX-XXXX"
+                placeholder="event.phone_number"
               />
 
               <!--Email-->
@@ -128,7 +133,7 @@ const props = defineProps<{
                 label="Organization Email"
                 help="Type the email of the event organizer"
                 placeholder="emailexample@domain.com"
-                outer-class="mb-5 w-4/5"
+                outer-class="event.email"
               />
 
               <!--Capacity-->
@@ -136,7 +141,7 @@ const props = defineProps<{
                 id="capacity"
                 type="number"
                 name="capacity"
-                label="Capacity"
+                label="event.capacity"
                 help="Type the maximum capacity of volunteers for this event"
                 step="1"
                 outer-class="mb-5 w-4/5"
@@ -157,7 +162,7 @@ const props = defineProps<{
 
               <TextMultiple
                 title="Volunteer Prerequisites"
-                placeholder="Enter new prerequisite"
+                placeholder="event.prerquisites"
                 add-text="Add new prerequisite"
                 name="prerequisites"
                 empty
@@ -165,7 +170,7 @@ const props = defineProps<{
 
               <TextMultiple
                 title="Volunteer Positions"
-                placeholder="Enter new position"
+                placeholder="event.voluterrPositions"
                 add-text="Add new position"
                 name="volunteerPositions"
                 empty
