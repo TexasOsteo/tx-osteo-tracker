@@ -308,7 +308,7 @@ function toggleExpanded() {
 
         <div class="w-full space-y-4">
           <p class="mb-5">{{ event.description }}</p>
-          <NuxtLink v-if="isAdmin" to="/event/edit">
+          <NuxtLink v-if="isAdmin" :id="event.id" to="/event/edit/">
             <div
               class="w-full p-3 text-center bg-[#F0CC5A] text-white rounded-md hover:bg-white hover:text-black shadow"
             >
