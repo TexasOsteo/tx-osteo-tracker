@@ -4,9 +4,9 @@
 <script setup lang="ts">
 const isAdmin = isSignedInUserAdmin()
 const volunteerList = ref<{ name: string; email: string; id: string }[]>([])
+const route = useRoute()
 
 if (isAdmin) {
-  const route = useRoute()
   try {
     const { data } = await useFetch(`/api/events/${route.params.id}`)
     volunteerList.value =
@@ -14,9 +14,41 @@ if (isAdmin) {
         name: user.name,
         email: user.email,
         id: user.id,
+        qualification: user.qualifications,
       })) || []
   } catch (error) {
     console.error('Error fetching event data:', error)
+  }
+}
+// return a list of volunteers sorted by name alphabetically
+volunteerList.value.sort((a, b) => a.name.localeCompare(b.name))
+// confirmation modal
+const isConfirmationModalOpen = ref(false)
+const userIdToRemove = ref(null)
+const removeUser = (userId: any) => {
+  isConfirmationModalOpen.value = true
+  userIdToRemove.value = userId
+}
+const cancelRemoval = () => {
+  isConfirmationModalOpen.value = false
+  userIdToRemove.value = null
+}
+// to remove volunteers
+const confirmRemoval = async () => {
+  try {
+    await useFetch(
+      `/api/events/${route.params.id}/register/${userIdToRemove.value}`,
+      {
+        method: 'DELETE',
+      },
+    )
+    volunteerList.value = volunteerList.value.filter(
+      (user) => user.id !== userIdToRemove.value,
+    )
+    isConfirmationModalOpen.value = false
+    userIdToRemove.value = null
+  } catch (error) {
+    console.error('Failed to remove volunteer')
   }
 }
 </script>
@@ -43,8 +75,26 @@ if (isAdmin) {
             <table className="table-auto">
               <tbody>
                 <tr>
-                  <td class="w-40">{{ user.name }}</td>
-                  <td class="w-40">{{ user.email }}</td>
+                  <td class="w-80">{{ user.name }}</td>
+                  <td class="w-80">{{ user.email }}</td>
+                  <td class="w-80">
+                    <button @click="removeUser(user.id)">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                        stroke-width="1.5"
+                        stroke="red"
+                        class="w-6 h-6"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          d="M6 18L18 6M6 6l12 12"
+                          fill="red"
+                        />
+                      </svg>
+                    </button>
+                  </td>
                 </tr>
               </tbody>
             </table>
@@ -52,6 +102,52 @@ if (isAdmin) {
         </div>
       </li>
     </ul>
+    <div
+      v-if="isConfirmationModalOpen"
+      data-modal-backdrop="static"
+      class="fixed z-10 inset-0 overflow-y-auto overflow-x-auto"
+      tabindex="-1"
+      aria-hidden="true"
+    >
+      <div
+        class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0"
+      >
+        <div class="fixed inset-0 transition-opacity" aria-hidden="true">
+          <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
+        </div>
+        <span
+          class="hidden sm:inline-block sm:align-middle sm:h-screen"
+          aria-hidden="true"
+          >&#8203;</span
+        >
+        <div
+          class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full"
+        >
+          <div class="modal-content">
+            <p>Are you sure to delete this user?</p>
+            <div>
+              <div
+                class="flex items-center p-6 space-x-2 border-t border-gray-200 rounded-b dark:border-gray-600"
+              >
+                <button
+                  class="text-gray-500 bg-white hover:bg-white-100 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-500 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-600"
+                  @click="cancelRemoval"
+                >
+                  Cancel
+                </button>
+
+                <button
+                  class="text-gray-500 bg-white hover:bg-white-100 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10 dark:bg-blue-700 dark:text-gray-300 dark:border-gray-500 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-600"
+                  @click="confirmRemoval"
+                >
+                  Confirm
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 
   <div v-else>
