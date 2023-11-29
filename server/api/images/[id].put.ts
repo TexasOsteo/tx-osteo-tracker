@@ -11,7 +11,7 @@ import { BlobInfo } from '~/utils/types'
 export default defineEventHandler(async (event) => {
   throwErrorIfNotAdmin(event)
 
-  const body = await readBody(event)
+  const body = (await readBody(event)) as Record<string, string>
   if (
     typeof body !== 'object' ||
     Object.values(body).some((v) => typeof v !== 'string')
@@ -19,6 +19,13 @@ export default defineEventHandler(async (event) => {
     throw createError({
       status: 400,
       message: 'Invalid tag body',
+    })
+  }
+
+  if (!('type' in body)) {
+    throw createError({
+      status: 400,
+      message: 'Tag body is missing "type" field',
     })
   }
 
