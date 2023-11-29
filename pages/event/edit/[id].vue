@@ -1,15 +1,36 @@
 <script setup lang="ts">
+import { ref } from 'vue'
 import ISO6391 from 'iso-639-1'
 import type { Event } from '@prisma/client'
 import type { SerializeObject } from '~/utils/types'
 
 const route = useRoute()
 const { data } = await useFetch(`/api/events/${route.params.id}`)
-console.log(data)
-// const nameRef = ref({data?.name})
+
+const referID = ref(data && data.value ? [data.value.id] : [])
+const referName = ref(data && data.value ? [data.value.name] : [])
+const referOrg = ref(data && data.value ? [data.value.organizer] : [])
+const referLoc = ref(data && data.value ? [data.value.location] : [])
+const referDatm = ref(data && data.value ? [data.value.dateAndTime] : [])
+const referVolun = ref(data && data.value ? [data.value.signedUpUsers] : [])
+const formattedDatm = referDatm.value.toLocaleString().slice(0, 16)
+const referDur = ref(data && data.value ? [data.value.duration] : [])
+const referHour = ref(data && data.value ? [data.value.hoursOffered] : [])
+const referCap = ref(data && data.value ? [data.value.capacity] : [])
+const referPhNum = ref(data && data.value ? [data.value.phoneNumber] : [])
+const referMail = ref(data && data.value ? [data.value.email] : [])
+const referPrereq = ref(data && data.value ? [data.value.prerequisites] : [])
+const referPos = ref(data && data.value ? [data.value.volunteerPositions] : [])
+const referDesc = ref(data && data.value ? [data.value.description] : [])
 const props = defineProps<{
   id: string
 }>()
+
+async function deleteEvent() {
+  await useFetch(`/api/events/${referID.value}`, {
+    method: 'DELETE',
+  })
+}
 </script>
 
 <template>
@@ -23,6 +44,7 @@ const props = defineProps<{
           <h1 class="title font-sans font-bold text-5xl text-center mb-10">
             EDIT EVENT
           </h1>
+          <p></p>
           <FormKit
             type="form"
             :errors="formErrors"
@@ -33,29 +55,31 @@ const props = defineProps<{
             <div class="flex justify-center items-center flex-wrap">
               <FormKit
                 id="title"
-                v-model="nameRef"
+                v-model="referName"
                 type="text"
                 name="name"
                 label="Name"
                 help="Type event name here."
-                placeholder={{data.name}}
+                placeholder="Event Name"
                 outer-class="mb-5 w-4/5"
               />
 
               <!--Name of Organizer-->
               <FormKit
                 id="organizer"
+                v-model="referOrg"
                 type="text"
                 name="organizer"
                 label="Organizer"
                 help="Type organization name here."
-                placeholder="data.organizer"
+                placeholder="Event Organizer"
                 outer-class="mb-5 w-4/5"
               />
 
               <!--Location-->
               <FormKit
                 id="loc"
+                v-model="referLoc"
                 type="text"
                 name="location"
                 label="Location"
@@ -67,6 +91,7 @@ const props = defineProps<{
               <!--Date-->
               <FormKit
                 id="event_date"
+                v-model="formattedDatm"
                 type="datetime-local"
                 name="dateAndTime"
                 label="Date and Time"
@@ -81,6 +106,7 @@ const props = defineProps<{
               <!--Duration-->
               <FormKit
                 id="duration"
+                v-model="referDur"
                 type="number"
                 help="Enter the duration of the event (around how many hours?)"
                 label="Duration"
@@ -93,6 +119,7 @@ const props = defineProps<{
               <!--HoursOffered -->
               <FormKit
                 id="hoursOffered"
+                v-model="referHour"
                 type="number"
                 help="How many hours can a volunteer earn at this event?"
                 label="Volunteer Hours Offered"
@@ -110,13 +137,14 @@ const props = defineProps<{
                 name="thumbnail"
                 accept=".png,.pdf,.jpeg"
                 help="Upload a thumbnail for the event listing. Accepted formats: .png, .pdf, .jpeg."
-                multiple="false"
+                multiple="fal "
                 outer-class="mb-5 w-4/5"
               />
 
               <!--Phone Number-->
               <FormKit
                 id="phone_number"
+                v-model="referPhNum"
                 type="tel"
                 name="phoneNumber"
                 label="Organization Phone Number"
@@ -128,17 +156,19 @@ const props = defineProps<{
               <!--Email-->
               <FormKit
                 id="email"
+                v-model="referMail"
                 type="email"
                 name="email"
                 label="Organization Email"
                 help="Type the email of the event organizer"
                 placeholder="emailexample@domain.com"
-                outer-class="event.email"
+                outer-class="mb-5 w-4/5"
               />
 
               <!--Capacity-->
               <FormKit
                 id="capacity"
+                v-model="referCap"
                 type="number"
                 name="capacity"
                 label="event.capacity"
@@ -153,6 +183,7 @@ const props = defineProps<{
               <!--Description-->
               <FormKit
                 id="description"
+                v-model="referDesc"
                 type="textarea"
                 name="description"
                 label="Description"
@@ -161,6 +192,7 @@ const props = defineProps<{
               />
 
               <TextMultiple
+                v-model="referPrereq"
                 title="Volunteer Prerequisites"
                 placeholder="event.prerquisites"
                 add-text="Add new prerequisite"
@@ -169,6 +201,7 @@ const props = defineProps<{
               />
 
               <TextMultiple
+                v-model="referPos"
                 title="Volunteer Positions"
                 placeholder="event.voluterrPositions"
                 add-text="Add new position"
@@ -177,15 +210,20 @@ const props = defineProps<{
               />
             </div>
           </FormKit>
-          <div class="">
-            <h1>Delete Event</h1>
+          <div
+            class="bg-red-600 w-full text-center py-3.5 rounded-lg text-md text-white"
+          >
+            <a href="/event/listings" @click="deleteEvent"> Delete Event </a>
           </div>
         </div>
       </div>
       <div class="w-1/2 z-30 pr-5 pl-2.5">
-        <div class="bg-slate-100 h-screen rounded-3xl p-10 opacity-95">
-          <p>{{ props.id }}</p>
-          <VolunteerListing :id="props.id" />
+        <div class="bg-gray-100 h-screen rounded-3xl p-10 opacity-95">
+          <!-- <div v-if="referVolun.length > 0">
+            <div v-for="(name, index) in referVolun" :key="index">
+              <VolunteerListing :id="props.id" :name="name[0].name" />
+            </div>
+          </div> -->
         </div>
       </div>
     </div>

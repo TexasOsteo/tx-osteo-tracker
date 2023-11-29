@@ -3,13 +3,10 @@
 const { data: events } = await useFetch(`/api/events?after=${Date.now()}`)
 // Define a ref variable to store the user-inputted date
 
-
-
 const filterOrg = ref('')
 
-const filterDate = ref('')
-
 const filterLoc = ref('')
+
 </script>
 <template>
   <h1 class="text-center text-5xl my-10 font-semibold">Sign Up</h1>
@@ -36,22 +33,12 @@ const filterLoc = ref('')
 
     <div>
       <label for="date">Date:</label>
-      <input
-        id="date"
-        v-model="filterDate"
-        type="date"
-        class="bg-slate-200 m-3 p-2 rounded-lg"
-      />
+      <input id="date" type="date" class="bg-slate-200 m-3 p-2 rounded-lg" />
     </div>
 
     <div>
       <label for="time">Time:</label>
-      <input
-        id="time"
-        v-model="filterTime"
-        type="time"
-        class="bg-slate-200 m-3 p-2 rounded-lg"
-      />
+      <input id="time" type="time" class="bg-slate-200 m-3 p-2 rounded-lg" />
     </div>
 
     <div>

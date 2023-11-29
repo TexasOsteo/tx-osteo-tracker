@@ -7,7 +7,8 @@ const isAdmin = isSignedInUserAdmin()
 
 // Define event prop
 const props = defineProps<{
-  id: string
+  id: String
+  name: string
 }>()
 </script>
 
@@ -16,7 +17,7 @@ const props = defineProps<{
     class="w-full py-5 px-3 bg-slate-100 shadow opacity-95 flex flex-wrap items-center justify-between rounded-md"
   >
     <div class="h-full align-middle">
-      <p class="h-full align-middle"> {{ props.id }}</p>
+      <p class="h-full align-middle">{{ props.name }}</p>
     </div>
 
     <div

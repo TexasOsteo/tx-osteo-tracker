@@ -2,6 +2,7 @@
 import ISO6391 from 'iso-639-1'
 import type { Event } from '@prisma/client'
 import type { SerializeObject } from '~/utils/types'
+const { data: eventsList } = await useFetch(`/api/events?after=${Date.now()}`)
 
 const isAdmin = isSignedInUserAdmin()
 
@@ -18,6 +19,10 @@ const isOpen = ref<boolean>(false)
 
 function toggleExpanded() {
   isOpen.value = !isOpen.value
+}
+async function refreshEventList(){
+  await useFetch(`/api/events/${eventsList}`)
+
 }
 </script>
 
@@ -312,7 +317,7 @@ function toggleExpanded() {
             <div
               class="w-full p-3 text-center bg-[#F0CC5A] text-white rounded-md hover:bg-white hover:text-black shadow"
             >
-              SEE MORE
+            <button :onclick="refreshEventList">SEE MORE</button>
             </div>
           </NuxtLink>
 
