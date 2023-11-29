@@ -1,7 +1,7 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   devtools: { enabled: true },
-  css: ['~/assets/css/main.css'],
+  css: ['~/assets/css/main.css', 'vue-final-modal/style.css'],
   postcss: {
     plugins: {
       tailwindcss: {},
@@ -12,6 +12,10 @@ export default defineNuxtConfig({
     AUTH0_DOMAIN: ensureEnv('AUTH0_DOMAIN'),
     AUTH0_CLIENTID: ensureEnv('AUTH0_CLIENTID'),
     AUTH0_SECRET: ensureEnv('AUTH0_SECRET'),
+    AZURE_CDN_ORIGIN: ensureEnv('AZURE_CDN_ORIGIN'),
+    AZURE_STORAGE_CONNECTION_STRING: ensureEnv(
+      'AZURE_STORAGE_CONNECTION_STRING',
+    ),
     public: {
       auth0_token: 'txosteo_volunteer_auth0_token',
       txosteo_token: 'txosteo_volunteer_token',
