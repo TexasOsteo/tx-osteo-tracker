@@ -1,74 +1,153 @@
 <script setup lang="ts">
 // Fetch API call by destructing the events response object into its data
-const { data: events } = await useFetch(`/api/events?after=${Date.now()}`)
-// Define a ref variable to store the user-inputted date
-const filterOrg = ref('')
+const { data: eventsRes } = await useFetch(`/api/events?after=${Date.now()}`)
+const events = computed(() => {
+  const arr = eventsRes.value ?? []
+  // Sort events by date
+  arr.sort(
+    (a, b) =>
+      new Date(a.dateAndTime).getTime() - new Date(b.dateAndTime).getTime(),
+  )
+  return arr
+})
 
-const filterDate = ref('')
+const eventFilter = ref({
+  selectedLocation: 'all',
+  selectedOrganization: 'all',
+  selectedDate: '',
+})
 
-const filterLoc = ref('')
+const cities = computed(() =>
+  Array.from(new Set(events.value.map((event) => event.location))),
+)
+const organizations = computed(() =>
+  Array.from(new Set(events.value.map((event) => event.organizer))),
+)
+
+// Function runs every time eventFilter is updated to provide an updated variable
+// that stores all the events that should be displayed
+const eventsToDisplay = computed(() => {
+  const locationFilter = eventFilter.value.selectedLocation
+  const organizationFilter = eventFilter.value.selectedOrganization
+  const dateFilter = eventFilter.value.selectedDate
+    ? new Date(eventFilter.value.selectedDate)
+    : null
+  // Show all events if filters are default
+  if (locationFilter === 'all' && organizationFilter === 'all' && !dateFilter) {
+    return events.value
+  }
+  // Filter events in corresponding way
+  else {
+    const filteredEvents = events.value.filter((event) => {
+      // Filter all three
+      if (
+        locationFilter !== 'all' &&
+        organizationFilter !== 'all' &&
+        dateFilter
+      ) {
+        return (
+          event.location === locationFilter &&
+          event.organizer === organizationFilter &&
+          new Date(event.dateAndTime) >= dateFilter
+        )
+      }
+      // Filter time
+      else if (
+        locationFilter === 'all' &&
+        organizationFilter === 'all' &&
+        dateFilter
+      ) {
+        return new Date(event.dateAndTime) >= dateFilter
+      }
+      // Filter location and time
+      else if (
+        locationFilter !== 'all' &&
+        organizationFilter === 'all' &&
+        dateFilter
+      ) {
+        return (
+          event.location === locationFilter &&
+          new Date(event.dateAndTime) >= dateFilter
+        )
+      }
+      // Filter organizations and time
+      else if (
+        locationFilter === 'all' &&
+        organizationFilter !== 'all' &&
+        dateFilter
+      ) {
+        return (
+          event.organizer === organizationFilter &&
+          new Date(event.dateAndTime) >= dateFilter
+        )
+      }
+      // Filter organizations
+      else if (
+        locationFilter === 'all' &&
+        organizationFilter !== 'all' &&
+        !dateFilter
+      ) {
+        return event.organizer === organizationFilter
+      }
+      // Filter locations
+      else if (
+        locationFilter !== 'all' &&
+        organizationFilter === 'all' &&
+        !dateFilter
+      ) {
+        return event.location === locationFilter
+      }
+      // Filter organizations and locations
+      else {
+        return (
+          event.location === locationFilter &&
+          event.organizer === organizationFilter
+        )
+      }
+    })
+    return filteredEvents
+  }
+})
+
+// ------------------------------------------------------------------------------------------
 </script>
 <template>
   <h1 class="text-center text-5xl my-10 font-semibold">Sign Up</h1>
   <div class="flex flex-wrap items-center justify-center">
-    <div>
-      <label for="filterOrg">Organizer: </label>
-      <input
-        id="filterOrg"
-        v-model="filterOrg"
-        placeholder="-"
-        class="bg-slate-200 m-3 p-2 rounded-lg"
-      />
-    </div>
-
-    <div>
-      <label for="filterLoc">Location: </label>
-      <input
-        id="filterLoc"
-        v-model="filterLoc"
-        placeholder="-"
-        class="bg-slate-200 m-3 p-2 rounded-lg"
-      />
-    </div>
-
-    <div>
-      <label for="date">Date:</label>
-      <input
-        id="date"
-        v-model="filterDate"
-        type="date"
-        class="bg-slate-200 m-3 p-2 rounded-lg"
-      />
-    </div>
-
-    <div>
-      <label for="time">Time:</label>
-      <input
-        id="time"
-        v-model="filterTime"
-        type="time"
-        class="bg-slate-200 m-3 p-2 rounded-lg"
-      />
-    </div>
-
-    <div>
-      <label for="position">Volunteer Positions:</label>
-      <select id="position" class="bg-slate-200 m-3 p-2.5 rounded-lg">
-        <option value="both">Both</option>
-        <option value="regular">Regular Volunteer Only</option>
-        <option value="medical">Medical Volunteer Only</option>
-      </select>
-    </div>
+    <table class="table-fixed border-separate border-spacing-10">
+      <tr class="text-center place-content-strech self-auto">
+        <th>
+          <!--Filter events by Location-->
+          <label class="block font-bold text-center text-blue-900" for="locationFilter">Location</label>
+          <select id="locationFilter" v-model="eventFilter.selectedLocation" class="text-center">
+            <option value="all">All</option>
+            <option v-for="city in cities" :key="city" :value="city">
+              {{ city }}
+            </option>
+          </select>
+        </th>
+        <th>
+          <!--Filter events by Organization-->
+          <label class="block font-bold text-center text-blue-900" for="organizationFilter">Organization</label>
+          <select id="organizationFilter" v-model="eventFilter.selectedOrganization" class="text-center">
+            <option value="all">All</option>
+            <option v-for="organization in organizations" :key="organization" :value="organization">
+              {{ organization }}
+            </option>
+          </select>
+        </th>
+        <th>
+          <!--Filter events by Date and Time-->
+          <label class="block font-bold text-center text-blue-900" for="timeFilter">Date</label>
+          <input id="timeFilter" v-model="eventFilter.selectedDate" type="date" class="text-center" />
+        </th>
+      </tr>
+    </table>
   </div>
 
   <ul>
-    <li v-for="event in events" :key="event.id">
-      <div
-        v-if="
-          (!filterLoc || event.location.includes(filterLoc)) &&
-          (!filterOrg || event.organizer.includes(filterOrg))
-        "
-      >
+    <li v-for="event in eventsToDisplay" :key="event.id">
+      <div>
         <EventListing :event="event"> </EventListing>
       </div>
     </li>
