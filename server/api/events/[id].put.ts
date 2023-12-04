@@ -78,7 +78,7 @@ export default defineEventHandler(async (event) => {
       ...oldData,
       ...body,
       attendees: parseIDsToPrismaSetObject(body.attendees),
-      signedUpUsers: parseIDsToPrismaSetObject(body.attendees),
+      signedUpUsers: parseIDsToPrismaSetObject(body.signedUpUsers),
     },
   })
   return updated

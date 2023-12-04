@@ -1,6 +1,6 @@
 /* eslint-disable no-use-before-define */
 
-import type { PrismaClient } from '@prisma/client'
+import type { Prisma, PrismaClient } from '@prisma/client'
 import type { H3Event, EventHandlerRequest } from 'h3'
 import type { InferType } from 'yup'
 import type { Auth0ClaimsSchema, TXOsteoClaimsSchema } from './jwt'
@@ -16,6 +16,10 @@ export type BlobInfo = {
   tags: Record<string, string>
   name: string
 }
+
+export type FullEvent = Prisma.EventGetPayload<{
+  include: { attendees: true; signedUpUsers: true }
+}>
 
 /**
  * This shims the normal H3 event context to include the fields that are added

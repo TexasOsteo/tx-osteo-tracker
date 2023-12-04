@@ -73,6 +73,10 @@ export default defineEventHandler(async (event) => {
         },
       },
     },
+    include: {
+      attendees: true,
+      signedUpUsers: true,
+    },
   })
 
   return newEvent
