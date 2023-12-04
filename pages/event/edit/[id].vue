@@ -3,6 +3,7 @@ import { ref } from 'vue'
 import ISO6391 from 'iso-639-1'
 import type { Event } from '@prisma/client'
 import type { SerializeObject } from '~/utils/types'
+const formErrors = ref<string[]>()
 
 const route = useRoute()
 const { data } = await useFetch(`/api/events/${route.params.id}`)
@@ -31,6 +32,23 @@ async function deleteEvent() {
     method: 'DELETE',
   })
 }
+
+async function patchEvent(fields: any) {
+  const { error } = await useFetch(`/api/events/${referID.value}`, {
+    method: 'PUT',
+    body: {
+      ...fields,
+      attendees: [],
+      signedUpUsers: [],
+    },
+  })
+  if (error.value) {
+    formErrors.value = [
+      'There was an error updating this event.',
+      error.value.message,
+    ]
+  }
+}
 </script>
 
 <template>
@@ -49,7 +67,7 @@ async function deleteEvent() {
             type="form"
             :errors="formErrors"
             class-name="items-center"
-            @submit="handleSubmit"
+            @submit="patchEvent"
           >
             <!--Title of Event -->
             <div class="flex justify-center items-center flex-wrap">

@@ -33,7 +33,7 @@ const menuItemClass =
           <span class="hidden sm:block">Log Out</span>
         </a>
         <div class="h-full p-2 aspect-square">
-          <NuxtLink to="/users/me">
+          <NuxtLink to="/users/me/settings">
             <ProfileAvatar class="w-full h-full rounded-full drop-shadow-sm" />
           </NuxtLink>
         </div>

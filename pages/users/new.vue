@@ -7,7 +7,7 @@ async function handleSubmit(fields: any) {
     body: {
       ...fields,
       numHours: 0,
-      isAdmin: false,
+      isAdmin: true,
       userNotes: [],
       signedUpEvents: [],
       eventHistory: [],
