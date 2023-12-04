@@ -11,6 +11,12 @@ export type Auth0Claims = InferType<typeof Auth0ClaimsSchema>
 
 export type TXOsteoClaims = InferType<typeof TXOsteoClaimsSchema>
 
+export type BlobInfo = {
+  url: string
+  tags: Record<string, string>
+  name: string
+}
+
 /**
  * This shims the normal H3 event context to include the fields that are added
  * in the auth middleware
