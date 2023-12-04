@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import ISO6391 from 'iso-639-1'
 import FullCalendar from '@fullcalendar/vue3'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import interaction from '@fullcalendar/interaction'
@@ -15,7 +16,7 @@ import EventModal from './EventModal.vue'
 const eventFilter = ref({
   selectedLocation: 'all',
   selectedOrganization: 'all',
-  selectedTime: '',
+  selectedDate: '',
 })
 const cities = ref<Array<string>>([])
 const organizations = ref<Array<string>>([])
@@ -119,59 +120,59 @@ const fetchEvents = async () => {
 
 // event filter
 const filterEvents = () => {
-  const location = eventFilter.value.selectedLocation
-  const organization = eventFilter.value.selectedOrganization
-  const selectedTimeDate = eventFilter.value.selectedTime
-    ? new Date(eventFilter.value.selectedTime)
+  const locationFilter = eventFilter.value.selectedLocation
+  const organizationFilter = eventFilter.value.selectedOrganization
+  const dateFilter = eventFilter.value.selectedDate
+    ? new Date(eventFilter.value.selectedDate)
     : null
-  if (location === 'all' && organization === 'all' && !selectedTimeDate) {
+  if (locationFilter === 'all' && organizationFilter === 'all' && !dateFilter) {
     // show all events
     calendarOptions.value.events = eventsData.value
   } else {
     // Filter events by the selected location, time, and organization
     calendarOptions.value.events = eventsData.value.filter((event) => {
-      if (location === 'all' && organization === 'all' && selectedTimeDate) {
+      if (locationFilter === 'all' && organizationFilter === 'all' && dateFilter) {
         // timefilter
-        return new Date(event.start) >= selectedTimeDate
+        return new Date(event.start) >= dateFilter
       } else if (
         // location and date time filter
-        location !== 'all' &&
-        organization === 'all' &&
-        selectedTimeDate
+        locationFilter !== 'all' &&
+        organizationFilter === 'all' &&
+        dateFilter
       ) {
         return (
           event.extendedProps.location === location &&
-          new Date(event.start) >= selectedTimeDate
+          new Date(event.start) >= dateFilter
         )
       } else if (
         // organization and date time filter
-        location === 'all' &&
-        organization !== 'all' &&
-        selectedTimeDate
+        locationFilter === 'all' &&
+        organizationFilter !== 'all' &&
+        dateFilter
       ) {
         return (
-          event.extendedProps.organization === organization &&
-          new Date(event.start) >= selectedTimeDate
+          event.extendedProps.organization === organizationFilter &&
+          new Date(event.start) >= dateFilter
         )
       } else if (
         // organization filter
-        location === 'all' &&
-        organization !== 'all' &&
-        !selectedTimeDate
+        locationFilter === 'all' &&
+        organizationFilter !== 'all' &&
+        !dateFilter
       ) {
-        return event.extendedProps.organization === organization
+        return event.extendedProps.organization === organizationFilter
       } else if (
         // location filter
-        location !== 'all' &&
-        organization === 'all' &&
-        !selectedTimeDate
+        locationFilter !== 'all' &&
+        organizationFilter === 'all' &&
+        !dateFilter
       ) {
-        return event.extendedProps.location === location
+        return event.extendedProps.location === locationFilter
       } else {
         return (
           // location or organization filter
-          event.extendedProps.location === location ||
-          event.extendedProps.organization === organization
+          event.extendedProps.location === locationFilter ||
+          event.extendedProps.organization === organizationFilter
         )
       }
     })
@@ -187,17 +188,8 @@ fetchEvents()
       <tr class="text-center place-content-strech self-auto">
         <th>
           <!--Filter events by Location-->
-          <label
-            class="block font-bold text-center text-blue-900"
-            for="locationFilter"
-            >Location</label
-          >
-          <select
-            id="locationFilter"
-            v-model="eventFilter.selectedLocation"
-            class="text-center"
-            @change="filterEvents"
-          >
+          <label class="block font-bold text-center text-blue-900" for="locationFilter">Location</label>
+          <select id="locationFilter" v-model="eventFilter.selectedLocation" class="text-center" @change="filterEvents">
             <option value="all">All</option>
             <option v-for="city in cities" :key="city" :value="city">
               {{ city }}
@@ -206,56 +198,29 @@ fetchEvents()
         </th>
         <th>
           <!--Filter events by Organization-->
-          <label
-            class="block font-bold text-center text-blue-900"
-            for="organizationFilter"
-            >Organization</label
-          >
-          <select
-            id="organizationFilter"
-            v-model="eventFilter.selectedOrganization"
-            class="text-center"
-            @change="filterEvents"
-          >
+          <label class="block font-bold text-center text-blue-900" for="organizationFilter">Organization</label>
+          <select id="organizationFilter" v-model="eventFilter.selectedOrganization" class="text-center"
+            @change="filterEvents">
             <option value="all">All</option>
-            <option
-              v-for="organization in organizations"
-              :key="organization"
-              :value="organization"
-            >
+            <option v-for="organization in organizations" :key="organization" :value="organization">
               {{ organization }}
             </option>
           </select>
         </th>
         <th>
-          <!--Filter events by Date and Time-->
-          <label
-            class="block font-bold text-center text-blue-900"
-            for="timeFilter"
-            >Time</label
-          >
-          <input
-            id="timeFilter"
-            v-model="eventFilter.selectedTime"
-            type="datetime-local"
-            class="text-center"
-            @change="filterEvents"
-          />
+          <!--Filter events by Date-->
+          <label class="block font-bold text-center text-blue-900" for="timeFilter">Date</label>
+          <input id="timeFilter" v-model="eventFilter.selectedDate" type="date" class="text-center"
+            @change="filterEvents" />
         </th>
       </tr>
     </table>
     <FullCalendar ref="calendar" :options="calendarOptions" />
   </div>
   <div>
-    <EventModal
-      :id="modalEvent.id"
-      :modal-active="modalActive"
-      @close-modal="toggleModal"
-    >
+    <EventModal :id="modalEvent.id" :modal-active="modalActive" @close-modal="toggleModal">
       <!--Modal Header -->
-      <div
-        class="flex items-start justify-between p-4 border-b rounded-t dark:border-gray-600"
-      >
+      <div class="flex items-start justify-between p-4 border-b rounded-t dark:border-gray-600">
         <h2 id="modalTitle" class="text-2xl font-sans text-cyan-950 uppercase">
           {{ modalEvent.title }}
         </h2>
@@ -277,7 +242,14 @@ fetchEvents()
         <p class="text-base leading-relaxed text-cyan-900">
           Date:
           <span id="modalDate" class="font-sans text-cyan-950">{{
-            modalEvent.date
+            new Date(modalEvent.date).toLocaleString('en-US', {
+              year: 'numeric',
+              month: '2-digit',
+              day: '2-digit',
+              hour: '2-digit',
+              minute: '2-digit',
+              hour12: true,
+            })
           }}</span>
         </p>
         <p class="text-base leading-relaxed text-cyan-900">
@@ -288,12 +260,8 @@ fetchEvents()
         </p>
         <p class="text-base leading-relaxed text-cyan-900">
           Languages:
-          <span
-            v-for="(language, index) in modalEvent.languages"
-            :key="index"
-            class="font-sans text-cyan-950"
-          >
-            <span v-if="index !== 0">, </span>{{ language }}
+          <span v-for="(language, index) in modalEvent.languages" :key="language" class="font-sans text-cyan-950">
+            <span v-if="index !== 0">, </span>{{ ISO6391.getName(language) }}
           </span>
         </p>
         <p class="text-base leading-relaxed text-cyan-900">
@@ -301,30 +269,20 @@ fetchEvents()
           <img :src="modalEvent.thumbnail" />
         </p>
         <p class="text-base leading-relaxed text-cyan-900">
-          Hour Offered:
+          Service Hours Offered:
           <span id="modalDate" class="font-sans text-cyan-950">{{
             modalEvent.hoursOffered
           }}</span>
         </p>
         <p class="text-base leading-relaxed text-cyan-900">
           Prerequisites:
-          <span
-            v-for="(prerequisite, index) in modalEvent.prerequisites"
-            :key="index"
-            class="font-sans text-cyan-950"
-          >
-            <span v-if="index !== 0">, </span>{{ prerequisite }}</span
-          >
+          <span v-for="(prerequisite, index) in modalEvent.prerequisites" :key="index" class="font-sans text-cyan-950">
+            <span v-if="index !== 0">, </span>{{ prerequisite }}</span>
         </p>
         <p class="text-base leading-relaxed text-cyan-900">
-          Volunteer Position:
-          <span
-            v-for="(position, index) in modalEvent.volunteerPositions"
-            :key="index"
-            class="font-sans text-cyan-950"
-          >
-            <span v-if="index !== 0">, </span>{{ position }}</span
-          >
+          Volunteer Positions:
+          <span v-for="(position, index) in modalEvent.volunteerPositions" :key="index" class="font-sans text-cyan-950">
+            <span v-if="index !== 0">, </span>{{ position }}</span>
         </p>
         <p class="text-base leading-relaxed text-cyan-900">
           Phone Number:
