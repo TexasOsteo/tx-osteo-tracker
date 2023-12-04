@@ -231,6 +231,8 @@ async function refreshEventList() {
           </li>
         </ul>
 
+
+        
         <ul class="w-full mb-5 block sm:w-1/2">
           <li>
             <div class="flex flex-wrap items-center mt-5">
