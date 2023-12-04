@@ -112,73 +112,81 @@ const eventsToDisplay = computed(() => {
 // ------------------------------------------------------------------------------------------
 </script>
 <template>
-  <h1 class="text-center text-5xl my-10 font-semibold">Sign Up</h1>
-  <div class="flex flex-wrap items-center justify-center">
-    <table class="table-fixed border-separate border-spacing-10">
-      <tr class="text-center place-content-strech self-auto">
-        <th>
-          <!--Filter events by Location-->
-          <label
-            class="block font-bold text-center text-blue-900"
-            for="locationFilter"
-            >Location</label
-          >
-          <select
-            id="locationFilter"
-            v-model="eventFilter.selectedLocation"
-            class="text-center"
-          >
-            <option value="all">All</option>
-            <option v-for="city in cities" :key="city" :value="city">
-              {{ city }}
-            </option>
-          </select>
-        </th>
-        <th>
-          <!--Filter events by Organization-->
-          <label
-            class="block font-bold text-center text-blue-900"
-            for="organizationFilter"
-            >Organization</label
-          >
-          <select
-            id="organizationFilter"
-            v-model="eventFilter.selectedOrganization"
-            class="text-center"
-          >
-            <option value="all">All</option>
-            <option
-              v-for="organization in organizations"
-              :key="organization"
-              :value="organization"
+  <div >
+    <h1 class="text-center text-5xl pt-10 font-semibold">Sign Up</h1>
+    <div class="flex flex-wrap items-center justify-center">
+      <table class="border-separate border-spacing-10">
+        <tr class="text-center place-content-strech self-auto">
+          <th>
+            <!--Filter events by Location-->
+            <label
+              class="block font-bold text-center text-black"
+              for="locationFilter"
+              >Location</label
             >
-              {{ organization }}
-            </option>
-          </select>
-        </th>
-        <th>
-          <!--Filter events by Date and Time-->
-          <label
-            class="block font-bold text-center text-blue-900"
-            for="timeFilter"
-            >Date</label
-          >
-          <input
-            id="timeFilter"
-            v-model="eventFilter.selectedDate"
-            type="date"
-            class="text-center"
-          />
-        </th>
-      </tr>
-    </table>
-  </div>
+            <div class="bg-slate-200 p-2 m-2 rounded-lg">
+              <select
+                id="locationFilter"
+                v-model="eventFilter.selectedLocation"
+                class="text-center bg-slate-200"
+              >
+                <option value="all">All</option>
+                <option v-for="city in cities" :key="city" :value="city">
+                  {{ city }}
+                </option>
+              </select>
+            </div>
+          </th>
+          <th>
+            <!--Filter events by Organization-->
+            <label
+              class="block font-bold text-center text-black"
+              for="organizationFilter"
+              >Organization</label
+            >
+            <div class="bg-slate-200 p-2 m-2 rounded-lg">
+              <select
+                id="organizationFilter"
+                v-model="eventFilter.selectedOrganization"
+                class="text-center bg-slate-200"
+              >
+                <option value="all">All</option>
+                <option
+                  v-for="organization in organizations"
+                  :key="organization"
+                  :value="organization"
+                >
+                  {{ organization }}
+                </option>
+              </select>
+            </div>
+          </th>
+          <th>
+            <!--Filter events by Date and Time-->
+            <label
+              class="block font-bold text-center text-black"
+              for="timeFilter"
+              >Date</label
+            >
+            <div class="bg-slate-200 p-2 m-2 rounded-lg">
+              <input
+                id="timeFilter"
+                v-model="eventFilter.selectedDate"
+                type="date"
+                class="text-center bg-slate-200"
+              />
+            </div>
+          </th>
+        </tr>
+      </table>
+    </div>
 
-  <ul>
-    <li v-for="event in eventsToDisplay" :key="event.id">
-      <div>
-        <EventListing :event="event"> </EventListing>
-      </div>
-    </li>
-  </ul>
+    <ul>
+      <li v-for="event in eventsToDisplay" :key="event.id">
+        <div>
+          <EventListing :event="event"> </EventListing>
+        </div>
+      </li>
+    </ul>
+  </div>
 </template>
