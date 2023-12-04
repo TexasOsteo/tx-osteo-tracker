@@ -3,7 +3,7 @@ import { ref } from 'vue'
 import FullCalendar from '@fullcalendar/vue3'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import interaction from '@fullcalendar/interaction'
-import { CalendarOptions } from '@fullcalendar/core'
+import type { CalendarOptions } from '@fullcalendar/core'
 import EventModal from './EventModal.vue'
 
 /*
