@@ -38,6 +38,8 @@ async function patchEvent(fields: any) {
     method: 'PUT',
     body: {
       ...fields,
+      attendees: [],
+      signedUpUsers: [],
     },
   })
   if (error.value) {
