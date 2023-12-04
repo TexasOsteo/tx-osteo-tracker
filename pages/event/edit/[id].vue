@@ -34,12 +34,20 @@ async function deleteEvent() {
 }
 
 async function patchEvent(fields: any) {
+  const thumbnailData = await new Promise<string>((resolve) => {
+    // TODO: Make this not cursed
+    const file: File = fields.thumbnail[0].file
+    const reader = new FileReader()
+    reader.onload = () => resolve(reader.result as string)
+    reader.readAsDataURL(file)
+  })
   const { error } = await useFetch(`/api/events/${referID.value}`, {
     method: 'PUT',
     body: {
       ...fields,
       attendees: [],
       signedUpUsers: [],
+      thumbnail: thumbnailData,
     },
   })
   if (error.value) {
@@ -47,6 +55,9 @@ async function patchEvent(fields: any) {
       'There was an error updating this event.',
       error.value.message,
     ]
+  } else {
+    const router = useRouter()
+    router.go(-1)
   }
 }
 </script>
