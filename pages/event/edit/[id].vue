@@ -1,54 +1,69 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import ISO6391 from 'iso-639-1'
+import { format } from 'date-fns'
 import type { Event } from '@prisma/client'
-import type { SerializeObject } from '~/utils/types'
+import type { SerializeObject, FullEvent } from '~/utils/types'
+
+// Custom types used by FormKit
+type SFullEvent = SerializeObject<FullEvent>
+type FormKitEventData = Partial<
+  SerializeObject<Event> & {
+    attendees: string[]
+    signedUpUsers: string[]
+  }
+>
+
+const router = useRouter()
+const route = useRoute()
+const eventId = route.params.id as string
+const userClaims = getCurrentUserTxOsteoClaims()
+const userId = userClaims!.sub
+
+const { data: usersData } = await useFetch('/api/users')
+const { data: fullEventData } = await useFetch(`/api/events/${eventId}`)
+
+// This converts the serialized response from useFetch to an Event partial usable by FormKit
+function toFormData(event: SFullEvent | null): FormKitEventData {
+  if (!event) return {}
+  return {
+    ...event,
+    // Formkit needs date in this format:
+    dateAndTime: format(new Date(event.dateAndTime), `yyyy-MM-dd'T'HH:MM`),
+    // Convert volunteers into id strings
+    attendees: event.attendees.map((user) => user.id),
+    signedUpUsers: event.signedUpUsers.map((user) => user.id),
+  } as FormKitEventData
+}
+
+// This ref updates with when FormKit updates and when useFetch updates using watch
+const formData = ref<FormKitEventData>(toFormData(fullEventData.value))
+watch(fullEventData, (value) => (formData.value = toFormData(value)))
 const formErrors = ref<string[]>()
 
-const route = useRoute()
-const { data } = await useFetch(`/api/events/${route.params.id}`)
-
-const referID = ref(data && data.value ? [data.value.id] : [])
-const referName = ref(data && data.value ? [data.value.name] : [])
-const referOrg = ref(data && data.value ? [data.value.organizer] : [])
-const referLoc = ref(data && data.value ? [data.value.location] : [])
-const referDatm = ref(data && data.value ? [data.value.dateAndTime] : [])
-const referVolun = ref(data && data.value ? [data.value.signedUpUsers] : [])
-const formattedDatm = referDatm.value.toLocaleString().slice(0, 16)
-const referDur = ref(data && data.value ? [data.value.duration] : [])
-const referHour = ref(data && data.value ? [data.value.hoursOffered] : [])
-const referCap = ref(data && data.value ? [data.value.capacity] : [])
-const referPhNum = ref(data && data.value ? [data.value.phoneNumber] : [])
-const referMail = ref(data && data.value ? [data.value.email] : [])
-const referPrereq = ref(data && data.value ? [data.value.prerequisites] : [])
-const referPos = ref(data && data.value ? [data.value.volunteerPositions] : [])
-const referDesc = ref(data && data.value ? [data.value.description] : [])
-const props = defineProps<{
-  id: string
-}>()
+const allUsers = computed(() =>
+  Object.fromEntries(
+    (usersData.value ?? []).map((u) => [u.id, `${u.name} (${u.email})`]),
+  ),
+)
 
 async function deleteEvent() {
-  await useFetch(`/api/events/${referID.value}`, {
+  const { error } = await useFetch(`/api/events/${eventId}`, {
     method: 'DELETE',
   })
+  if (error.value) {
+    formErrors.value = [
+      'There was an error deleting this event.',
+      error.value.message,
+    ]
+  } else {
+    router.go(-1)
+  }
 }
 
 async function patchEvent(fields: any) {
-  const thumbnailData = await new Promise<string>((resolve) => {
-    // TODO: Make this not cursed
-    const file: File = fields.thumbnail[0].file
-    const reader = new FileReader()
-    reader.onload = () => resolve(reader.result as string)
-    reader.readAsDataURL(file)
-  })
-  const { error } = await useFetch(`/api/events/${referID.value}`, {
+  const { error } = await useFetch(`/api/events/${eventId}`, {
     method: 'PUT',
-    body: {
-      ...fields,
-      attendees: [],
-      signedUpUsers: [],
-      thumbnail: thumbnailData,
-    },
+    body: fields,
   })
   if (error.value) {
     formErrors.value = [
@@ -56,205 +71,199 @@ async function patchEvent(fields: any) {
       error.value.message,
     ]
   } else {
-    const router = useRouter()
     router.go(-1)
   }
 }
 </script>
 
 <template>
-  <div class="py-10 flex flex-wrap items-center">
+  <div class="py-20 flex justify-center flex-wrap items-center">
     <CurveBackground />
-    <div class="flex flex-wrap">
-      <div class="w-1/2 pl-5 pr-2.5">
-        <div
-          class="w-full bg-gray-100 opacity-95 rounded-3xl shadow-xl z-30 p-10 flex justify-center flex-wrap items-center"
-        >
-          <h1 class="title font-sans font-bold text-5xl text-center mb-10">
-            EDIT EVENT
-          </h1>
-          <p></p>
+
+    <div
+      class="max-w-screen-lg bg-gray-100 opacity-95 rounded-3xl shadow-xl z-30 p-10 flex justify-center flex-wrap items-center"
+    >
+      <h1 class="title font-sans font-bold text-5xl text-center mb-10">
+        EDIT EVENT
+      </h1>
+      <FormKit
+        v-model="formData"
+        type="form"
+        :errors="formErrors"
+        class-name="items-center"
+        @submit="patchEvent"
+      >
+        <!--Title of Event -->
+        <div class="flex justify-center items-center flex-wrap">
           <FormKit
-            type="form"
-            :errors="formErrors"
-            class-name="items-center"
-            @submit="patchEvent"
-          >
-            <!--Title of Event -->
-            <div class="flex justify-center items-center flex-wrap">
-              <FormKit
-                id="title"
-                v-model="referName"
-                type="text"
-                name="name"
-                label="Name"
-                help="Type event name here."
-                placeholder="Event Name"
-                outer-class="mb-5 w-4/5"
-              />
+            id="title"
+            type="text"
+            name="name"
+            label="Name"
+            help="Type event name here."
+            placeholder="Event Name"
+            outer-class="mb-5 w-4/5"
+          />
 
-              <!--Name of Organizer-->
-              <FormKit
-                id="organizer"
-                v-model="referOrg"
-                type="text"
-                name="organizer"
-                label="Organizer"
-                help="Type organization name here."
-                placeholder="Event Organizer"
-                outer-class="mb-5 w-4/5"
-              />
+          <!--Name of Organizer-->
+          <FormKit
+            id="organizer"
+            type="text"
+            name="organizer"
+            label="Organizer"
+            help="Type organization name here."
+            placeholder="Event Organizer"
+            outer-class="mb-5 w-4/5"
+          />
 
-              <!--Location-->
-              <FormKit
-                id="loc"
-                v-model="referLoc"
-                type="text"
-                name="location"
-                label="Location"
-                help="Enter the street address followed by the city, state, and zipcode."
-                placeholder="data.location"
-                outer-class="mb-5 w-4/5"
-              />
+          <!--Location-->
+          <FormKit
+            id="loc"
+            type="text"
+            name="location"
+            label="Location"
+            help="Enter the street address followed by the city, state, and zipcode."
+            placeholder="data.location"
+            outer-class="mb-5 w-4/5"
+          />
 
-              <!--Date-->
-              <FormKit
-                id="event_date"
-                v-model="formattedDatm"
-                type="datetime-local"
-                name="dateAndTime"
-                label="Date and Time"
-                help="Enter the date and time of the event"
-                validation="required|date_after"
-                outer-class="mb-5 w-4/5"
-                :validation-messages="{
-                  date_after: 'Enter a date that has not yet occurred',
-                }"
-              />
+          <!--Date-->
+          <FormKit
+            id="event_date"
+            type="datetime-local"
+            name="dateAndTime"
+            label="Date and Time"
+            help="Enter the date and time of the event"
+            validation="required|date_after"
+            outer-class="mb-5 w-4/5"
+            :validation-messages="{
+              date_after: 'Enter a date that has not yet occurred',
+            }"
+          />
 
-              <!--Duration-->
-              <FormKit
-                id="duration"
-                v-model="referDur"
-                type="number"
-                help="Enter the duration of the event (around how many hours?)"
-                label="Duration"
-                name="duration"
-                placeholder="event.duration"
-                step="0.5"
-                outer-class="mb-5 w-4/5"
-              />
+          <!--Duration-->
+          <FormKit
+            id="duration"
+            type="number"
+            help="Enter the duration of the event (around how many hours?)"
+            label="Duration"
+            name="duration"
+            placeholder="event.duration"
+            step="0.5"
+            outer-class="mb-5 w-4/5"
+          />
 
-              <!--HoursOffered -->
-              <FormKit
-                id="hoursOffered"
-                v-model="referHour"
-                type="number"
-                help="How many hours can a volunteer earn at this event?"
-                label="Volunteer Hours Offered"
-                name="hoursOffered"
-                placeholder="event.hoursOffered"
-                step="0.5"
-                outer-class="mb-5 w-4/5"
-              />
+          <!--HoursOffered -->
+          <FormKit
+            id="hoursOffered"
+            type="number"
+            help="How many hours can a volunteer earn at this event?"
+            label="Volunteer Hours Offered"
+            name="hoursOffered"
+            placeholder="event.hoursOffered"
+            step="0.5"
+            outer-class="mb-5 w-4/5"
+          />
 
-              <!--Thumbnail-->
-              <FormKit
-                id="thumbnail"
-                type="file"
-                label="Thumbnail"
-                name="thumbnail"
-                accept=".png,.pdf,.jpeg"
-                help="Upload a thumbnail for the event listing. Accepted formats: .png, .pdf, .jpeg."
-                multiple="fal "
-                outer-class="mb-5 w-4/5"
-              />
+          <!--Thumbnail-->
+          <ImageSelect
+            type="thumbnail"
+            name="thumbnail"
+            label="Select a thumbnail"
+            validation="required"
+          />
 
-              <!--Phone Number-->
-              <FormKit
-                id="phone_number"
-                v-model="referPhNum"
-                type="tel"
-                name="phoneNumber"
-                label="Organization Phone Number"
-                help="Type the phone number of the event organizer"
-                outer-class="mb-5 w-4/5"
-                placeholder="event.phone_number"
-              />
+          <!--Phone Number-->
+          <FormKit
+            id="phone_number"
+            type="tel"
+            name="phoneNumber"
+            label="Organization Phone Number"
+            help="Type the phone number of the event organizer"
+            outer-class="mb-5 w-4/5"
+            placeholder="event.phone_number"
+          />
 
-              <!--Email-->
-              <FormKit
-                id="email"
-                v-model="referMail"
-                type="email"
-                name="email"
-                label="Organization Email"
-                help="Type the email of the event organizer"
-                placeholder="emailexample@domain.com"
-                outer-class="mb-5 w-4/5"
-              />
+          <!--Email-->
+          <FormKit
+            id="email"
+            type="email"
+            name="email"
+            label="Organization Email"
+            help="Type the email of the event organizer"
+            placeholder="emailexample@domain.com"
+            outer-class="mb-5 w-4/5"
+          />
 
-              <!--Capacity-->
-              <FormKit
-                id="capacity"
-                v-model="referCap"
-                type="number"
-                name="capacity"
-                label="event.capacity"
-                help="Type the maximum capacity of volunteers for this event"
-                step="1"
-                outer-class="mb-5 w-4/5"
-                placeholder="50"
-              />
+          <!--Capacity-->
+          <FormKit
+            id="capacity"
+            type="number"
+            name="capacity"
+            label="event.capacity"
+            help="Type the maximum capacity of volunteers for this event"
+            step="1"
+            outer-class="mb-5 w-4/5"
+            placeholder="50"
+          />
 
-              <LanguageSelect />
+          <LanguageSelect />
 
-              <!--Description-->
-              <FormKit
-                id="description"
-                v-model="referDesc"
-                type="textarea"
-                name="description"
-                label="Description"
-                help="Type a description of this event"
-                outer-class="mb-5 w-4/5"
-              />
+          <!--Description-->
+          <FormKit
+            id="description"
+            type="textarea"
+            name="description"
+            label="Description"
+            help="Type a description of this event"
+            outer-class="mb-5 w-4/5"
+          />
 
-              <TextMultiple
-                v-model="referPrereq"
-                title="Volunteer Prerequisites"
-                placeholder="event.prerquisites"
-                add-text="Add new prerequisite"
-                name="prerequisites"
-                empty
-              />
+          <TextMultiple
+            title="Volunteer Prerequisites"
+            placeholder="Enter new prerequisite"
+            add-text="Add new prerequisite"
+            name="prerequisites"
+            empty
+          />
 
-              <TextMultiple
-                v-model="referPos"
-                title="Volunteer Positions"
-                placeholder="event.voluterrPositions"
-                add-text="Add new position"
-                name="volunteerPositions"
-                empty
-              />
-            </div>
-          </FormKit>
-          <div
-            class="bg-red-600 w-full text-center py-3.5 rounded-lg text-md text-white"
-          >
-            <a href="/event/listings" @click="deleteEvent"> Delete Event </a>
-          </div>
+          <TextMultiple
+            title="Volunteer Positions"
+            placeholder="Enter new position"
+            add-text="Add new position"
+            name="volunteerPositions"
+            empty
+          />
+
+          <h1 class="title font-sans font-bold text-4xl text-center mt-8 mb-4">
+            Modify Volunteers
+          </h1>
+
+          <SelectMultiple
+            :options="allUsers"
+            title="Signed Up Users"
+            add-text="Sign up new user"
+            :default-value="userId"
+            name="signedUpUsers"
+            validation="noDuplicates"
+          />
+
+          <SelectMultiple
+            :options="allUsers"
+            title="Attendees"
+            add-text="Add new attendee"
+            :default-value="userId"
+            name="attendees"
+            validation="noDuplicates"
+          />
         </div>
-      </div>
-      <div class="w-1/2 z-30 pr-5 pl-2.5">
-        <div class="bg-gray-100 h-screen rounded-3xl p-10 opacity-95">
-          <!-- <div v-if="referVolun.length > 0">
-            <div v-for="(name, index) in referVolun" :key="index">
-              <VolunteerListing :id="props.id" :name="name[0].name" />
-            </div>
-          </div> -->
-        </div>
-      </div>
+      </FormKit>
+      <button
+        class="bg-red-600 w-full text-center py-3.5 rounded-lg text-md text-white"
+        @click="deleteEvent"
+      >
+        Delete Event
+      </button>
     </div>
   </div>
 </template>
