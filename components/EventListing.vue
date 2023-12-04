@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { ref } from 'vue'
 import ISO6391 from 'iso-639-1'
 import type { Event } from '@prisma/client'
 import type { SerializeObject } from '~/utils/types'
@@ -20,9 +21,8 @@ const isOpen = ref<boolean>(false)
 function toggleExpanded() {
   isOpen.value = !isOpen.value
 }
-async function refreshEventList(){
+async function refreshEventList() {
   await useFetch(`/api/events/${eventsList}`)
-
 }
 </script>
 
@@ -89,7 +89,7 @@ async function refreshEventList(){
           </div>
 
           <h3 class="mr-20 ml-3">
-            <event class="location">{{ event.location }}</event>
+            <p class="location">{{ event.location }}</p>
           </h3>
         </div>
         <div class="flex items-center mt-5">
@@ -180,7 +180,7 @@ async function refreshEventList(){
           <li>
             <div class="flex flex-wrap items-center mt-5">
               <svg
-                width="16"
+                width="24"
                 height="20"
                 viewBox="0 0 16 20"
                 fill="none"
@@ -191,7 +191,21 @@ async function refreshEventList(){
                   fill="black"
                 />
               </svg>
-              <h3 class="mr-20 ml-3">{{ event.hoursOffered }} Hours Given</h3>
+              <h3
+                v-if="
+                  event.duration === event.hoursOffered || !event.hoursOffered
+                "
+                class="mr-20 ml-3"
+              >
+                {{ event.duration }} Hours
+              </h3>
+              <h3
+                v-if="event.duration !== event.hoursOffered"
+                class="mr-20 ml-3"
+              >
+                {{ event.duration }} Hours, {{ event.hoursOffered }} Hours
+                Credit
+              </h3>
             </div>
           </li>
 
@@ -261,7 +275,10 @@ async function refreshEventList(){
           </li>
 
           <li>
-            <div class="flex flex-wrap items-center mt-5">
+            <div
+              v-if="event.volunteerPositions.length > 0"
+              class="flex flex-wrap items-center mt-5"
+            >
               <div>
                 <svg
                   width="24"
@@ -276,13 +293,15 @@ async function refreshEventList(){
                   />
                 </svg>
               </div>
-
-              <h3 class="mr-20 ml-3">{{ event.volunteerPositions }}</h3>
+              <h3>{{ event.volunteerPositions.join(', ') }}</h3>
             </div>
           </li>
 
           <li>
-            <div class="flex items-center mt-5">
+            <div
+              v-if="event.languages.length > 0"
+              class="flex items-center mt-5"
+            >
               <div>
                 <svg
                   width="24"
@@ -317,7 +336,7 @@ async function refreshEventList(){
             <div
               class="w-full p-3 text-center bg-[#F0CC5A] text-white rounded-md hover:bg-white hover:text-black shadow"
             >
-            <button :onclick="refreshEventList">SEE MORE</button>
+              <button :onclick="refreshEventList">SEE MORE</button>
             </div>
           </NuxtLink>
 

@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { ModalsContainer } from 'vue-final-modal'
+
 const isAdmin = isSignedInUserAdmin()
 
 const menuItemClass =
@@ -8,7 +10,7 @@ const menuItemClass =
 <template>
   <div>
     <div
-      class="fixed h-20 w-full max-w-full bg-white flex items-center justify-between shadow z-40 px-4"
+      class="fixed top-0 h-20 w-full max-w-full bg-white flex items-center justify-between shadow z-40 px-4"
     >
       <div class="h-full flex items-center">
         <h1 class="text-xl hidden sm:block">TEXAS OSTEOPOROSIS FOUNDATION</h1>
@@ -39,7 +41,9 @@ const menuItemClass =
         </div>
       </div>
     </div>
-    <div class="h-20 w-full" />
-    <slot />
+    <div class="mt-20 w-full">
+      <slot />
+    </div>
+    <ModalsContainer />
   </div>
 </template>

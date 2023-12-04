@@ -2,21 +2,12 @@
 const formErrors = ref<string[]>()
 
 async function handleSubmit(fields: any) {
-  const thumbnailData = await new Promise<string>((resolve) => {
-    // TODO: Make this not cursed
-    const file: File = fields.thumbnail[0].file
-    const reader = new FileReader()
-    reader.onload = () => resolve(reader.result as string)
-    reader.readAsDataURL(file)
-  })
-
   const { error } = await useFetch('/api/events', {
     method: 'POST',
     body: {
       ...fields,
       attendees: [],
       signedUpUsers: [],
-      thumbnail: thumbnailData,
     },
   })
 
@@ -122,15 +113,11 @@ async function handleSubmit(fields: any) {
           />
 
           <!--Thumbnail-->
-          <FormKit
-            id="thumbnail"
-            type="file"
-            label="Thumbnail"
+          <ImageSelect
+            type="thumbnail"
             name="thumbnail"
-            accept=".png,.pdf,.jpeg"
-            help="Upload a thumbnail for the event listing. Accepted formats: .png, .pdf, .jpeg."
-            multiple="false"
-            outer-class="mb-5 w-4/5"
+            label="Select a thumbnail"
+            validation="required"
           />
 
           <!--Phone Number-->
