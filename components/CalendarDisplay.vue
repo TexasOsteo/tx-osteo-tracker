@@ -370,67 +370,100 @@ fetchEvents()
                   />
                 </svg>
               </div>
-              <h3 class="mr-20 ml-3">
-                {{
-                  event.languages
-                    .map((languageCode: string) =>
-                      ISO6391.getName(languageCode),
-                    )
-                    .join(', ')
-                }}
+              <h3>
+                <span
+                  v-for="(language, index) in modalEvent.languages"
+                  :key="index"
+                  class="font-sans text-cyan-950"
+                >
+                  <span v-if="index !== 0">, </span>{{ language }}
+                </span>
               </h3>
             </div>
           </li>
+        </ul>
+        <ul class="w-full mb-5 block sm:w-1/2">
+          <li>
+            <div class="flex flex-wrap items-center mt-5">
+              <svg
+                width="16"
+                height="20"
+                viewBox="0 0 16 20"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M0 20V18H2V15C2 13.9833 2.23767 13.029 2.713 12.137C3.18833 11.245 3.85067 10.5327 4.7 10C3.85 9.46667 3.18767 8.754 2.713 7.862C2.23833 6.97 2.00067 6.016 2 5V2H0V0H16V2H14V5C14 6.01667 13.7623 6.971 13.287 7.863C12.8117 8.755 12.1493 9.46733 11.3 10C12.15 10.5333 12.8127 11.246 13.288 12.138C13.7633 13.03 14.0007 13.984 14 15V18H16V20H0Z"
+                  fill="black"
+                />
+              </svg>
+              <h3 class="mr-20 ml-3">
+                {{ modalEvent.hoursOffered }} Hours Given
+              </h3>
+            </div>
+          </li>
+          <li>
+            <div class="flex flex-wrap items-center mt-5">
+              <div>
+                <svg
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M15 2.01294H9V8.99994H2V14.9999H9V21.9869H15V14.9999H22V8.99994H15V2.01294Z"
+                    fill="black"
+                  />
+                </svg>
+              </div>
+
+              <span
+                v-for="(prerequisite, index) in modalEvent.prerequisites"
+                :key="index"
+                class="font-sans text-cyan-950"
+              >
+                <span v-if="index !== 0">, </span>{{ prerequisite }}</span
+              >
+            </div>
+          </li>
+          
+          <p class="text-base leading-relaxed text-cyan-900">
+            Volunteer Position:
+            <span
+              v-for="(position, index) in modalEvent.volunteerPositions"
+              :key="index"
+              class="font-sans text-cyan-950"
+            >
+              <span v-if="index !== 0">, </span>{{ position }}</span
+            >
+          </p>
+          <p class="text-base leading-relaxed text-cyan-900">
+            Phone Number:
+            <span id="modalDate" class="font-sans text-cyan-950">{{
+              modalEvent.phoneNumber
+            }}</span>
+          </p>
+          <p class="text-base leading-relaxed text-cyan-900">
+            Email:
+            <span id="modalDate" class="font-sans text-cyan-950">{{
+              modalEvent.email
+            }}</span>
+          </p>
+          <p class="text-base leading-relaxed text-cyan-900">
+            Capacity:
+            <span id="modalDate" class="font-sans text-cyan-950">{{
+              modalEvent.capacity
+            }}</span>
+          </p>
         </ul>
 
         <p class="text-base leading-relaxed text-cyan-900">
           Thumbnail:
           <img :src="modalEvent.thumbnail" />
         </p>
-        <p class="text-base leading-relaxed text-cyan-900">
-          Hour Offered:
-          <span id="modalDate" class="font-sans text-cyan-950">{{
-            modalEvent.hoursOffered
-          }}</span>
-        </p>
-        <p class="text-base leading-relaxed text-cyan-900">
-          Prerequisites:
-          <span
-            v-for="(prerequisite, index) in modalEvent.prerequisites"
-            :key="index"
-            class="font-sans text-cyan-950"
-          >
-            <span v-if="index !== 0">, </span>{{ prerequisite }}</span
-          >
-        </p>
-        <p class="text-base leading-relaxed text-cyan-900">
-          Volunteer Position:
-          <span
-            v-for="(position, index) in modalEvent.volunteerPositions"
-            :key="index"
-            class="font-sans text-cyan-950"
-          >
-            <span v-if="index !== 0">, </span>{{ position }}</span
-          >
-        </p>
-        <p class="text-base leading-relaxed text-cyan-900">
-          Phone Number:
-          <span id="modalDate" class="font-sans text-cyan-950">{{
-            modalEvent.phoneNumber
-          }}</span>
-        </p>
-        <p class="text-base leading-relaxed text-cyan-900">
-          Email:
-          <span id="modalDate" class="font-sans text-cyan-950">{{
-            modalEvent.email
-          }}</span>
-        </p>
-        <p class="text-base leading-relaxed text-cyan-900">
-          Capacity:
-          <span id="modalDate" class="font-sans text-cyan-950">{{
-            modalEvent.capacity
-          }}</span>
-        </p>
+
         <p class="text-base leading-relaxed text-cyan-900">
           Description:
           <span id="modalDescription" class="font-sans text-cyan-950">{{
