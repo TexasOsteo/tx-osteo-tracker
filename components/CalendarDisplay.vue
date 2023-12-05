@@ -184,7 +184,7 @@ fetchEvents()
 </script>
 
 <template>
-  <div >
+  <div>
     <h1 class="text-center text-5xl pt-10 font-semibold">Sign Up</h1>
     <div class="flex flex-wrap items-center justify-center">
       <table class="table-fixed border-separate border-spacing-10">
@@ -299,7 +299,7 @@ fetchEvents()
               </div>
             </li>
             <li>
-              <div class="flex  items-center mt-5">
+              <div class="flex items-center mt-5">
                 <div>
                   <svg
                     width="24"
@@ -408,7 +408,7 @@ fetchEvents()
                     fill="black"
                   />
                 </svg>
-                <h3 class="ml-3">{{ modalEvent.hoursOffered }} Hours Given </h3>
+                <h3 class="ml-3">{{ modalEvent.hoursOffered }} Hours Given</h3>
               </div>
             </li>
             <li>
@@ -522,15 +522,12 @@ fetchEvents()
           </ul>
 
           <p class="text-base leading-relaxed text-cyan-900">
-          Description:
-          <span id="modalDescription" class="font-sans text-cyan-950">{{
-            modalEvent.description
-          }}</span>
-        </p>
-
+            Description:
+            <span id="modalDescription" class="font-sans text-cyan-950">{{
+              modalEvent.description
+            }}</span>
+          </p>
         </div>
-
-        
 
         <div class="">
           <p class="text-base leading-relaxed text-cyan-900">
