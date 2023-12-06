@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import ISO6391 from 'iso-639-1'
+<<<<<<< HEAD
 
+=======
+>>>>>>> 18d87f64e810dc81d3c303c35202577c88d677c1
 import { ref } from 'vue'
 import FullCalendar from '@fullcalendar/vue3'
 import dayGridPlugin from '@fullcalendar/daygrid'
@@ -185,7 +188,11 @@ fetchEvents()
 
 <template>
   <div>
+<<<<<<< HEAD
     <h1 class="title font-sans font-bold text-5xl text-center pt-10">Sign Up</h1>
+=======
+    <h1 class="text-center text-5xl pt-10 font-semibold">Sign Up</h1>
+>>>>>>> 18d87f64e810dc81d3c303c35202577c88d677c1
     <div class="flex flex-wrap items-center justify-center">
       <table class="table-fixed border-separate border-spacing-10">
         <tr class="text-center place-content-strech self-auto">
