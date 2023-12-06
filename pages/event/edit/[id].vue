@@ -236,7 +236,7 @@ async function patchEvent(fields: any) {
           />
 
           <h1 class="title font-sans font-bold text-4xl text-center mt-8 mb-4">
-            Modify Volunteers
+            MODIFY VOLUNTEERS
           </h1>
 
           <SelectMultiple

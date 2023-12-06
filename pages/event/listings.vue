@@ -113,7 +113,7 @@ const eventsToDisplay = computed(() => {
 </script>
 <template>
   <div >
-    <h1 class="text-center text-5xl pt-10 font-semibold">Sign Up</h1>
+    <h1 class="title font-sans font-bold text-5xl text-center pt-10">Sign Up</h1>
     <div class="flex flex-wrap items-center justify-center">
       <table class="border-separate border-spacing-10">
         <tr class="text-center place-content-strech self-auto">

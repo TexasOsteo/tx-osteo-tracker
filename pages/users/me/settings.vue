@@ -206,8 +206,8 @@ function displayDate(dateTime: string) {
           @click="togglePast"
         >
           <h1 class="mr-2">Past Events</h1>
-          <img v-if="isExpanded2" src="/icon-park_down.jpg" class="w-5 h-5" />
-          <img v-else src="/icon-park_up.jpg" class="w-5 h-5" />
+          <img v-if="isExpanded2" src="/icon-park_up.jpg" class="w-5 h-5" />
+          <img v-else src="/icon-park_down.jpg" class="w-5 h-5" />
         </button>
 
         <div
