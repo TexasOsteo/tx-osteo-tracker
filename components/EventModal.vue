@@ -13,7 +13,7 @@ defineProps<{
         v-if="modalActive"
         id="eventModal"
         data-modal-backdrop="static"
-        class="fixed z-10 inset-0 overflow-y-auto overflow-x-auto"
+        class="fixed z-40 inset-0 overflow-y-auto overflow-x-auto"
         tabindex="-1"
         aria-hidden="true"
       >
@@ -35,14 +35,15 @@ defineProps<{
               <slot></slot>
 
               <div
-                class="flex items-center p-6 space-x-2 border-t border-gray-200 rounded-b dark:border-gray-600"
+                class="flex items-center p-6 space-x-4 border-t border-gray-200 rounded-b dark:border-gray-600"
               >
                 <EventRegisterButton :id="id" />
+
                 <button
                   id="closeModal"
                   data-modal-hide="static-modal"
                   type="button"
-                  class="text-gray-500 bg-white hover:bg-white-100 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-md border border-gray-200 text-md  px-5 py-3 hover:text-gray-900 focus:z-10 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-500 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-600"
+                  class="text-gray-500 bg-white hover:bg-white-100 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-md border border-gray-200 text-md px-5 py-3 hover:text-gray-900 focus:z-10 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-500 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-600"
                   @click="$emit('close-modal')"
                 >
                   Back

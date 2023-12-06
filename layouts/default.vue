@@ -10,7 +10,7 @@ const menuItemClass =
 <template>
   <div>
     <div
-      class="fixed top-0 h-20 w-full max-w-full bg-white flex items-center justify-between shadow z-40 px-4"
+      class="fixed top-0 h-20 w-full max-w-full bg-white flex items-center justify-between shadow z-10 px-4"
     >
       <div class="h-full flex items-center">
         <h1 class="text-xl hidden lg:block">TEXAS OSTEOPOROSIS FOUNDATION</h1>

@@ -341,6 +341,13 @@ async function refreshEventList() {
               <button :onclick="refreshEventList">EDIT EVENT</button>
             </div>
           </NuxtLink>
+          <NuxtLink v-if="isAdmin" :to="`/event/${event.id}/volunteers`">
+            <div
+              class="w-full p-3 text-center bg-emerald-300 text-white rounded-md hover:bg-white hover:text-black shadow mt-3"
+            >
+              <button :onclick="refreshEventList">VOLUNTEER LIST</button>
+            </div>
+          </NuxtLink>
 
           <EventRegisterButton :id="event.id" />
         </div>
