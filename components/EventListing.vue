@@ -28,7 +28,7 @@ async function refreshEventList() {
 
 <template>
   <div
-    class="bg-white mx-20 p-5 my-5 rounded-lg shadow-lg flex flex-wrap block lg:w-1/2 lg:mx-auto"
+    class="bg-white mx-10 p-5 sm:2 mb-5 rounded-lg shadow-lg flex flex-wrap block lg:w-1/2 lg:mx-auto"
   >
     <div class="flex flex-wrap mb-5 w-[90%]">
       <div class="flex flex-wrap items-center">
@@ -43,6 +43,7 @@ async function refreshEventList() {
         <h1 class="text-4xl font-bold font-sans mr-7 my-5 ml-3">
           {{ event.name }}
         </h1>
+
         <h3
           class="mr-20 mt-3 ml-3"
           :class="{
@@ -55,7 +56,7 @@ async function refreshEventList() {
         </h3>
       </div>
       <div v-if="!isOpen" class="flex flex-wrap mt-5">
-        <div class="flex flex-wrap items-center mt-5">
+        <div class="flex items-center mt-5">
           <div>
             <svg
               width="24"
@@ -72,7 +73,7 @@ async function refreshEventList() {
           </div>
           <h3 class="mr-20 ml-3">{{ event.organizer }}</h3>
         </div>
-        <div class="flex flex-wrap items-center mt-5">
+        <div class="flex items-center mt-5">
           <div>
             <svg
               width="24"
@@ -123,11 +124,11 @@ async function refreshEventList() {
       </div>
       <div
         v-if="isOpen"
-        class="flex flex-wrap transform translate-y-5 bg-slate-200 px-5 pb-5 rounded-lg"
+        class="flex flex-wrap transform translate-y-5 bg-slate-200 px-5 pb-5 rounded-lg m-2"
       >
         <ul class="w-full mb-5 block sm:w-1/2">
           <li>
-            <div class="flex flex-wrap items-center mt-5">
+            <div class="flex items-center mt-5">
               <div>
                 <svg
                   width="24"
@@ -147,7 +148,7 @@ async function refreshEventList() {
           </li>
 
           <li>
-            <div class="flex flex-wrap items-center mt-5">
+            <div class="flex items-center mt-5">
               <div>
                 <svg
                   width="24"
@@ -178,7 +179,7 @@ async function refreshEventList() {
           </li>
 
           <li>
-            <div class="flex flex-wrap items-center mt-5">
+            <div class="flex items-center mt-5">
               <svg
                 width="24"
                 height="20"
@@ -210,7 +211,7 @@ async function refreshEventList() {
           </li>
 
           <li>
-            <div class="flex flex-wrap items-center mt-5">
+            <div class="flex items-center mt-5">
               <div>
                 <svg
                   width="24"
@@ -233,7 +234,7 @@ async function refreshEventList() {
 
         <ul class="w-full mb-5 block sm:w-1/2">
           <li>
-            <div class="flex flex-wrap items-center mt-5">
+            <div class="flex items-center mt-5">
               <div>
                 <svg
                   width="24"
@@ -277,7 +278,7 @@ async function refreshEventList() {
           <li>
             <div
               v-if="event.volunteerPositions.length > 0"
-              class="flex flex-wrap items-center mt-5"
+              class="flex items-center mt-5"
             >
               <div>
                 <svg
@@ -317,6 +318,7 @@ async function refreshEventList() {
                     stroke-linecap="round"
                     stroke-linejoin="round"
                   />
+                  <!------------------------------------------------------------------------------------------>
                 </svg>
               </div>
               <h3 class="mr-20 ml-3">
@@ -336,7 +338,7 @@ async function refreshEventList() {
             <div
               class="w-full p-3 text-center bg-[#F0CC5A] text-white rounded-md hover:bg-white hover:text-black shadow"
             >
-              <button :onclick="refreshEventList">SEE MORE</button>
+              <button :onclick="refreshEventList">EDIT EVENT</button>
             </div>
           </NuxtLink>
           <NuxtLink v-if="isAdmin" :to="`/event/${event.id}/volunteers`">
