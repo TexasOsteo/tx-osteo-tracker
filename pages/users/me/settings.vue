@@ -1,5 +1,6 @@
 <script setup lang="ts">
 const { data } = await useFetch('/api/auth/me')
+const userID = ref(data && data.value ? [data.value.id] : [])
 const DOB = ref(data.value?.dateOfBirth)
 const formattedDOB = DOB.value?.split('T')[0]
 const isExpanded1 = ref(false)
@@ -24,6 +25,17 @@ const closePopup = () => {
   showPopup.value = false
 }
 
+async function deleteUser() {
+  await useFetch(`/api/users/${userID.value}`, {
+    method: 'DELETE',
+  })
+
+  const cookieRef1 = useCookie(useRuntimeConfig().public.txosteo_token)
+  const cookieRef2 = useCookie(useRuntimeConfig().public.auth0_token)
+  cookieRef1.value = null
+  cookieRef2.value = null
+}
+async function editUser() {}
 function displayDate(dateTime: string) {
   const d = new Date(dateTime)
   const year = d.getUTCFullYear()
@@ -147,11 +159,13 @@ function displayDate(dateTime: string) {
         >
           Edit Account
         </button>
-        <button
+        <NuxtLink
+          to="/users/me/edit"
           class="rounded-lg bg-red-500 w-1/2 p-1.5 mb-4 text-white text-large font-['Work Sans'] hover:bg-red-600"
         >
           Delete Account
-        </button>
+          <button @click="deleteUser"></button>
+        </NuxtLink>
       </div>
     </nav>
 
