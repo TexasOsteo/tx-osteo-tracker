@@ -13,7 +13,7 @@ In Vue, there are multiple ways of declaring components, props, and styles. Howe
 
 This means components should look like so:
 
-```html
+```vue
 <script setup lang="ts">
   // ... Import code
 
