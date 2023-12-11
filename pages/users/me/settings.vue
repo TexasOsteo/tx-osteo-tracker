@@ -26,6 +26,8 @@ const closePopup = () => {
 }
 
 async function deleteUser() {
+  if (!confirm('Are you sure? This action cannot be undone')) return
+
   await useFetch(`/api/users/${userID.value}`, {
     method: 'DELETE',
   })
@@ -35,7 +37,7 @@ async function deleteUser() {
   cookieRef1.value = null
   cookieRef2.value = null
 }
-async function editUser() {}
+
 function displayDate(dateTime: string) {
   const d = new Date(dateTime)
   const year = d.getUTCFullYear()
@@ -47,7 +49,7 @@ function displayDate(dateTime: string) {
   const ampm = hours >= 12 ? 'pm' : 'am'
 
   hours = hours % 12
-  hours = hours ? hours : 12 // the hour '0' should be '12'
+  hours = hours > 0 ? hours : 12 // the hour '0' should be '12'
 
   return `${year}-${month}-${day} @ ${hours}:${minutes} ${ampm}`
 }
@@ -155,18 +157,18 @@ function displayDate(dateTime: string) {
         >
           Sign Out
         </button>
-        <button
+        <NuxtLink
+          to="/users/me/edit"
           class="rounded-lg bg-yellow-500 w-full p-3 mb-4 text-white text-lg hover:bg-yellow-600"
         >
           Edit Account
-        </button>
-        <NuxtLink
-          to="/users/me/edit"
-          class="rounded-lg bg-red-500 w-1/2 p-1.5 mb-4 text-white text-large font-['Work Sans'] hover:bg-red-600"
+        </NuxtLink>
+        <button
+          class="rounded-lg bg-red-500 w-full p-3 mb-4 text-white text-lg hover:bg-red-600"
+          @click="deleteUser"
         >
           Delete Account
-          <button @click="deleteUser"></button>
-        </NuxtLink>
+        </button>
       </div>
     </nav>
 
@@ -191,7 +193,7 @@ function displayDate(dateTime: string) {
         </button>
 
         <div
-          v-if="isExpanded1"
+          v-if="isExpanded1 && data"
           class="flex flex-1 items-center justify-center py-3"
         >
           <div
@@ -225,7 +227,7 @@ function displayDate(dateTime: string) {
         </button>
 
         <div
-          v-if="isExpanded2"
+          v-if="isExpanded2 && data"
           class="flex flex-1 items-center justify-center py-3"
         >
           <div
@@ -258,7 +260,7 @@ function displayDate(dateTime: string) {
               <img src="/icon-park_x.jpg" class="w-5 h-5" />
             </button>
           </div>
-          <EventListing :event="currentEvent"> </EventListing>
+          <EventListing v-if="currentEvent" :event="currentEvent" />
         </div>
       </div>
     </main>
