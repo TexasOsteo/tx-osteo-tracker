@@ -1,5 +1,8 @@
 <script setup lang="ts">
+import ISO6391 from 'iso-639-1'
+
 const { data } = await useFetch('/api/auth/me')
+const userID = ref(data && data.value ? [data.value.id] : [])
 const DOB = ref(data.value?.dateOfBirth)
 const formattedDOB = DOB.value?.split('T')[0]
 const isExpanded1 = ref(false)
@@ -24,6 +27,19 @@ const closePopup = () => {
   showPopup.value = false
 }
 
+async function deleteUser() {
+  if (!confirm('Are you sure? This action cannot be undone')) return
+
+  await useFetch(`/api/users/${userID.value}`, {
+    method: 'DELETE',
+  })
+
+  const cookieRef1 = useCookie(useRuntimeConfig().public.txosteo_token)
+  const cookieRef2 = useCookie(useRuntimeConfig().public.auth0_token)
+  cookieRef1.value = null
+  cookieRef2.value = null
+}
+
 function displayDate(dateTime: string) {
   const d = new Date(dateTime)
   const year = d.getUTCFullYear()
@@ -35,7 +51,7 @@ function displayDate(dateTime: string) {
   const ampm = hours >= 12 ? 'pm' : 'am'
 
   hours = hours % 12
-  hours = hours ? hours : 12 // the hour '0' should be '12'
+  hours = hours > 0 ? hours : 12 // the hour '0' should be '12'
 
   return `${year}-${month}-${day} @ ${hours}:${minutes} ${ampm}`
 }
@@ -69,17 +85,16 @@ function displayDate(dateTime: string) {
           Email: {{ data?.email }}
         </p>
         <p id="MyBirthday" class="text-gray-700 text-large">
-          <span class="text-gray-700">Birthday </span>
-          <span class="text-gray-400">(YYYY/MM/DD)</span>
+          <span class="text-gray-700">Birthday</span>
           <span class="text-gray-700">: {{ formattedDOB }}</span>
         </p>
 
         <div id="MyLanguages" class="text-gray-700 text-large">
           <p>
             Languages:
-            <span v-if="!(data?.languages && data.languages.length > 0)"
-              >None</span
-            >
+            <span v-if="!data?.languages || data.languages.length == 0">
+              None
+            </span>
           </p>
           <ul v-if="data?.languages && data.languages.length > 0">
             <li
@@ -87,7 +102,7 @@ function displayDate(dateTime: string) {
               :key="index"
               class="ml-5"
             >
-              • {{ lang }}
+              • {{ ISO6391.getName(lang) }}
             </li>
           </ul>
         </div>
@@ -143,13 +158,15 @@ function displayDate(dateTime: string) {
         >
           Sign Out
         </button>
-        <button
+        <NuxtLink
+          to="/users/me/edit"
           class="rounded-lg bg-yellow-500 w-full p-3 mb-4 text-white text-lg hover:bg-yellow-600"
         >
           Edit Account
-        </button>
+        </NuxtLink>
         <button
           class="rounded-lg bg-red-500 w-full p-3 mb-4 text-white text-lg hover:bg-red-600"
+          @click="deleteUser"
         >
           Delete Account
         </button>
@@ -160,12 +177,6 @@ function displayDate(dateTime: string) {
       id="MyEvents"
       class="w-3/5 flex flex-col overflow-auto bg-gray-100 border-2 border-gray-100 border-t-gray-200 border-l-[#EEE] lg:w-3/4"
     >
-      <!--
-        <div id="MyStatus">
-          <header>My Status</header>
-        </div>
-      -->
-
       <div id="UFEvents" class="flex-col overflow-y-auto bg-gray-100">
         <button
           class="flex items-center w-full sticky top-0 border-2 border-gray-200 border-t-gray-100 bg-[#FFF] rounded-sm p-2"
@@ -177,7 +188,7 @@ function displayDate(dateTime: string) {
         </button>
 
         <div
-          v-if="isExpanded1"
+          v-if="isExpanded1 && data"
           class="flex flex-1 items-center justify-center py-3"
         >
           <div
@@ -200,7 +211,7 @@ function displayDate(dateTime: string) {
         </div>
       </div>
 
-      <div id="PEvents" class="flex overflow-y-auto bg-gray-200">
+      <div id="PEvents" class="flex-col overflow-y-auto bg-gray-100">
         <button
           class="flex items-center w-full sticky top-0 border-2 border-gray-200 border-t-gray-200 bg-[#FFF] rounded-sm p-2"
           @click="togglePast"
@@ -211,7 +222,7 @@ function displayDate(dateTime: string) {
         </button>
 
         <div
-          v-if="isExpanded2"
+          v-if="isExpanded2 && data"
           class="flex flex-1 items-center justify-center py-3"
         >
           <div
@@ -244,7 +255,7 @@ function displayDate(dateTime: string) {
               <img src="/icon-park_x.jpg" class="w-5 h-5" />
             </button>
           </div>
-          <EventListing :event="currentEvent"> </EventListing>
+          <EventListing v-if="currentEvent" :event="currentEvent" />
         </div>
       </div>
     </main>
