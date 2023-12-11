@@ -176,12 +176,6 @@ function displayDate(dateTime: string) {
       id="MyEvents"
       class="w-3/5 flex flex-col overflow-auto bg-gray-100 border-2 border-gray-100 border-t-gray-200 border-l-[#EEE] lg:w-3/4"
     >
-      <!--
-        <div id="MyStatus">
-          <header>My Status</header>
-        </div>
-      -->
-
       <div id="UFEvents" class="flex-col overflow-y-auto bg-gray-100">
         <button
           class="flex items-center w-full sticky top-0 border-2 border-gray-200 border-t-gray-100 bg-[#FFF] rounded-sm p-2"
@@ -216,7 +210,7 @@ function displayDate(dateTime: string) {
         </div>
       </div>
 
-      <div id="PEvents" class="flex overflow-y-auto bg-gray-200">
+      <div id="PEvents" class="flex-col overflow-y-auto bg-gray-100">
         <button
           class="flex items-center w-full sticky top-0 border-2 border-gray-200 border-t-gray-200 bg-[#FFF] rounded-sm p-2"
           @click="togglePast"
