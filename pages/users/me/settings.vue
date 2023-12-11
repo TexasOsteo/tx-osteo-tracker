@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import ISO6391 from 'iso-639-1'
+
 const { data } = await useFetch('/api/auth/me')
 const userID = ref(data && data.value ? [data.value.id] : [])
 const DOB = ref(data.value?.dateOfBirth)
@@ -83,17 +85,16 @@ function displayDate(dateTime: string) {
           Email: {{ data?.email }}
         </p>
         <p id="MyBirthday" class="text-gray-700 text-large">
-          <span class="text-gray-700">Birthday </span>
-          <span class="text-gray-400">(YYYY/MM/DD)</span>
+          <span class="text-gray-700">Birthday</span>
           <span class="text-gray-700">: {{ formattedDOB }}</span>
         </p>
 
         <div id="MyLanguages" class="text-gray-700 text-large">
           <p>
             Languages:
-            <span v-if="!(data?.languages && data.languages.length > 0)"
-              >None</span
-            >
+            <span v-if="!data?.languages || data.languages.length == 0">
+              None
+            </span>
           </p>
           <ul v-if="data?.languages && data.languages.length > 0">
             <li
@@ -101,7 +102,7 @@ function displayDate(dateTime: string) {
               :key="index"
               class="ml-5"
             >
-              • {{ lang }}
+              • {{ ISO6391.getName(lang) }}
             </li>
           </ul>
         </div>
