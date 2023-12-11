@@ -2,11 +2,13 @@ import { throwErrorIfNotAdmin } from '~/utils/auth'
 
 /**
  * --- API INFO
- * DELETE /api/events/[event id]/register/[user id]
- * If user id is 'me,' it will update for the currently signed in user
+ * POST /api/events/[event id]/register/[user id]
+ * Marks a user as an attendee for an event
  */
 
 export default defineEventHandler(async (event) => {
+  throwErrorIfNotAdmin(event)
+
   const eventId = getRouterParam(event, 'id')
   if (!eventId) {
     throw createError({
@@ -15,7 +17,7 @@ export default defineEventHandler(async (event) => {
     })
   }
 
-  let userId = getRouterParam(event, 'user')
+  const userId = getRouterParam(event, 'user')
   if (!userId) {
     throw createError({
       status: 400,
@@ -23,23 +25,11 @@ export default defineEventHandler(async (event) => {
     })
   }
 
-  const cookieUserId = event.context.txOsteoClaims?.sub
-  if (userId === 'me') userId = cookieUserId
-
-  // Only allow if this is the user, or if the user is an admin
-  // Checks by making sure the user ids are the same
-  if (cookieUserId !== userId) {
-    throwErrorIfNotAdmin(event) // Check if user is admin
-  }
-
   const newEvent = await event.context.prisma.event.update({
     where: { id: eventId },
     data: {
-      capacity: {
-        increment: 1,
-      },
-      signedUpUsers: {
-        disconnect: {
+      attendees: {
+        connect: {
           id: userId,
         },
       },
