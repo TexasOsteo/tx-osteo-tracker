@@ -200,7 +200,7 @@ async function patchEvent(fields: any) {
             id="capacity"
             type="number"
             name="capacity"
-            label="event.capacity"
+            label="Capacity"
             help="Type the maximum capacity of volunteers for this event"
             step="1"
             outer-class="mb-5 w-4/5"
