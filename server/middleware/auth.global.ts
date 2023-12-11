@@ -16,6 +16,7 @@ const publicPaths: PathFilter[] = [
   { path: '/' },
   { path: '/users/new' },
   { path: '/api/users', methods: ['POST'] },
+  { path: '/resources' },
 ]
 
 /**
