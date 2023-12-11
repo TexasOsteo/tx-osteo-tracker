@@ -1,6 +1,6 @@
 # Tech Stack
 
-Our project uses many modules and frameworks in the Node.js / NPM ecosystem.
+![Diagram of our tech stack structure](./images/techstack-overview.svg)
 
 ### Vue 3
 
