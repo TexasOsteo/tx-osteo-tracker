@@ -21,6 +21,10 @@ export type FullEvent = Prisma.EventGetPayload<{
   include: { attendees: true; signedUpUsers: true }
 }>
 
+export type FullUser = Prisma.UserGetPayload<{
+  include: { eventHistory: true; signedUpEvents: true }
+}>
+
 /**
  * This shims the normal H3 event context to include the fields that are added
  * in the auth middleware

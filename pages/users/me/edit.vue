@@ -1,24 +1,49 @@
 <script setup lang="ts">
+import type { SerializeObject, FullUser } from '~/utils/types'
+
+type FormKitUserData = Partial<SerializeObject<FullUser>>
+
 const formErrors = ref<string[]>()
-const { data } = await useFetch('/api/auth/me')
+const { data: fetchData } = await useFetch('/api/auth/me')
+
+// Parse the response from the server into something FormKit understands
+function toFormData(data: SerializeObject<FullUser> | null): FormKitUserData {
+  console.log(data?.dateOfBirth)
+  if (!data) return {}
+  return {
+    ...data,
+    // Formkit needs date in this format:
+    dateOfBirth: data.dateOfBirth.split('T')[0],
+    // Remove unneeded fields
+    eventHistory: undefined,
+    signedUpEvents: undefined,
+    userNotes: undefined,
+    isAdmin: undefined,
+    numHours: undefined,
+  }
+}
+
+// Watch for updates from the server and update the formkit ref if needed
+const formData = ref<FormKitUserData>(toFormData(fetchData.value))
+watch(fetchData, (value) => (formData.value = toFormData(value)))
 
 async function handleSubmit(fields: any) {
-  const { error } = await useFetch(`/api/users/${data.value!.id}`, {
+  const id = fetchData.value?.id
+  if (!id) return
+
+  const { error } = await useFetch(`/api/users/${id}`, {
     method: 'PUT',
-    body: {
-      ...fields,
-      qualifications: [],
-      languages: [],
-    },
+    body: fields,
   })
 
   if (error.value) {
     formErrors.value = [
-      'There was an error creating your profile. Do you already have one?',
+      'There was an error updating your profile.',
       error.value.message,
     ]
   } else {
-    window.location.replace(new URL('/api/auth/login', window.location.origin))
+    const router = useRouter()
+    router.go(-1)
   }
 }
 </script>
@@ -34,6 +59,7 @@ async function handleSubmit(fields: any) {
         Welcome!
       </h1>
       <FormKit
+        v-model="formData"
         type="form"
         :errors="formErrors"
         class-name="items-center"
