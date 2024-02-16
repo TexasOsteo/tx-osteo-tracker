@@ -17,12 +17,19 @@ export type BlobInfo = {
   name: string
 }
 
-export type FullEvent = Prisma.EventGetPayload<{
-  include: { attendees: true; signedUpUsers: true }
+export type EventWithPositions = Prisma.EventGetPayload<{
+  include: { positions: true }
 }>
 
-export type FullUser = Prisma.UserGetPayload<{
-  include: { eventHistory: true; signedUpEvents: true }
+export type FullEvent = Prisma.EventGetPayload<{
+  include: { attendees: true; signedUpUsers: true; positions: true }
+}>
+
+export type UserWithEvents = Prisma.UserGetPayload<{
+  include: {
+    eventHistory: true
+    signedUpEvents: true
+  }
 }>
 
 /**

@@ -1,14 +1,15 @@
 <script setup lang="ts">
-import type { SerializeObject, FullUser } from '~/utils/types'
+import type { SerializeObject, UserWithEvents } from '~/utils/types'
 
-type FormKitUserData = Partial<SerializeObject<FullUser>>
+type FormKitUserData = Partial<SerializeObject<UserWithEvents>>
 
 const formErrors = ref<string[]>()
-const { data: fetchData } = await useFetch('/api/auth/me')
+const { data: fetchData } = await useFetch('/api/users/me')
 
 // Parse the response from the server into something FormKit understands
-function toFormData(data: SerializeObject<FullUser> | null): FormKitUserData {
-  console.log(data?.dateOfBirth)
+function toFormData(
+  data: SerializeObject<UserWithEvents> | null,
+): FormKitUserData {
   if (!data) return {}
   return {
     ...data,
@@ -17,9 +18,10 @@ function toFormData(data: SerializeObject<FullUser> | null): FormKitUserData {
     // Remove unneeded fields
     eventHistory: undefined,
     signedUpEvents: undefined,
-    userNotes: undefined,
     isAdmin: undefined,
     numHours: undefined,
+    subscribedEmailCategories: undefined, // TODO: Add front-end for email changes
+    // adminNotes: undefined,
   }
 }
 
@@ -91,13 +93,23 @@ async function handleSubmit(fields: any) {
 
           <LanguageSelect />
 
-          <TextMultiple
+          <!-- <TextMultiple
             title="Qualifications"
             placeholder="Enter qualification description"
             add-text="Add new qualification"
-            name="qualifications"
+            name="verifiedQualifications"
             outer-class="mb-5 w-4/5"
             empty
+          /> -->
+
+          <FormKit
+            id="userNotes"
+            type="textarea"
+            name="userNotes"
+            label="Notes"
+            help="Enter any information you want people to know (dietary restrictions, etc)."
+            placeholder="Add information here"
+            outer-class="mb-5 w-4/5"
           />
         </div>
       </FormKit>

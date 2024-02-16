@@ -6,10 +6,12 @@ import {
   boolean,
   date,
   type ObjectSchema,
+  type InferType,
 } from 'yup'
-import type { User } from '@prisma/client'
+import { userSchema } from './index.post'
 import { validateBody } from '~/utils/validation'
 import { throwErrorIfNotAdmin } from '~/utils/auth'
+import { parseIDsToPrismaSetObject } from '~/utils/prisma-parsing'
 
 /**
  * --- API INFO
@@ -20,17 +22,23 @@ import { throwErrorIfNotAdmin } from '~/utils/auth'
  * ---
  */
 
-const schema: ObjectSchema<Partial<User>> = object({
+const schema: ObjectSchema<Partial<InferType<typeof userSchema>>> = object({
   id: string().optional(),
-  auth0_id: string().optional(),
+  auth0Id: string().optional(),
   dateOfBirth: date().optional(),
   name: string().optional(),
   email: string().optional(),
   languages: array(string().defined()).optional(),
   numHours: number().optional(),
   isAdmin: boolean().optional(),
-  qualifications: array(string().defined()).optional(),
-  userNotes: array(string().defined()).optional(),
+  subscribedEmailCategories: array(string().defined()).optional(),
+  userNotes: string().optional(),
+  signedUpEvents: array(string().defined()).optional(),
+  signedUpPositions: array(string().defined()).optional(),
+  eventHistory: array(string().defined()).optional(),
+  verifiedQualifications: array(string().defined()).optional(),
+  qualificationUploads: array(string().defined()).optional(),
+  adminNotes: string().optional(),
 })
 
 export default defineEventHandler(async (event) => {
@@ -77,6 +85,18 @@ export default defineEventHandler(async (event) => {
     data: {
       ...oldData,
       ...body,
+      eventHistory: parseIDsToPrismaSetObject(body.eventHistory),
+      signedUpEvents: parseIDsToPrismaSetObject(body.signedUpEvents),
+      signedUpPositions: parseIDsToPrismaSetObject(body.signedUpPositions),
+      qualificationUploads: parseIDsToPrismaSetObject(
+        body.qualificationUploads,
+      ),
+      verifiedQualifications: parseIDsToPrismaSetObject(
+        body.verifiedQualifications,
+      ),
+      adminNotes: body.adminNotes
+        ? { connect: { id: body.adminNotes } }
+        : undefined,
     },
   })
   return updated

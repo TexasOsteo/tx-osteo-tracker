@@ -1,10 +1,5 @@
-// This is your Prisma schema file,
+// This is a Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Commented-out code for the prisma generation
-// Put this wherever you need to use and edit the database!
-// import { PrismaClient } from '@prisma/client'
-// const prisma = new PrismaClient()
 
 // Default generator to transform Prisma-specific code to something usable
 // prisma-client-js is the default and what we need
@@ -20,43 +15,89 @@ datasource db {
 
 // Model, or a table of info stored, for a User
 model User {
-  id             String   @id @default(uuid())
-  auth0_id       String   @unique
-  name           String
-  email          String
-  dateOfBirth    DateTime @db.Date // @db is a Prisma-specific annotation, it will store only the date portion of the DateTime
-  languages      String[]
-  numHours       Float
-  isAdmin        Boolean
-  qualifications String[]
-  userNotes      String[]
-  eventHistory   Event[]  @relation("EventHistory")
-  signedUpEvents Event[]  @relation("SignedUpEvents")
-  // Note: since user's can sign up for many events and events can have
+  id          String   @id @default(uuid())
+  auth0Id     String   @unique
+  name        String
+  email       String
+  dateOfBirth DateTime @db.Date // @db is a Prisma-specific annotation, it will store only the date portion of the DateTime
+  languages   String[]
+  numHours    Float
+  isAdmin     Boolean
+
+  subscribedEmailCategories String[]
+
+  userNotes  String // These are notes by the user themselves, not notes written by admins
+  adminNotes AdminNotes? @relation("AdminNotes") // These are notes written by admins. It is a relation to make it easier to separate user and admin views
+
+  // Since user's can sign up for many events and events can have
   // many users signed up, they have a many to many relationship and thus
   // the eventHistory and signedUpEvents fields only need a relationship attribute
   // to disambiguate them
+  eventHistory      Event[]         @relation("EventHistory")
+  signedUpEvents    Event[]         @relation("SignedUpEvents")
+  signedUpPositions EventPosition[] @relation("EventPositionUsers")
+
+  verifiedQualifications Qualifications[]      @relation("UserQualifications")
+  qualificationUploads   QualificationUpload[] @relation("UserQualificationsUploads")
 }
 
 // Model for an Event
 model Event {
-  id                 String   @id @default(uuid())
-  name               String
-  organizer          String
-  location           String
-  dateAndTime        DateTime
-  duration           Float
-  languages          String[]
-  thumbnail          String
-  hoursOffered       Float
-  prerequisites      String[]
-  volunteerPositions String[]
-  phoneNumber        String
-  email              String
-  description        String
-  capacity           Int
-  attendees          User[]   @relation("EventHistory")
-  signedUpUsers      User[]   @relation("SignedUpEvents")
+  id           String   @id @default(uuid())
+  name         String
+  code         String
+  organizer    String
+  location     String
+  dateAndTime  DateTime
+  duration     Float
+  languages    String[] // Strings according to the iso-639-1 standard
+  thumbnail    String
+  hoursOffered Float
+  phoneNumber  String
+  email        String
+  description  String
+
   // As described in the User model, User and Event have a many to many relationship
   // so we only need a relationship attribute to disambiguate attendees and signedUpUsers
+  attendees     User[] @relation("EventHistory")
+  signedUpUsers User[] @relation("SignedUpEvents")
+
+  positions EventPosition[] @relation("EventPositions")
+}
+
+// Model for a tag given to a user by an admin. A tag's content is a string
+model AdminNotes {
+  id     String @id @default(uuid())
+  note   String
+  user   User   @relation("AdminNotes", fields: [userId], references: [id], onDelete: Cascade)
+  userId String @unique
+}
+
+model Qualifications {
+  id             String                @id @default(uuid())
+  name           String
+  uploads        QualificationUpload[] @relation("QualificationUploads")
+  validatedUsers User[]                @relation("UserQualifications")
+  positions      EventPosition[]       @relation("EventPositionQualifications")
+}
+
+model QualificationUpload {
+  id             String           @id @default(uuid())
+  fileUrl        String?
+  processed      Boolean          @default(false)
+  description    String
+  user           User             @relation("UserQualificationsUploads", fields: [userId], references: [id], onDelete: Cascade)
+  userId         String
+  qualifications Qualifications[] @relation("QualificationUploads")
+}
+
+model EventPosition {
+  id              String           @id @default(uuid())
+  name            String
+  currentCapacity Int
+  maxCapacity     Int
+  prerequisites   Qualifications[] @relation("EventPositionQualifications")
+  users           User[]           @relation("EventPositionUsers")
+  event           Event            @relation("EventPositions", fields: [eventId], references: [id], onDelete: Cascade)
+  eventId         String
 }

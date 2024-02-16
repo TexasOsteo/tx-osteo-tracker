@@ -4,7 +4,6 @@ import {
   number,
   array,
   date,
-  bool,
   ObjectSchema,
   type InferType,
 } from 'yup'
@@ -35,12 +34,11 @@ const schema: ObjectSchema<Partial<InferType<typeof eventSchema>>> = object({
   phoneNumber: string().optional(),
   email: string().optional(),
   description: string().optional(),
-  capacity: number().optional(),
+  code: string().required(),
   attendees: array(string().defined()).optional(),
   signedUpUsers: array(string().defined()).optional(),
   languages: array(string().defined()).optional(),
-  prerequisites: array(string().defined()).optional(),
-  volunteerPositions: array(string().defined()).optional(),
+  positions: array(string().defined()).optional(),
 })
 
 export default defineEventHandler(async (event) => {
@@ -79,6 +77,10 @@ export default defineEventHandler(async (event) => {
       ...body,
       attendees: parseIDsToPrismaSetObject(body.attendees),
       signedUpUsers: parseIDsToPrismaSetObject(body.signedUpUsers),
+      positions: parseIDsToPrismaSetObject(body.positions),
+    },
+    include: {
+      positions: true,
     },
   })
   return updated

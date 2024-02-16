@@ -195,18 +195,6 @@ async function patchEvent(fields: any) {
             outer-class="mb-5 w-4/5"
           />
 
-          <!--Capacity-->
-          <FormKit
-            id="capacity"
-            type="number"
-            name="capacity"
-            label="Capacity"
-            help="Type the maximum capacity of volunteers for this event"
-            step="1"
-            outer-class="mb-5 w-4/5"
-            placeholder="50"
-          />
-
           <LanguageSelect />
 
           <!--Description-->
@@ -219,21 +207,13 @@ async function patchEvent(fields: any) {
             outer-class="mb-5 w-4/5"
           />
 
-          <TextMultiple
-            title="Volunteer Prerequisites"
-            placeholder="Enter new prerequisite"
-            add-text="Add new prerequisite"
-            name="prerequisites"
-            empty
-          />
-
-          <TextMultiple
+          <!-- <TextMultiple
             title="Volunteer Positions"
             placeholder="Enter new position"
             add-text="Add new position"
             name="volunteerPositions"
             empty
-          />
+          /> -->
 
           <h1 class="title font-sans font-bold text-4xl text-center mt-8 mb-4">
             MODIFY VOLUNTEERS

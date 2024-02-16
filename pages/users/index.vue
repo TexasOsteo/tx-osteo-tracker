@@ -11,7 +11,6 @@ function formatDate(dateString: string) {
 
 const users = ref<SerializeObject<User>[]>([])
 users.value = await getUsers()
-// console.log(users.users)
 
 async function getUsers() {
   const { data } = await useFetch('/api/users')
@@ -83,24 +82,27 @@ async function getUsers() {
           <a
             href="#"
             class="font-medium text-blue-600 dark:text-blue-500 hover:underline"
-            >View</a
           >
+            View
+          </a>
         </td>
 
         <td class="px-6 py-4 text-right">
           <a
             href="#"
             class="font-medium text-blue-600 dark:text-blue-500 hover:underline"
-            >Edit</a
           >
+            Edit
+          </a>
         </td>
 
         <td class="px-6 py-4 text-right">
           <a
             href="#"
             class="font-medium text-red-600 dark:text-blue-500 hover:underline"
-            >Delete</a
           >
+            Delete
+          </a>
         </td>
       </tr>
     </tbody>

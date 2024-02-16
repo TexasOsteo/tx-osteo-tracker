@@ -4,7 +4,7 @@ export const useCurrentUserStore = defineStore('currentUserStore', () => {
   const currentUser = ref<Awaited<ReturnType<typeof update>>>(null)
 
   async function update() {
-    const { data } = await useFetch('/api/auth/me')
+    const { data } = await useFetch('/api/users/me')
     currentUser.value = data.value
     return data.value
   }

@@ -30,7 +30,7 @@ export default defineEventHandler(async (event) => {
 
   // Get user info by calling this endpoint with the new id token as the cookie because the user must be authenticated
   // If the user cannot be found, null will be returned
-  const user = await $fetch('/api/auth/me', {
+  const user = await $fetch('/api/users/me', {
     headers: {
       cookie: `${cookieName}=${body.id_token}`,
     },

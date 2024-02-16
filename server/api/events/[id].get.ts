@@ -21,6 +21,7 @@ export default defineEventHandler(async (event) => {
     include: {
       attendees: true,
       signedUpUsers: true,
+      positions: true,
     },
   })
 

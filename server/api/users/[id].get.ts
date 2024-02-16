@@ -32,6 +32,10 @@ export default defineEventHandler(async (event) => {
     include: {
       eventHistory: true,
       signedUpEvents: true,
+      qualificationUploads: true,
+      signedUpPositions: true,
+      verifiedQualifications: true,
+      adminNotes: event.context.txOsteoClaims?.admin === true,
     },
   })
 

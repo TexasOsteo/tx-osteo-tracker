@@ -8,9 +8,12 @@ async function handleSubmit(fields: any) {
       ...fields,
       numHours: 0,
       isAdmin: false,
-      userNotes: [],
       signedUpEvents: [],
       eventHistory: [],
+      signedUpPositions: [],
+      qualificationUploads: [],
+      verifiedQualifications: [],
+      subscribedEmailCategories: Object.keys(UserEmailCategories),
     },
   })
 
@@ -67,13 +70,23 @@ async function handleSubmit(fields: any) {
 
           <LanguageSelect />
 
-          <TextMultiple
+          <!-- <TextMultiple
             title="Qualifications"
             placeholder="Enter qualification description"
             add-text="Add new qualification"
-            name="qualifications"
+            name="verifiedQualifications"
             outer-class="mb-5 w-4/5"
             empty
+          /> -->
+
+          <FormKit
+            id="userNotes"
+            type="textarea"
+            name="userNotes"
+            label="Notes"
+            help="Enter any information you want people to know (dietary restrictions, etc)."
+            placeholder="Add information here"
+            outer-class="mb-5 w-4/5"
           />
         </div>
       </FormKit>

@@ -21,6 +21,9 @@ export default defineEventHandler(async (event) => {
         gte: afterDate,
       },
     },
+    include: {
+      positions: true,
+    },
   })
   return data
 })
