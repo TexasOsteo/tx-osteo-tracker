@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { EventPosition } from '@prisma/client'
 import ISO6391 from 'iso-639-1'
 import { ref } from 'vue'
 import FullCalendar from '@fullcalendar/vue3'
@@ -8,7 +9,9 @@ import type { CalendarOptions } from '@fullcalendar/core'
 import EventModal from './EventModal.vue'
 
 /*
-  TODO: Make events dynamically request from the database when a new month is chosen.
+  TODO: The calendar system is inefficient. The code is messy and the event filter is not scalable.
+  
+  Make events dynamically request from the database when a new month is chosen.
   Right now it gets every event from the database which isn't scalable.
 
   Also, replace the dialog box with a modal
@@ -36,11 +39,9 @@ const modalEvent = ref({
   languages: '',
   thumbnail: '',
   hoursOffered: '',
-  prerequisites: '',
-  volunteerPositions: '',
+  positions: [] as EventPosition[],
   phoneNumber: '',
   email: '',
-  capacity: '',
   description: '',
 })
 
@@ -73,12 +74,9 @@ const calendarOptions = ref<CalendarOptions>({
     modalEvent.value.languages = info.event.extendedProps.languages
     modalEvent.value.thumbnail = info.event.extendedProps.thumbnail
     modalEvent.value.hoursOffered = info.event.extendedProps.hoursOffered
-    modalEvent.value.prerequisites = info.event.extendedProps.prerequisites
-    modalEvent.value.volunteerPositions =
-      info.event.extendedProps.volunteerPositions
+    modalEvent.value.positions = info.event.extendedProps.positions
     modalEvent.value.phoneNumber = info.event.extendedProps.phoneNumber
     modalEvent.value.email = info.event.extendedProps.email
-    modalEvent.value.capacity = info.event.extendedProps.capacity
     modalActive.value = true
   },
   eventColor: 'green',
@@ -100,10 +98,8 @@ const fetchEvents = async () => {
         languages: event.languages,
         thumbnail: event.thumbnail,
         hoursOffered: event.hoursOffered,
-        prerequisites: event.prerequisites,
-        volunteerPositions: event.volunteerPositions,
+        positions: event.positions,
         phoneNumber: event.phoneNumber,
-        capacity: event.capacity,
         id: event.id,
       },
     }))
@@ -184,9 +180,9 @@ fetchEvents()
 
 <template>
   <div>
-
-    <h1 class="title font-sans font-bold text-5xl text-center pt-10">Sign Up</h1>
-
+    <h1 class="title font-sans font-bold text-5xl text-center pt-10">
+      Sign Up
+    </h1>
 
     <div class="flex flex-wrap items-center justify-center">
       <table class="table-fixed border-separate border-spacing-10">
@@ -196,8 +192,9 @@ fetchEvents()
             <label
               class="block font-bold text-center text-black"
               for="locationFilter"
-              >Location</label
             >
+              Location
+            </label>
             <div class="bg-slate-200 p-2 m-2 rounded-lg">
               <select
                 id="locationFilter"
@@ -217,8 +214,9 @@ fetchEvents()
             <label
               class="block font-bold text-center text-black"
               for="organizationFilter"
-              >Organization</label
             >
+              Organization
+            </label>
             <div class="bg-slate-200 p-2 m-2 rounded-lg">
               <select
                 id="organizationFilter"
@@ -242,8 +240,9 @@ fetchEvents()
             <label
               class="block font-bold text-center text-black"
               for="timeFilter"
-              >Time</label
             >
+              Time
+            </label>
             <div class="bg-slate-200 p-2 m-2 rounded-lg">
               <input
                 id="timeFilter"
@@ -389,7 +388,8 @@ fetchEvents()
                     :key="index"
                     class="font-sans text-cyan-950"
                   >
-                    <span v-if="index !== 0">, </span>{{ language }}
+                    <span v-if="index !== 0">,</span>
+                    {{ language }}
                   </span>
                 </h3>
               </div>
@@ -413,32 +413,6 @@ fetchEvents()
                 <h3 class="ml-3">{{ modalEvent.hoursOffered }} Hours Given</h3>
               </div>
             </li>
-            <li>
-              <div class="flex items-center mt-5">
-                <div>
-                  <svg
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M15 2.01294H9V8.99994H2V14.9999H9V21.9869H15V14.9999H22V8.99994H15V2.01294Z"
-                      fill="black"
-                    />
-                  </svg>
-                </div>
-
-                <span
-                  v-for="(prerequisite, index) in modalEvent.prerequisites"
-                  :key="index"
-                  class="font-sans text-cyan-950"
-                >
-                  <span v-if="index !== 0">, </span>{{ prerequisite }}</span
-                >
-              </div>
-            </li>
 
             <li>
               <div class="flex items-center mt-5">
@@ -458,12 +432,13 @@ fetchEvents()
                 </div>
 
                 <span
-                  v-for="(position, index) in modalEvent.volunteerPositions"
+                  v-for="(position, index) in modalEvent.positions"
                   :key="index"
                   class="font-sans text-cyan-950"
                 >
-                  <span v-if="index !== 0">, </span>{{ position }}</span
-                >
+                  <span v-if="index !== 0">,</span>
+                  {{ position.name }}
+                </span>
               </div>
             </li>
 
@@ -508,7 +483,9 @@ fetchEvents()
               </div>
             </li>
             <div class="flex flex-wrap items-center">
-              <h3
+              Capacity#
+              <!-- TODO: Update capacity counter -->
+              <!-- <h3
                 class="mr-20 mt-3 text-xl font-medium"
                 :class="{
                   'text-yellow-500':
@@ -519,15 +496,15 @@ fetchEvents()
                 }"
               >
                 {{ modalEvent.capacity }} SLOTS LEFT
-              </h3>
+              </h3> -->
             </div>
           </ul>
 
           <p class="text-base leading-relaxed text-cyan-900">
             Description:
-            <span id="modalDescription" class="font-sans text-cyan-950">{{
-              modalEvent.description
-            }}</span>
+            <span id="modalDescription" class="font-sans text-cyan-950">
+              {{ modalEvent.description }}
+            </span>
           </p>
         </div>
 

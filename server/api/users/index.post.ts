@@ -11,23 +11,27 @@ import { parseIDsToPrismaConnectObject } from '~/utils/prisma-parsing'
  * ---
  */
 
-const schema = object({
+export const userSchema = object({
   id: string().optional(),
-  auth0_id: string().optional(),
+  auth0Id: string().optional(),
   dateOfBirth: date().required(),
   name: string().required(),
   email: string().optional(),
   languages: array(string().defined()).defined(),
   numHours: number().required(),
   isAdmin: boolean().required(),
-  qualifications: array(string().defined()).defined(),
-  userNotes: array(string().defined()).defined(),
+  subscribedEmailCategories: array(string().defined()).defined(),
+  userNotes: string().required(),
   signedUpEvents: array(string().defined()).defined(),
+  signedUpPositions: array(string().defined()).defined(),
   eventHistory: array(string().defined()).defined(),
+  verifiedQualifications: array(string().defined()).defined(),
+  qualificationUploads: array(string().defined()).defined(),
+  adminNotes: string().optional(),
 })
 
 export default defineEventHandler(async (event) => {
-  const body = await validateBody(event, schema)
+  const body = await validateBody(event, userSchema)
 
   const claims = event.context.auth0Claims
   if (!claims) {
@@ -37,7 +41,7 @@ export default defineEventHandler(async (event) => {
     })
   }
 
-  if (body.auth0_id && claims?.sub !== body.auth0_id) {
+  if (body.auth0Id && claims?.sub !== body.auth0Id) {
     throwErrorIfNotAdmin(
       event,
       'You must be an admin to create a user other than yourself',
@@ -53,10 +57,20 @@ export default defineEventHandler(async (event) => {
   const newUser = await event.context.prisma.user.create({
     data: {
       ...body,
-      auth0_id: body.auth0_id ?? claims.sub,
+      auth0Id: body.auth0Id ?? claims.sub,
       email: body.email ?? claims.email,
       eventHistory: parseIDsToPrismaConnectObject(body.eventHistory),
       signedUpEvents: parseIDsToPrismaConnectObject(body.signedUpEvents),
+      signedUpPositions: parseIDsToPrismaConnectObject(body.signedUpPositions),
+      qualificationUploads: parseIDsToPrismaConnectObject(
+        body.qualificationUploads,
+      ),
+      verifiedQualifications: parseIDsToPrismaConnectObject(
+        body.verifiedQualifications,
+      ),
+      adminNotes: body.adminNotes
+        ? { connect: { id: body.adminNotes } }
+        : undefined,
     },
   })
   return newUser

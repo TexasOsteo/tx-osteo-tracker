@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import ISO6391 from 'iso-639-1'
 
-const { data } = await useFetch('/api/auth/me')
+const { data } = await useFetch('/api/users/me')
 const userID = ref(data && data.value ? [data.value.id] : [])
 const DOB = ref(data.value?.dateOfBirth)
 const formattedDOB = DOB.value?.split('T')[0]
@@ -110,18 +110,14 @@ function displayDate(dateTime: string) {
         <div id="MyNotes" class="text-gray-700 text-large font-['Work Sans']">
           <p>
             Notes:
-            <span v-if="!(data?.userNotes && data.userNotes.length > 0)"
-              >None</span
-            >
+            <span v-if="!(data?.userNotes && data.userNotes.length > 0)">
+              None
+            </span>
           </p>
           <ul v-if="data?.userNotes && data.userNotes.length > 0">
-            <li
-              v-for="(note, index) in data.userNotes"
-              :key="index"
-              class="ml-5"
-            >
-              • {{ note }}
-            </li>
+            {{
+              data.userNotes
+            }}
           </ul>
         </div>
 
@@ -132,17 +128,28 @@ function displayDate(dateTime: string) {
           <p>
             Qualifications:
             <span
-              v-if="!(data?.qualifications && data.qualifications.length > 0)"
-              >None</span
+              v-if="
+                !(
+                  data?.verifiedQualifications &&
+                  data.verifiedQualifications.length > 0
+                )
+              "
             >
+              None
+            </span>
           </p>
-          <ul v-if="data?.qualifications && data.qualifications.length > 0">
+          <ul
+            v-if="
+              data?.verifiedQualifications &&
+              data.verifiedQualifications.length > 0
+            "
+          >
             <li
-              v-for="(qual, index) in data.qualifications"
+              v-for="(qual, index) in data.verifiedQualifications"
               :key="index"
               class="ml-5"
             >
-              • {{ qual }}
+              • {{ qual.name }}
             </li>
           </ul>
         </div>

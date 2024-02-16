@@ -14,10 +14,14 @@ export default defineEventHandler(async (event) => {
   }
 
   const user = await event.context.prisma.user.findUnique({
-    where: { auth0_id: claims.sub },
+    where: { auth0Id: claims.sub },
     include: {
       eventHistory: true,
       signedUpEvents: true,
+      adminNotes: event.context.txOsteoClaims?.admin === true,
+      qualificationUploads: true,
+      signedUpPositions: true,
+      verifiedQualifications: true,
     },
   })
 

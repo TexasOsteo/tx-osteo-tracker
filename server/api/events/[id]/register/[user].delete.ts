@@ -32,12 +32,10 @@ export default defineEventHandler(async (event) => {
     throwErrorIfNotAdmin(event) // Check if user is admin
   }
 
+  // TODO: Update position capacity
   const newEvent = await event.context.prisma.event.update({
     where: { id: eventId },
     data: {
-      capacity: {
-        increment: 1,
-      },
       signedUpUsers: {
         disconnect: {
           id: userId,

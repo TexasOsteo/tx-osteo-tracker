@@ -112,8 +112,10 @@ const eventsToDisplay = computed(() => {
 // ------------------------------------------------------------------------------------------
 </script>
 <template>
-  <div >
-    <h1 class="title font-sans font-bold text-5xl text-center pt-10">Sign Up</h1>
+  <div>
+    <h1 class="title font-sans font-bold text-5xl text-center pt-10">
+      Sign Up
+    </h1>
     <div class="flex flex-wrap items-center justify-center">
       <table class="border-separate border-spacing-10">
         <tr class="text-center place-content-strech self-auto">
@@ -122,8 +124,9 @@ const eventsToDisplay = computed(() => {
             <label
               class="block font-bold text-center text-black"
               for="locationFilter"
-              >Location</label
             >
+              Location
+            </label>
             <div class="bg-slate-200 p-2 m-2 rounded-lg">
               <select
                 id="locationFilter"
@@ -142,8 +145,9 @@ const eventsToDisplay = computed(() => {
             <label
               class="block font-bold text-center text-black"
               for="organizationFilter"
-              >Organization</label
             >
+              Organization
+            </label>
             <div class="bg-slate-200 p-2 m-2 rounded-lg">
               <select
                 id="organizationFilter"
@@ -166,8 +170,9 @@ const eventsToDisplay = computed(() => {
             <label
               class="block font-bold text-center text-black"
               for="timeFilter"
-              >Date</label
             >
+              Date
+            </label>
             <div class="bg-slate-200 p-2 m-2 rounded-lg">
               <input
                 id="timeFilter"
@@ -184,7 +189,7 @@ const eventsToDisplay = computed(() => {
     <ul>
       <li v-for="event in eventsToDisplay" :key="event.id">
         <div>
-          <EventListing :event="event"> </EventListing>
+          <EventListing :event="event"></EventListing>
         </div>
       </li>
     </ul>

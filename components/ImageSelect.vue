@@ -5,6 +5,11 @@
 import { VueFinalModal } from 'vue-final-modal'
 import type { BlobInfo } from '~/utils/types'
 
+type FormKitFile = {
+  name: string
+  file: File
+}
+
 const props = defineProps<{
   /**
    * Image type, such as 'thumbnail'
@@ -142,7 +147,9 @@ function confirm() {
       label="New Image"
       accept=".png,.jpg,.jpeg,.gif,.webp"
       help="Upload a new image"
-      @input="(f) => (uploadedImage = (f ?? [])[0]?.file ?? null)"
+      @input="
+        (f: FormKitFile[]) => (uploadedImage = (f ?? [])[0]?.file ?? null)
+      "
     />
     <div class="flex w-full justify-end gap-1">
       <button

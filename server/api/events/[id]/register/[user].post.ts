@@ -54,19 +54,11 @@ export default defineEventHandler(async (event) => {
     })
   }
 
-  if (eventData.capacity === 0) {
-    throw createError({
-      status: 400,
-      message: `This event is at capacity`,
-    })
-  }
+  // TODO: Update position capacity and check if it is full
 
   const newEvent = await event.context.prisma.event.update({
     where: { id: eventId },
     data: {
-      capacity: {
-        decrement: 1,
-      },
       signedUpUsers: {
         connect: {
           id: userId,

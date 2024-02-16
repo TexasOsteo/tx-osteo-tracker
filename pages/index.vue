@@ -66,14 +66,14 @@ definePageMeta({
                 <a href="https://www.texasosteo.org/about-us">About US</a>
               </li>
               <li>
-                <a href="https://www.texasosteo.org/osteo-101-bone-health"
-                  >Osteo 101</a
-                >
+                <a href="https://www.texasosteo.org/osteo-101-bone-health"></a>
+                  Osteo 101
+                </a>
               </li>
               <li>
-                <a href="https://www.texasosteo.org/take-the-test"
-                  >Take the Test</a
-                >
+                <a href="https://www.texasosteo.org/take-the-test">
+                  Take the Test
+                </a>
               </li>
               <li><a href="https://www.texasosteo.org/">Homepage</a></li>
             </ul>

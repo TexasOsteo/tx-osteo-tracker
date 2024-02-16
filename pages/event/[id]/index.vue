@@ -119,8 +119,9 @@ const { data } = await useFetch(`/api/events/${route.params.id}`)
     <NuxtLink
       :to="`/event/${route.params.id}/volunteers`"
       class="text-green-500"
-      >Click here to see volunteer list</NuxtLink
     >
+      Click here to see volunteer list
+    </NuxtLink>
   </div>
   <NuxtLink to="/" class="underline">Home</NuxtLink>
 </template>

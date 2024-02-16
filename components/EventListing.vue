@@ -1,28 +1,37 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import ISO6391 from 'iso-639-1'
-import type { Event } from '@prisma/client'
-import type { SerializeObject } from '~/utils/types'
-const { data: eventsList } = await useFetch(`/api/events?after=${Date.now()}`)
+import type { SerializeObject, EventWithPositions } from '~/utils/types'
 
 const isAdmin = isSignedInUserAdmin()
 
 // Define event prop
-defineProps<{
+const props = defineProps<{
   // event can either be a normal Event object or a SerializedObject Event
   // This is so that date can be either a string or a Date object since
   // the API call converts a Date object to a string
-  event: Event | SerializeObject<Event>
+  event: EventWithPositions | SerializeObject<EventWithPositions>
 }>()
+
+const currentCapacity = computed(() =>
+  props.event.positions.reduce(
+    (acc, position) => acc + position.currentCapacity,
+    0,
+  ),
+)
+
+const maxCapacity = computed(() =>
+  props.event.positions.reduce(
+    (acc, position) => acc + position.maxCapacity,
+    0,
+  ),
+)
 
 // Create var to toggle expanded view
 const isOpen = ref<boolean>(false)
 
 function toggleExpanded() {
   isOpen.value = !isOpen.value
-}
-async function refreshEventList() {
-  await useFetch(`/api/events/${eventsList}`)
 }
 </script>
 
@@ -47,12 +56,14 @@ async function refreshEventList() {
         <h3
           class="mr-20 mt-3 ml-3"
           :class="{
-            'text-yellow-500': event.capacity >= 5 && event.capacity <= 10,
-            'text-red-500': event.capacity < 5,
-            'text-green-500': event.capacity >= 10,
+            'text-yellow-500':
+              currentCapacity / maxCapacity < 0.75 &&
+              currentCapacity / maxCapacity > 0.25,
+            'text-red-500': currentCapacity / maxCapacity <= 0.25,
+            'text-green-500': currentCapacity / maxCapacity >= 0.75,
           }"
         >
-          {{ event.capacity }} SLOTS LEFT
+          {{ currentCapacity }} SLOTS LEFT
         </h3>
       </div>
       <div v-if="!isOpen" class="flex flex-wrap mt-5">
@@ -277,7 +288,7 @@ async function refreshEventList() {
 
           <li>
             <div
-              v-if="event.volunteerPositions.length > 0"
+              v-if="event.positions.length > 0"
               class="flex items-center mt-5"
             >
               <div>
@@ -294,7 +305,7 @@ async function refreshEventList() {
                   />
                 </svg>
               </div>
-              <h3>{{ event.volunteerPositions.join(', ') }}</h3>
+              <h3>{{ event.positions.map((p) => p.name).join(', ') }}</h3>
             </div>
           </li>
 

@@ -15,6 +15,7 @@ const publicPaths: PathFilter[] = [
   { path: /^\/api\/auth\/.+/, methods: ['GET', 'POST'] },
   { path: '/' },
   { path: '/users/new' },
+  { path: '/api/users/me' },
   { path: '/api/users', methods: ['POST'] },
   { path: '/resources' },
 ]
