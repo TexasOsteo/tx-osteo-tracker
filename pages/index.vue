@@ -66,7 +66,7 @@ definePageMeta({
                 <a href="https://www.texasosteo.org/about-us">About US</a>
               </li>
               <li>
-                <a href="https://www.texasosteo.org/osteo-101-bone-health"></a>
+                <a href="https://www.texasosteo.org/osteo-101-bone-health">
                   Osteo 101
                 </a>
               </li>

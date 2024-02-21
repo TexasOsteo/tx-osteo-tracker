@@ -18,6 +18,7 @@ const publicPaths: PathFilter[] = [
   { path: '/api/users/me' },
   { path: '/api/users', methods: ['POST'] },
   { path: '/resources' },
+  { path: '/__nuxt_error' }, // Needed to show errors properly
 ]
 
 /**
