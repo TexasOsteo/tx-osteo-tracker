@@ -1,6 +1,6 @@
 <script setup lang="ts">
 definePageMeta({
-  layout: false,
+  layout: false, // Disable default layout with navbar since this page has a custom one
 })
 </script>
 
@@ -13,16 +13,20 @@ definePageMeta({
       <h1 class="text-3xl block sm:hidden">TOF</h1>
     </div>
     <div class="h-full w-1/2 flex items-center justify-end">
-      <button
-        class="py-5 px-10 mr-5 bg-white rounded-md hover:bg-[#F0CC5A] hover:text-white transition duration-300 ease-in-out hidden sm:block"
+      <a href="/api/auth/login"
+        ><button
+          class="py-5 px-10 mr-5 bg-white rounded-md hover:bg-[#F0CC5A] hover:text-white transition duration-300 ease-in-out hidden sm:block"
+        >
+          SIGN UP
+        </button></a
       >
-        <a href="/api/auth/login">SIGN UP</a>
-      </button>
-      <button
-        class="py-5 px-10 mr-5 bg-white rounded-md hover:bg-[#F0CC5A] hover:text-white transition duration-300 ease-in-out hidden sm:block"
+      <a href="/api/auth/login">
+        <button
+          class="py-5 px-10 mr-5 bg-white rounded-md hover:bg-[#F0CC5A] hover:text-white transition duration-300 ease-in-out hidden sm:block"
+        >
+          LOG IN
+        </button></a
       >
-        <a href="/api/auth/login">LOG IN</a>
-      </button>
     </div>
   </div>
   <div class="flex flex-wrap z-0 overflow-x-hidden overflow-y-hidden">
@@ -35,17 +39,20 @@ definePageMeta({
           Start volunteering and make a change in the world today!
         </p>
         <div class="flex flex-wrap items-center justify-center">
-          <button
-            class="py-5 px-10 mr-5 bg-[#0DA49B] text-white rounded-md hover:bg-[#F0CC5A] hover:text-white transition duration-300 ease-in-out text-2xl mb-20"
-          >
-            <a href="/api/auth/login">Sign Up</a>
-          </button>
-
-          <button
-            class="py-5 px-10 mr-5 bg-[#0DA49B] text-white rounded-md hover:bg-[#F0CC5A] hover:text-white transition duration-300 ease-in-out text-2xl mb-20"
-          >
-            <a href="/api/auth/login">Log In</a>
-          </button>
+          <a href="/api/auth/login">
+            <button
+              class="py-5 px-10 mr-5 bg-[#0DA49B] text-white rounded-md hover:bg-[#F0CC5A] hover:text-white transition duration-300 ease-in-out text-2xl mb-20"
+            >
+              Sign Up
+            </button>
+          </a>
+          <a href="/api/auth/login">
+            <button
+              class="py-5 px-10 mr-5 bg-[#0DA49B] text-white rounded-md hover:bg-[#F0CC5A] hover:text-white transition duration-300 ease-in-out text-2xl mb-20"
+            >
+              Log In
+            </button>
+          </a>
         </div>
       </div>
       <CompanyLogo />
