@@ -30,3 +30,6 @@ typescript/**/migrations/
 misc/**/migrations/
 databases/**/migrations/
 experimental/**/*.db
+
+# MJML
+server/assets/mjml/rendered

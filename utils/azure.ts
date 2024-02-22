@@ -1,4 +1,5 @@
 import { BlobServiceClient } from '@azure/storage-blob'
+import { EmailClient } from '@azure/communication-email'
 
 /**
  * @returns A new blob service client for the default Azure storage account
@@ -16,4 +17,13 @@ export function getBlobServiceClient() {
 export function getCDNUrl(path = '/') {
   const origin = useRuntimeConfig().AZURE_CDN_ORIGIN
   return new URL(path, origin.startsWith('http') ? origin : `https://${origin}`)
+}
+
+/**
+ * @returns The Azure email communication client
+ */
+export function getEmailClient() {
+  return new EmailClient(
+    useRuntimeConfig().AZURE_COMMUNICATION_SERVICE_CONNECTION_STRING,
+  )
 }

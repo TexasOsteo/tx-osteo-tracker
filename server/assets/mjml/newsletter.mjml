@@ -1,0 +1,15 @@
+<mjml>
+  <mj-body background-color="#FFFFFF">
+    <mj-include path="./header.mjml" />
+    <mj-section>
+      <mj-column width="100%">
+        <mj-text font-size="20px" font-weight="bold">{{title}}</mj-text>
+        <mj-text font-size="16px">{{date}}</mj-text>
+        <mj-spacer />
+        <mj-image width="300px" src="{{image}}" />
+        <mj-text font-size="14px">{{content}}</mj-text>
+      </mj-column>
+    </mj-section>
+    <mj-include path="./footer.mjml" />
+  </mj-body>
+</mjml>

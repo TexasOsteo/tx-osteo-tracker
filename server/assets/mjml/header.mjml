@@ -1,0 +1,20 @@
+<mjml>
+  <mj-body>
+    <mj-section background-color="#0DA49B">
+      <mj-column width="25%" vertical-align="middle">
+        <mj-image src="{{logo}}" alt="logo" width="80px"></mj-image>
+      </mj-column>
+      <mj-column width="75%" vertical-align="middle">
+        <mj-text
+          align="left"
+          color="#ffffff"
+          font-size="24px"
+          font-family="Lato, Helvetica, Arial, sans-serif"
+          font-weight="bold"
+        >
+          Texas Osteoporosis Foundation
+        </mj-text>
+      </mj-column>
+    </mj-section>
+  </mj-body>
+</mjml>

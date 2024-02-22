@@ -1,0 +1,22 @@
+<mjml>
+  <mj-body>
+    <mj-section background-color="#0DA49B">
+      <mj-column>
+        <mj-navbar>
+          <mj-navbar-link
+            href="{{origin}}/email/unsubscribe/{{emailCategory}}"
+            color="#ffffff"
+          >
+            Unsubscribe
+          </mj-navbar-link>
+          <mj-navbar-link href="{{origin}}" color="#ffffff">
+            Volunteer
+          </mj-navbar-link>
+          <mj-navbar-link href="https://www.texasosteo.org/" color="#ffffff">
+            About TOF
+          </mj-navbar-link>
+        </mj-navbar>
+      </mj-column>
+    </mj-section>
+  </mj-body>
+</mjml>
