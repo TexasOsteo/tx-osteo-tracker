@@ -13,7 +13,7 @@ async function handleSubmit(fields: any) {
       signedUpPositions: [],
       qualificationUploads: [],
       verifiedQualifications: [],
-      subscribedEmailCategories: Object.keys(UserEmailCategories),
+      subscribedEmailCategories: Object.values(UserEmailCategories),
     },
   })
 

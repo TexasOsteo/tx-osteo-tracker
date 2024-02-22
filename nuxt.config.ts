@@ -1,3 +1,5 @@
+import mjml from 'vite-plugin-mjml'
+
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   devtools: { enabled: true },
@@ -16,6 +18,9 @@ export default defineNuxtConfig({
     AZURE_STORAGE_CONNECTION_STRING: ensureEnv(
       'AZURE_STORAGE_CONNECTION_STRING',
     ),
+    AZURE_COMMUNICATION_SERVICE_CONNECTION_STRING: ensureEnv(
+      'AZURE_COMMUNICATION_SERVICE_CONNECTION_STRING',
+    ),
     public: {
       auth0_token: 'txosteo_volunteer_auth0_token',
       txosteo_token: 'txosteo_volunteer_token',
@@ -29,6 +34,20 @@ export default defineNuxtConfig({
     head: {
       title: 'Volunteer At Texas Osteoporosis Foundation',
     },
+  },
+  watch: [/.+\.mjml/], // Needed since watch for mjml plugin doesn't work
+  vite: {
+    plugins: [
+      mjml({
+        input: 'server/assets/mjml',
+        output: 'server/assets/mjml/rendered',
+        extension: '.html',
+        watch: true,
+        mjml: {
+          filePath: './server/assets/mjml',
+        },
+      }),
+    ],
   },
 })
 
