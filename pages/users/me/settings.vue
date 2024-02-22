@@ -200,7 +200,7 @@ function displayDate(dateTime: string) {
         </div>
       </div>
 
-      <div id="PEvents" class="flex overflow-y-auto bg-gray-200">
+      <div id="PEvents" class="flex-col overflow-y-auto bg-gray-200">
         <button
           class="flex items-center w-full sticky top-0 border-2 border-gray-200 border-t-gray-200 bg-[#FFF] rounded-sm p-2"
           @click="togglePast"
@@ -225,7 +225,7 @@ function displayDate(dateTime: string) {
             </div>
 
             <button
-              class="bg-teal-400 hover:bg-teal-500 p-2 rounded-xl"
+              class="bg-teal-400 hover:bg-teal-500 p-2 rounded-xl text-white"
               @click="openPopup(event)"
             >
               View
