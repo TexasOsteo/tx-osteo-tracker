@@ -45,10 +45,22 @@ export async function renderEmail(
  * @param message
  * @returns
  */
-export async function sendEmail(message: EmailMessage) {
-  const client = getEmailClient()
-  const poller = await client.beginSend(message)
-  return poller.pollUntilDone()
+export function sendEmail(message: EmailMessage) {
+  return new Promise<void>((resolve, reject) => {
+    const client = getEmailClient()
+    client.beginSend(message).then((poller) => {
+      const cancelProgress = poller.onProgress((state) => {
+        if (state.error) {
+          cancelProgress()
+          reject(state.error)
+        } else if (state.isStarted) {
+          cancelProgress()
+          resolve()
+        }
+      })
+      poller.pollUntilDone()
+    })
+  })
 }
 
 /**
