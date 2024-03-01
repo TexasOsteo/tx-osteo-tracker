@@ -1,6 +1,5 @@
 import { throwErrorIfNotAdmin } from '~/utils/auth'
-import { getBlobServiceClient, getCDNUrl } from '~/utils/azure'
-import { BlobInfo } from '~/utils/types'
+import { deleteBlob } from '~/utils/azure'
 
 /**
  * --- API INFO
@@ -21,13 +20,5 @@ export default defineEventHandler(async (event) => {
     })
   }
 
-  const blobServiceClient = getBlobServiceClient()
-  const containerClient = blobServiceClient.getContainerClient('images')
-  const blobClient = await containerClient.getBlobClient(id)
-
-  const { tags } = await blobClient.getTags()
-
-  await containerClient.deleteBlob(id)
-
-  return { name: id, tags, url: getCDNUrl(`/images/${id}`).href } as BlobInfo
+  return await deleteBlob('images', id)
 })

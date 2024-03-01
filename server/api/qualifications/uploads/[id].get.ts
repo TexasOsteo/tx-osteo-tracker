@@ -1,10 +1,9 @@
 import { throwErrorIfNotAdmin } from '~/utils/auth'
-import { getBlob } from '~/utils/azure'
 
 /**
  * --- API INFO
- * GET /api/images/[id]
- * Gets the blob information of the image with the id from Azure storage
+ * GET /api/qualifications/uploads/[id]
+ * Returns the qualification upload by id
  */
 
 export default defineEventHandler(async (event) => {
@@ -16,9 +15,16 @@ export default defineEventHandler(async (event) => {
     // If there is no id, throw a 400 (BAD REQUEST) error
     throw createError({
       status: 400,
-      message: 'No image id provided',
+      message: 'No qualification id provided',
     })
   }
 
-  return await getBlob('images', id)
+  return await event.context.prisma.qualificationUpload.findUnique({
+    where: {
+      id,
+    },
+    include: {
+      qualifications: true,
+    },
+  })
 })

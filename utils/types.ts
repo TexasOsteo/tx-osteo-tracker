@@ -15,6 +15,7 @@ export type BlobInfo = {
   url: string
   tags: Record<string, string>
   name: string
+  token?: string // TODO: Implement
 }
 
 export type EventWithPositions = Prisma.EventGetPayload<{

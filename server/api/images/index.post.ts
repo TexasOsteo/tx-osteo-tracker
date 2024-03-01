@@ -1,7 +1,7 @@
-import { createHash } from 'node:crypto'
+import { object, string } from 'yup'
 import { throwErrorIfNotAdmin } from '~/utils/auth'
-import { getBlobServiceClient, getCDNUrl } from '~/utils/azure'
-import { BlobInfo } from '~/utils/types'
+import { uploadBlob } from '~/utils/azure'
+import { createFileValidator, validateBody } from '~/utils/validation'
 
 /**
  * --- API INFO
@@ -10,50 +10,29 @@ import { BlobInfo } from '~/utils/types'
  * Uploads an image to the Azure CDN storage
  */
 
+const schema = object({
+  file: createFileValidator(
+    ['image/jpeg', 'image/png', 'image/gif', 'image/webp'],
+    5 * 1024 * 1024,
+  ).required(),
+  type: string().required(),
+})
+
 export default defineEventHandler(async (event) => {
   throwErrorIfNotAdmin(event)
 
-  const body = await readFormData(event)
-  if (!body.has('type') || !body.has('file')) {
-    throw createError({
-      statusCode: 400,
-      message: 'Request body is missing elements. Must have a file and type.',
-    })
-  }
+  const { file, type } = await validateBody(event, schema, true)
 
-  const type = body.get('type')!.toString()
-  const file = body.get('file')! as File
-
-  // Convert Web File object to NodeJS Buffer
-  const data = Buffer.from(await file.arrayBuffer())
-  const hash = createHash('md5').update(data).digest('hex')
-
-  const blobServiceClient = getBlobServiceClient()
-  const containerClient = blobServiceClient.getContainerClient('images')
-  const blobBlockClient = containerClient.getBlockBlobClient(hash)
-
-  if (await blobBlockClient.exists()) {
-    throw createError({
-      statusCode: 400,
-      message: `A blob with this hash already exists: ${hash}`,
-    })
-  }
-
-  await blobBlockClient.uploadData(data, {
-    tags: {
-      type,
-    },
-    blobHTTPHeaders: {
-      blobCacheControl: 'public, max-age=2592000',
-      blobContentType: file.type,
+  return uploadBlob({
+    blob: file,
+    container: 'images',
+    options: {
+      tags: {
+        type,
+      },
+      blobHTTPHeaders: {
+        blobCacheControl: 'public, max-age=2592000',
+      },
     },
   })
-
-  return {
-    name: hash,
-    tags: {
-      type,
-    },
-    url: getCDNUrl(`/images/${hash}`).href,
-  } as BlobInfo
 })
