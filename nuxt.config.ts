@@ -2,7 +2,9 @@ import mjml from 'vite-plugin-mjml'
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  devtools: { enabled: true },
+  devtools: {
+    enabled: process.env.DISABLE_NUXT_DEVTOOLS !== 'true',
+  },
   css: ['~/assets/css/main.css', 'vue-final-modal/style.css'],
   postcss: {
     plugins: {
