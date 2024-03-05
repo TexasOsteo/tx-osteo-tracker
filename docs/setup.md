@@ -8,7 +8,6 @@ Please follow all of these steps to setup your development environment correctly
 - Install [VS Code](https://code.visualstudio.com/)
 - Install these VS Code extensions:
   - [Vue Language Support (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.volar)
-  - [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin)
   - [ESLint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint)
   - [Prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
   - [Prisma](https://marketplace.visualstudio.com/items?itemName=Prisma.prisma)

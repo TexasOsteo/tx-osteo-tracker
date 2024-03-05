@@ -25,6 +25,7 @@ model User {
   isAdmin     Boolean
 
   subscribedEmailCategories String[]
+  lastEmailTriggered        DateTime @default(now())
 
   userNotes  String // These are notes by the user themselves, not notes written by admins
   adminNotes AdminNotes? @relation("AdminNotes") // These are notes written by admins. It is a relation to make it easier to separate user and admin views
@@ -83,7 +84,7 @@ model Qualifications {
 
 model QualificationUpload {
   id             String           @id @default(uuid())
-  fileUrl        String?
+  hasFile        Boolean
   processed      Boolean          @default(false)
   description    String
   user           User             @relation("UserQualificationsUploads", fields: [userId], references: [id], onDelete: Cascade)
