@@ -1,6 +1,8 @@
 import { createHash } from 'node:crypto'
 import {
   BlobServiceClient,
+  StorageSharedKeyCredential,
+  BlobSASPermissions,
   type BlockBlobParallelUploadOptions,
 } from '@azure/storage-blob'
 import { EmailClient } from '@azure/communication-email'
@@ -10,18 +12,32 @@ import type { BlobInfo } from './types'
  * @returns A new blob service client for the default Azure storage account
  */
 export function getBlobServiceClient() {
-  return BlobServiceClient.fromConnectionString(
-    useRuntimeConfig().AZURE_STORAGE_CONNECTION_STRING,
+  const account = useRuntimeConfig().AZURE_STORAGE_ACCOUNT_NAME
+  const sharedKeyCredential = new StorageSharedKeyCredential(
+    account,
+    useRuntimeConfig().AZURE_STORAGE_SHARED_KEY,
+  )
+  return new BlobServiceClient(
+    `https://${account}.blob.core.windows.net`,
+    sharedKeyCredential,
   )
 }
 
 /**
- * @param path Optional path
+ * Returns the origin of the default Azure CDN as a properly formatted URL origin
+ */
+export function getCDNOrigin() {
+  const origin = useRuntimeConfig().AZURE_CDN_ORIGIN
+  return origin.startsWith('http') ? origin : `https://${origin}`
+}
+
+/**
+ * @param container Name of container
+ * @param name Name of blob
  * @returns The full url for a path to the default Azure CDN
  */
-export function getCDNUrl(path = '/') {
-  const origin = useRuntimeConfig().AZURE_CDN_ORIGIN
-  return new URL(path, origin.startsWith('http') ? origin : `https://${origin}`)
+export function getCDNUrl(container: string, name: string) {
+  return new URL(`/${container}/${name}`, getCDNOrigin())
 }
 
 /**
@@ -69,7 +85,7 @@ export async function uploadBlob({
   })
 
   return {
-    url: getCDNUrl(`/${container}/${name}`).href,
+    url: getCDNUrl(container, name).href,
     name,
     tags: options.tags ?? {},
   }
@@ -93,7 +109,7 @@ export async function getAllBlobs(container: string): Promise<BlobInfo[]> {
     blobsInfo.push({
       name: blob.name,
       tags: blob.tags ?? {},
-      url: getCDNUrl(`/${containerClient.containerName}/${blob.name}`).href,
+      url: getCDNUrl(containerClient.containerName, blob.name).href,
     })
   }
 
@@ -119,7 +135,7 @@ export async function getBlob(
   return {
     name,
     tags,
-    url: getCDNUrl(`/${container}/${name}`).href,
+    url: getCDNUrl(container, name).href,
   } as BlobInfo
 }
 
@@ -141,7 +157,7 @@ export async function deleteBlob(container: string, name: string) {
   return {
     name,
     tags,
-    url: getCDNUrl(`/${container}/${name}`).href,
+    url: getCDNUrl(container, name).href,
   } as BlobInfo
 }
 
@@ -166,6 +182,36 @@ export async function setBlobTags(
   return {
     name,
     tags,
-    url: getCDNUrl(`/${container}/${name}`).href,
+    url: getCDNUrl(container, name).href,
   } as BlobInfo
+}
+
+/**
+ * Returns a temporary SAS url for a blob. This allows temporary access to a restricted resource
+ * @param container
+ * @param name
+ * @param duration The duration of the SAS url in milliseconds. Be default, 2 hours
+ * @returns
+ */
+export async function getSASUrl(
+  container: string,
+  name: string,
+  duration = 2 * 60 * 60 * 1000,
+) {
+  const blobServiceClient = getBlobServiceClient()
+  const containerClient = blobServiceClient.getContainerClient(container)
+  const blobClient = containerClient.getBlobClient(name)
+  const urlString = await blobClient.generateSasUrl({
+    permissions: BlobSASPermissions.parse('r'),
+    startsOn: new Date(),
+    expiresOn: new Date(new Date().valueOf() + duration),
+  })
+
+  // Convert the direct non-CDN url to CDN url
+  const directUrl = new URL(urlString)
+  const origin = useRuntimeConfig().AZURE_CDN_ORIGIN
+  return new URL(
+    directUrl.pathname + directUrl.search,
+    origin.startsWith('http') ? origin : `https://${origin}`,
+  )
 }

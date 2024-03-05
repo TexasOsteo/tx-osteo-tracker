@@ -82,3 +82,20 @@ export function stringified<T extends AnySchema>(innerType: T) {
     }
   }) as T
 }
+
+/**
+ * Retrieves a route parameter and throws an error if it isn't present
+ * @param event H3 event
+ * @param param Name of the parameter
+ * @returns
+ */
+export function ensureRouteParam(event: DefaultEvent, param: string): string {
+  const value = getRouterParam(event, 'id')
+  if (!value) {
+    throw createError({
+      statusCode: 400,
+      message: `Missing URL param: ${param}`,
+    })
+  }
+  return value
+}

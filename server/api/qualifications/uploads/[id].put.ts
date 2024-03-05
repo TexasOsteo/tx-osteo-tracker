@@ -6,6 +6,7 @@ import {
   createFileValidator,
   validateBody,
   stringified,
+  ensureRouteParam,
 } from '~/utils/validation'
 
 /**
@@ -37,22 +38,14 @@ export default defineEventHandler(async (event) => {
 
   const userId = event.context.txOsteoClaims!.sub
 
-  // Get the id parameter (the last part of this url)
-  const id = getRouterParam(event, 'id')
-  if (!id) {
-    // If there is no id, throw a 400 (BAD REQUEST) error
-    throw createError({
-      status: 400,
-      message: 'No qualification id provided',
-    })
-  }
+  const id = ensureRouteParam(event, 'id')
 
   const body = await validateBody(event, schema, true)
 
   // Upload file if included
-  let fileUrl: string | undefined
+  let hasFile: true | undefined
   if (body.file) {
-    const info = await uploadBlob({
+    await uploadBlob({
       container: 'qualifications',
       blob: body.file,
       name: id,
@@ -63,7 +56,7 @@ export default defineEventHandler(async (event) => {
         },
       },
     })
-    fileUrl = info.url
+    hasFile = true
   }
 
   return await event.context.prisma.qualificationUpload.update({
@@ -71,7 +64,7 @@ export default defineEventHandler(async (event) => {
       id,
     },
     data: {
-      fileUrl,
+      hasFile,
       description: body.description,
       qualifications: parseIDsToPrismaSetObject(body.qualifications),
     },

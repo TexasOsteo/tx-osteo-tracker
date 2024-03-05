@@ -66,6 +66,7 @@ export default defineEventHandler(async (event) => {
     data: {
       description: body.description,
       processed: false,
+      hasFile: false,
       user: {
         connect: {
           id: userId,
@@ -80,7 +81,7 @@ export default defineEventHandler(async (event) => {
 
   // Upload file if included
   if (body.file) {
-    const blobInfo = await uploadBlob({
+    await uploadBlob({
       container: 'qualifications',
       blob: body.file,
       name: qUpload.id,
@@ -92,12 +93,13 @@ export default defineEventHandler(async (event) => {
       },
     })
 
+    // Use another request to update file field in case azure upload fails
     qUpload = await event.context.prisma.qualificationUpload.update({
       where: {
         id: qUpload.id,
       },
       data: {
-        fileUrl: blobInfo.url,
+        hasFile: true,
       },
       include: {
         qualifications: true,

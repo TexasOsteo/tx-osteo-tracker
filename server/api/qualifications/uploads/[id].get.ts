@@ -1,4 +1,5 @@
 import { throwErrorIfNotAdmin } from '~/utils/auth'
+import { ensureRouteParam } from '~/utils/validation'
 
 /**
  * --- API INFO
@@ -10,14 +11,7 @@ export default defineEventHandler(async (event) => {
   throwErrorIfNotAdmin(event)
 
   // Get the id parameter (the last part of this url)
-  const id = getRouterParam(event, 'id')
-  if (!id) {
-    // If there is no id, throw a 400 (BAD REQUEST) error
-    throw createError({
-      status: 400,
-      message: 'No qualification id provided',
-    })
-  }
+  const id = ensureRouteParam(event, 'id')
 
   return await event.context.prisma.qualificationUpload.findUnique({
     where: {
