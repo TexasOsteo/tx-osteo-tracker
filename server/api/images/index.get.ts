@@ -1,5 +1,5 @@
 import { throwErrorIfNotAdmin } from '~/utils/auth'
-import { getAllBlobs } from '~/utils/azure'
+import { getAllBlobs } from '~/utils/blob'
 
 /**
  * --- API INFO

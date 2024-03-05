@@ -1,6 +1,6 @@
 import { array, object, string } from 'yup'
 import { throwErrorIfNotAdmin } from '~/utils/auth'
-import { uploadBlob } from '~/utils/azure'
+import { uploadBlob } from '~/utils/blob'
 import { parseIDsToPrismaSetObject } from '~/utils/prisma-parsing'
 import {
   createFileValidator,

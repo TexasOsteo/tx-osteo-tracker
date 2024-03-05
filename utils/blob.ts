@@ -5,7 +5,6 @@ import {
   BlobSASPermissions,
   type BlockBlobParallelUploadOptions,
 } from '@azure/storage-blob'
-import { EmailClient } from '@azure/communication-email'
 import type { BlobInfo } from './types'
 
 /**
@@ -38,15 +37,6 @@ export function getCDNOrigin() {
  */
 export function getCDNUrl(container: string, name: string) {
   return new URL(`/${container}/${name}`, getCDNOrigin())
-}
-
-/**
- * @returns The Azure email communication client
- */
-export function getEmailClient() {
-  return new EmailClient(
-    useRuntimeConfig().AZURE_COMMUNICATION_SERVICE_CONNECTION_STRING,
-  )
 }
 
 /**

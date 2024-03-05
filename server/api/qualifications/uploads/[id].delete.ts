@@ -1,5 +1,5 @@
 import { throwErrorIfNotAdmin } from '~/utils/auth'
-import { deleteBlob } from '~/utils/azure'
+import { deleteBlob } from '~/utils/blob'
 import { ensureRouteParam } from '~/utils/validation'
 
 /**

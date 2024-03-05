@@ -1,13 +1,21 @@
-import type { EmailMessage } from '@azure/communication-email'
+import { EmailClient, type EmailMessage } from '@azure/communication-email'
 import type { User } from '@prisma/client'
 import { format } from 'date-fns'
 import handlebars from 'handlebars'
-import { getEmailClient } from './azure'
 import type { DefaultEvent } from './types'
 
 type EmailContext = {
   [x: string]: any
   emailCategory: string
+}
+
+/**
+ * @returns The Azure email communication client
+ */
+export function getEmailClient() {
+  return new EmailClient(
+    useRuntimeConfig().AZURE_COMMUNICATION_SERVICE_CONNECTION_STRING,
+  )
 }
 
 /**

@@ -1,6 +1,6 @@
 import { object, string } from 'yup'
 import { throwErrorIfNotAdmin } from '~/utils/auth'
-import { uploadBlob } from '~/utils/azure'
+import { uploadBlob } from '~/utils/blob'
 import { createFileValidator, validateBody } from '~/utils/validation'
 
 /**

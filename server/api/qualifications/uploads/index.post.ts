@@ -1,5 +1,5 @@
 import { array, object, string } from 'yup'
-import { uploadBlob } from '~/utils/azure'
+import { uploadBlob } from '~/utils/blob'
 import { parseIDsToPrismaConnectObject } from '~/utils/prisma-parsing'
 import {
   createFileValidator,

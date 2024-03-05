@@ -1,5 +1,5 @@
 import { throwErrorIfNotAdmin } from '~/utils/auth'
-import { getSASUrl } from '~/utils/azure'
+import { getSASUrl } from '~/utils/blob'
 import { ensureRouteParam } from '~/utils/validation'
 
 /**
