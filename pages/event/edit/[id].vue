@@ -2,6 +2,7 @@
 import { ref } from 'vue'
 import { format } from 'date-fns'
 import type { Event } from '@prisma/client'
+import { generateEventCode } from '../../../utils/universal'
 import type { SerializeObject, FullEvent } from '~/utils/types'
 
 // Custom types used by FormKit
@@ -45,6 +46,10 @@ const allUsers = computed(() =>
     (usersData.value ?? []).map((u) => [u.id, `${u.name} (${u.email})`]),
   ),
 )
+
+const generateCode = () => {
+  formData.value.code = generateEventCode()
+}
 
 async function deleteEvent() {
   const { error } = await useFetch(`/api/events/${eventId}`, {
@@ -236,6 +241,28 @@ async function patchEvent(fields: any) {
             name="attendees"
             validation="noDuplicates"
           />
+
+          <h1 class="title font-sans font-bold text-4xl text-center mt-8 mb-4">
+            GENERATE CODE
+          </h1>
+          <div class="flex justify-center items-center flex-wrap">
+            <FormKit
+              id="code"
+              type="text"
+              name="code"
+              label="Event Code"
+              help="This code is used to check in volunteers"
+              placeholder="Event Code"
+              outer-class="mb-5 w-4/5"
+            />
+          </div>
+          <FormKit
+            type="button"
+            help="You can bind event listeners."
+            @click="generateCode"
+          >
+            Click me!
+          </FormKit>
         </div>
       </FormKit>
       <button
