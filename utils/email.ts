@@ -115,3 +115,12 @@ export async function updateUserRateLimit(event: DefaultEvent) {
     data: { lastEmailTriggered: new Date() },
   })
 }
+
+export async function throwErrorIfRateLimited(event: DefaultEvent) {
+  if (await isUserRateLimited(event)) {
+    throw createError({
+      statusCode: 429,
+      message: 'Rate limited',
+    })
+  }
+}
