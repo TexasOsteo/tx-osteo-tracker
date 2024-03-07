@@ -21,7 +21,8 @@ const inputCode = ref('') // to hold the value of the input field
 async function checkCode() {
   if (
     inputCode.value === fullEventData.value?.code &&
-    fullEventData.value?.code !== undefined
+    fullEventData.value?.code !== undefined &&
+    fullEventData.value?.attendees.some((user) => user.id === data.value?.id)
   ) {
     await useFetch(`/api/events/${eventId}/attendance/me`, {
       method: 'POST',
