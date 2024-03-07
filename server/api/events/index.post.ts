@@ -1,4 +1,4 @@
-import { string, object, number, date, array } from 'yup'
+import { string, object, number, date, array, bool } from 'yup'
 
 import { parseIDsToPrismaConnectObject } from '~/utils/prisma-parsing'
 import { throwErrorIfNotAdmin } from '~/utils/auth'
@@ -30,12 +30,14 @@ export const eventSchema = object({
   attendees: array(string().defined()).defined(),
   signedUpUsers: array(string().defined()).defined(),
   positions: array(string().defined()).defined(),
+  notifyVolunteers: bool().default(true),
 })
 
 export default defineEventHandler(async (event) => {
   throwErrorIfNotAdmin(event) // Check if user is admin
 
-  const body = await validateBody(event, eventSchema)
+  const { notifyVolunteers, ...body } = await validateBody(event, eventSchema)
+
   const eventListing = await event.context.prisma.event.create({
     data: {
       ...body,
@@ -47,5 +49,21 @@ export default defineEventHandler(async (event) => {
       positions: true,
     },
   })
+
+  if (notifyVolunteers) {
+    try {
+      await $fetch('/api/email/new-event', {
+        method: 'POST',
+        headers: event.headers,
+        body: {
+          id: eventListing.id,
+        },
+      })
+    } catch {
+      // eslint-disable-next-line no-console
+      console.warn('Failed to send new event email')
+    }
+  }
+
   return eventListing
 })
