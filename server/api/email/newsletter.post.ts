@@ -2,7 +2,13 @@ import { string, object } from 'yup'
 import { format } from 'date-fns'
 import { throwErrorIfNotAdmin } from '~/utils/auth'
 import { UserEmailCategories } from '~/utils/constants'
-import { renderEmail, sendEmail, usersToRecipients } from '~/utils/email'
+import {
+  renderEmail,
+  sendEmail,
+  throwErrorIfRateLimited,
+  updateUserRateLimit,
+  usersToRecipients,
+} from '~/utils/email'
 import { validateBody } from '~/utils/validation'
 
 const schema = object({
@@ -17,8 +23,8 @@ const schema = object({
  * Send an email using Azure
  */
 export default defineEventHandler(async (event) => {
-  // TODO: Rate limit
   throwErrorIfNotAdmin(event)
+  await throwErrorIfRateLimited(event)
 
   const body = await validateBody(event, schema)
 
@@ -53,6 +59,8 @@ export default defineEventHandler(async (event) => {
       bcc: usersToRecipients(recipients),
     },
   })
+
+  await updateUserRateLimit(event)
 
   return returnObj
 })
