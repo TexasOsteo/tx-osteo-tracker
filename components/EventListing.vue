@@ -359,7 +359,7 @@ function toggleExpanded() {
               <button :onclick="refreshEventList">CHECK IN</button>
             </div>
           </NuxtLink>
-          <NuxtLink :to="`/event/code/${event.id}`">
+          <NuxtLink v-if="isAdmin" :to="`/event/code/${event.id}`">
             <div
               class="w-full p-3 text-center bg-indigo-600 text-white rounded-md hover:bg-white hover:text-black shadow mt-3"
             >

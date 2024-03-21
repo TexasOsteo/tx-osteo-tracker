@@ -11,11 +11,6 @@ async function checkCode() {
       code: inputCode.value,
     },
   })
-  if (error.value) {
-    console.log(error.value)
-  } else {
-    console.log('success')
-  }
 }
 
 definePageMeta({
