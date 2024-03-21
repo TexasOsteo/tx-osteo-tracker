@@ -79,6 +79,20 @@ export default defineEventHandler(async (event) => {
     },
   })
 
+  // Connect the new upload to the qualifications table
+  for (const id of body.qualifications) {
+    await event.context.prisma.qualifications.update({
+      where: { id },
+      data: {
+        uploads: {
+          connect: {
+            id: qUpload.id,
+          },
+        },
+      },
+    })
+  }
+
   // Upload file if included
   if (body.file) {
     await uploadBlob({
