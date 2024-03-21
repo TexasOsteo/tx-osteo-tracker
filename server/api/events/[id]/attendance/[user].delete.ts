@@ -26,7 +26,7 @@ export default defineEventHandler(async (event) => {
   }
 
   const newEvent = await event.context.prisma.event.update({
-    where: { id: eventId },
+    where: { id: eventId, attendees: { some: { id: userId } } },
     data: {
       attendees: {
         disconnect: {
@@ -37,6 +37,15 @@ export default defineEventHandler(async (event) => {
     include: {
       attendees: true,
       signedUpUsers: true,
+    },
+  })
+
+  await event.context.prisma.user.update({
+    where: { id: userId },
+    data: {
+      numHours: {
+        decrement: newEvent.hoursOffered,
+      },
     },
   })
 
