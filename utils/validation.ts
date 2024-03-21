@@ -25,3 +25,12 @@ export async function validateBody<T extends AnyObject>(
     throw error
   }
 }
+export function compareCodes(
+  inputCode: { value: string },
+  fullEventData: { value?: { code?: string } },
+) {
+  return (
+    inputCode.value === fullEventData.value?.code &&
+    fullEventData.value?.code !== undefined
+  )
+}

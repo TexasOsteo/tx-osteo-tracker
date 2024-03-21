@@ -6,10 +6,7 @@ const { data: fullEventData } = await useFetch(`/api/events/${eventId}`)
 const { data } = await useFetch('/api/users/me')
 const userID = ref(data && data.value ? [data.value.id] : [])
 
-// const eventCode = ref('')
-// const generateCode = () => {
-//   eventCode.value = generateEventCode()
-// }
+
 
 const eventCode = ref('')
 

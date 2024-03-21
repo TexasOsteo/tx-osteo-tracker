@@ -33,5 +33,9 @@ export default defineEventHandler(async (event) => {
     })
   }
 
+  if (!event.context.txOsteoClaims?.admin) {
+    data.code = ''
+  }
+
   return data
 })

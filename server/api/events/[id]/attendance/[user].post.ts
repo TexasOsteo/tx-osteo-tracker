@@ -8,18 +8,11 @@ import { validateBody } from '~/utils/validation'
  * Marks a user as an attendee for an event
  */
 
-// const schema = object({
-//   code: string().required(),
-// })
+const schema = object({
+  code: string(),
+})
 
 export default defineEventHandler(async (event) => {
-  // const { code } = await validateBody(event, schema)
-
-  // get event code from db
-  // code === event.code ??
-  // or, if admin, just add the user to the event
-  // event.context.txOsteoClaims?.admin
-
   const eventId = getRouterParam(event, 'id')
   if (!eventId) {
     throw createError({
@@ -43,6 +36,32 @@ export default defineEventHandler(async (event) => {
     throwErrorIfNotAdmin(event) // Check if user is admin
   }
 
+  const { code } = await validateBody(event, schema)
+  const currentEvent = await event.context.prisma.event.findUnique({
+    where: {
+      id: eventId,
+    },
+    include: {
+      attendees: true,
+    },
+  })
+  if (!currentEvent) {
+    throw createError({
+      statusCode: 404,
+      statusMessage: 'Event not found',
+    })
+  }
+  if (currentEvent.code !== code) {
+    throwErrorIfNotAdmin(event, 'Invalid event code')
+  }
+
+  if (currentEvent.attendees.find((attendee) => attendee.id === userId)) {
+    throw createError({
+      statusCode: 400,
+      statusMessage: 'User is already an attendee',
+    })
+  }
+
   const newEvent = await event.context.prisma.event.update({
     where: { id: eventId },
     data: {
@@ -57,6 +76,19 @@ export default defineEventHandler(async (event) => {
       signedUpUsers: true,
     },
   })
+
+  await event.context.prisma.user.update({
+    where: { id: userId },
+    data: {
+      numHours: {
+        increment: newEvent.hoursOffered,
+      },
+    },
+  })
+
+  if (!event.context.txOsteoClaims?.admin) {
+    newEvent.code = ''
+  }
 
   return newEvent
 })

@@ -25,5 +25,10 @@ export default defineEventHandler(async (event) => {
       positions: true,
     },
   })
+  if (!event.context.txOsteoClaims?.admin) {
+    for (const ev of data) {
+      ev.code = ''
+    }
+  }
   return data
 })
