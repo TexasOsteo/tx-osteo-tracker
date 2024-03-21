@@ -1,6 +1,5 @@
 import { throwErrorIfNotAdmin } from '~/utils/auth'
-import { getBlobServiceClient, getCDNUrl } from '~/utils/azure'
-import { BlobInfo } from '~/utils/types'
+import { getAllBlobs } from '~/utils/blob'
 
 /**
  * --- API INFO
@@ -16,23 +15,6 @@ export default defineEventHandler(async (event) => {
   const url = getRequestURL(event)
   const typeParam = url.searchParams.get('type')
 
-  const blobServiceClient = getBlobServiceClient()
-  const containerClient = blobServiceClient.getContainerClient('images')
-
-  const blobsInfo: BlobInfo[] = []
-
-  for await (const blob of containerClient.listBlobsFlat({
-    includeDeleted: false,
-    includeTags: true,
-  })) {
-    if (!typeParam || blob.tags?.type === typeParam) {
-      blobsInfo.push({
-        name: blob.name,
-        tags: blob.tags ?? {},
-        url: getCDNUrl(`/${containerClient.containerName}/${blob.name}`).href,
-      })
-    }
-  }
-
-  return blobsInfo
+  const blobs = await getAllBlobs('images')
+  return blobs.filter((blob) => !typeParam || blob.tags.type === typeParam)
 })

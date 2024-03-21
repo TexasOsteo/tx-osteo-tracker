@@ -12,26 +12,24 @@ import {
 import { validateBody } from '~/utils/validation'
 
 const schema = object({
-  image: string().required(),
-  title: string().required(),
-  content: string().required(),
+  id: string().required(),
 })
 
 /**
  * --- API INFO
- * POST /api/email/newsletter
+ * POST /api/email/new-event
  * Send an email using Azure
  */
 export default defineEventHandler(async (event) => {
   throwErrorIfNotAdmin(event)
   await throwErrorIfRateLimited(event)
 
-  const body = await validateBody(event, schema)
+  const { id } = await validateBody(event, schema)
 
   const recipients = await event.context.prisma.user.findMany({
     where: {
       subscribedEmailCategories: {
-        has: UserEmailCategories.NEWSLETTER,
+        has: UserEmailCategories.NEW_EVENT,
       },
     },
   })
@@ -41,10 +39,20 @@ export default defineEventHandler(async (event) => {
   }
   if (recipients.length === 0) return returnObj
 
-  // Generates HTML based on the newsletter template with the information from the request body
-  const emailHTML = await renderEmail('newsletter', event, {
-    emailCategory: UserEmailCategories.NEWSLETTER,
-    ...body,
+  const eventInfo = await event.context.prisma.event.findFirst({
+    where: { id },
+  })
+  if (!eventInfo) {
+    throw createError({
+      statusCode: 404,
+      statusMessage: 'Event not found',
+    })
+  }
+
+  // Generates HTML based on the new-event template with the information from the request body
+  const emailHTML = await renderEmail('new-event', event, {
+    emailCategory: UserEmailCategories.NEW_EVENT,
+    ...eventInfo,
   })
 
   await sendEmail({
@@ -52,7 +60,7 @@ export default defineEventHandler(async (event) => {
     senderAddress:
       'DoNotReply@a47fc2ce-80d8-41bc-bf85-dd31d4ff6b81.azurecomm.net',
     content: {
-      subject: `Texas Osteo Newsletter - ${format(new Date(), 'MMM d, y')}`,
+      subject: `Texas Osteo Event Listing - ${format(new Date(), 'MMM d, y')}`,
       html: emailHTML,
     },
     recipients: {
