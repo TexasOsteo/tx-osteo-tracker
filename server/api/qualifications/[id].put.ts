@@ -1,20 +1,20 @@
 import { string, object, array } from 'yup'
 import { parseIDsToPrismaConnectObject } from '~/utils/prisma-parsing'
-import { validateBody } from '~/utils/validation'
+import { ensureRouteParam, validateBody } from '~/utils/validation'
 
 import { throwErrorIfNotAdmin } from '~/utils/auth'
 
 /**
  * --- API INFO
- * POST /api/qualifications
- * Creates a new qualification with a generated id
- * Returns the newly created qualification
+ * PUT /api/qualifications/[id]
+ * Updates an existing qualifications
+ * Returns the newly updated qualification
  * ---
  */
 
 export const qualificationsSchema = object({
   id: string().optional(),
-  name: string().required(),
+  name: string().optional(),
   uploads: array(string().required()).optional(),
   validatedUsers: array(string().required()).optional(),
   positions: array(string().required()).optional(),
@@ -23,9 +23,14 @@ export const qualificationsSchema = object({
 export default defineEventHandler(async (event) => {
   throwErrorIfNotAdmin(event)
 
+  const id = ensureRouteParam(event, 'id')
+
   const body = await validateBody(event, qualificationsSchema)
 
-  const qualification = await event.context.prisma.qualifications.create({
+  const qualification = await event.context.prisma.qualifications.update({
+    where: {
+      id,
+    },
     data: {
       id: body.id,
       name: body.name,

@@ -1,5 +1,6 @@
 import { object, string, number, array } from 'yup'
 import { throwErrorIfNotAdmin } from '~/utils/auth'
+import { parseIDsToPrismaConnectObject } from '~/utils/prisma-parsing'
 import { validateBody } from '~/utils/validation'
 
 /**
@@ -18,9 +19,9 @@ export default defineEventHandler(async (event) => {
     object({
       name: string().required(), // Event position name is required
       maxCapacity: number().required(), // Maximum capacity is required
-      prerequisites: array().of(string()), // Prerequisites are optional
+      prerequisites: array(string().required()), // Prerequisites are optional
       currentCapacity: number(), // Current capacity is optional
-      users: array().of(string()), // Users are optional
+      users: array(string().required()), // Users are optional
       eventId: string().required(), // Event ID is required
     }),
   )
@@ -30,20 +31,10 @@ export default defineEventHandler(async (event) => {
     data: {
       name: body.name,
       maxCapacity: body.maxCapacity,
-      prerequisites: body.prerequisites
-        ? {
-            // Connect the event position to the prerequisites
-            connect: body.prerequisites.map((id) => ({ id })),
-          }
-        : {},
+      prerequisites: parseIDsToPrismaConnectObject(body.prerequisites ?? []),
       // Set the current capacity to the number of users if any, or 0
       currentCapacity: body.users ? body.users.length : 0,
-      users: body.users
-        ? {
-            // Connect the event position to the users
-            connect: body.users.map((id) => ({ id })),
-          }
-        : {},
+      users: parseIDsToPrismaConnectObject(body.users ?? []),
       event: {
         // Connect the event position to the event
         connect: {

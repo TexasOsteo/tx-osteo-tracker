@@ -1,4 +1,5 @@
 import { string, object, number, array } from 'yup'
+import { parseIDsToPrismaConnectObject } from '~/utils/prisma-parsing'
 import { validateBody } from '~/utils/validation'
 
 /**
@@ -23,8 +24,8 @@ export default defineEventHandler(async (event) => {
     object({
       name: string(), // Event position name is optional
       maxCapacity: number(), // Maximum capacity is optional
-      prerequisites: array().of(string()), // Prerequisites are optional
-      users: array().of(string()), // Users are optional
+      prerequisites: array(string().required()), // Prerequisites are optional
+      users: array(string().required()), // Users are optional
       eventId: string(), // Event ID is optional
     }),
   )
@@ -37,26 +38,18 @@ export default defineEventHandler(async (event) => {
     data: {
       name: body.name,
       maxCapacity: body.maxCapacity,
-      currentCapacity: body.users ? body.users.length : 0, // Adjust current capacity to the length of the incoming users, or 0 if users is undefined
-      prerequisites: body.prerequisites
-        ? {
-            // Connect the event position to the prerequisites
-            connect: body.prerequisites.map((id) => ({ id })),
-          }
-        : {},
-      users: body.users
-        ? {
-            // Connect the event position to the users
-            connect: body.users.map((id) => ({ id })),
-          }
-        : {},
+      currentCapacity: {
+        increment: body.users?.length,
+      },
+      prerequisites: parseIDsToPrismaConnectObject(body.prerequisites ?? []),
+      users: parseIDsToPrismaConnectObject(body.users ?? []),
       event: body.eventId
         ? {
-            // Connect the event position to the event
-            connect: {
-              id: body.eventId,
-            },
-          }
+          // Connect the event position to the event
+          connect: {
+            id: body.eventId,
+          },
+        }
         : {},
     },
   })

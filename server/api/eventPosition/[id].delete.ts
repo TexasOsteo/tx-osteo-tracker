@@ -28,22 +28,6 @@ export default defineEventHandler(async (event) => {
     throw new Error('Event position not found')
   }
 
-  // Disconnect the event position from all its users
-  for (const user of eventPosition.users) {
-    await event.context.prisma.user.update({
-      where: {
-        id: user.id,
-      },
-      data: {
-        signedUpPositions: {
-          disconnect: {
-            id: positionId,
-          },
-        },
-      },
-    })
-  }
-
   // Delete the event position
   const deletedEventPosition = await event.context.prisma.eventPosition.delete({
     where: {

@@ -15,7 +15,7 @@ export default defineEventHandler(async (event) => {
     // If there is no id, throw a 400 (BAD REQUEST) error
     throw createError({
       status: 400,
-      message: 'No event id provided',
+      message: 'No user id provided',
     })
   }
 
