@@ -13,20 +13,20 @@ definePageMeta({
       <h1 class="text-3xl block sm:hidden">TOF</h1>
     </div>
     <div class="h-full w-1/2 flex items-center justify-end">
-      <a href="/api/auth/login"
-        ><button
+      <a href="/api/auth/login">
+        <button
           class="py-5 px-10 mr-5 bg-white rounded-md hover:bg-[#F0CC5A] hover:text-white transition duration-300 ease-in-out hidden sm:block"
         >
           SIGN UP
-        </button></a
-      >
+        </button>
+      </a>
       <a href="/api/auth/login">
         <button
           class="py-5 px-10 mr-5 bg-white rounded-md hover:bg-[#F0CC5A] hover:text-white transition duration-300 ease-in-out hidden sm:block"
         >
           LOG IN
-        </button></a
-      >
+        </button>
+      </a>
     </div>
   </div>
   <div class="flex flex-wrap z-0 overflow-x-hidden overflow-y-hidden">
@@ -108,3 +108,5 @@ definePageMeta({
     </div>
   </div>
 </template>
+
+
