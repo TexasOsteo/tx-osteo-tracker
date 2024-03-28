@@ -29,18 +29,22 @@ const props = defineProps<{
   validation?: string
 }>()
 
-const imageValue = ref<string>()
+const imageValue = ref<string>() // Uses undefined instead of null for FormKit
 const modalOpen = ref<boolean>(false)
 const images = ref<BlobInfo[] | null>(null)
-const uploadedImage = ref<File | null>(null)
-const imageSelectForm = ref<HTMLFormElement>()
+const uploadedImage = ref<FormKitFile | null>(null)
 const errorText = ref<string | null>(null)
 
-// Detect when the modal opens and request images
 watch(modalOpen, () => {
+  // Detect when the modal opens and request images
   if (modalOpen.value && images.value === null) {
     images.value = [] // Make non-null so no other promises are created
     getImages()
+  }
+
+  if (!modalOpen.value) {
+    // Reset error text
+    errorText.value = null
   }
 })
 
@@ -51,9 +55,10 @@ async function getImages() {
 
 async function uploadImage() {
   if (!uploadedImage.value) return
+
   const body = new FormData()
   body.set('type', props.type)
-  body.set('file', uploadedImage.value)
+  body.set('file', uploadedImage.value.file)
 
   const { data, error } = await useFetch(`/api/images?type=${props.type}`, {
     method: 'POST',
@@ -66,20 +71,35 @@ async function uploadImage() {
   }
 
   images.value = null // Reset images because the array is now outdated
-  imageValue.value = data.value.url
   modalOpen.value = false
+  imageValue.value = data.value.url
   uploadedImage.value = null
 }
 
-function confirm() {
-  if (imageSelectForm.value) {
-    const data = new FormData(imageSelectForm.value)
-    const selectedImage = data.get('image')
-    if (selectedImage) {
-      imageValue.value = selectedImage as string
-    }
+async function deleteImage() {
+  if (!imageValue.value || !images.value) return
+
+  const confirmation = confirm(
+    'Are you sure? The image will be permanently deleted for the entire website.',
+  )
+  if (!confirmation) return
+
+  const imageBlob = images.value.find((b) => b.url === imageValue.value)
+  if (!imageBlob) return
+
+  const { data, error } = await useFetch(`/api/images/${imageBlob.name}`, {
+    method: 'DELETE',
+  })
+
+  if (!data.value) {
+    errorText.value =
+      error.value?.message ?? 'Could not delete image for unknown reason.'
+    return
   }
-  modalOpen.value = false
+
+  // Remove deleted image
+  images.value = images.value.filter((b) => b.name !== imageBlob.name)
+  imageValue.value = undefined
 }
 </script>
 
@@ -120,20 +140,19 @@ function confirm() {
     class="flex justify-center items-center"
     content-class="flex flex-col lg:6/12 sm:w-8/12 w-full max-h-[90vh] mx-4 p-4 bg-white border rounded-lg space-y-2"
   >
-    <h1>Select an Image</h1>
+    <h1 class="font-bold">Select an Image</h1>
     <form
       v-if="images && images.length > 0"
-      :ref="(elem) => (imageSelectForm = elem as HTMLFormElement)"
-      class="p-2 grid grid-cols-3 gap-4"
+      class="p-2 grid grid-cols-3 gap-2 h-max overflow-y-auto"
     >
       <label v-for="image in images" :key="image.name" :for="image.name">
         <input
           :id="image.name"
           :key="image.name"
+          v-model="imageValue"
           class="peer invisible opacity-0 w-0 h-0"
           :value="image.url"
           type="radio"
-          name="image"
         />
         <img
           class="object-cover max-w-full h-auto align-middle cursor-pointer peer-checked:outline-8 outline-0 outline-double outline-black"
@@ -147,21 +166,33 @@ function confirm() {
       label="New Image"
       accept=".png,.jpg,.jpeg,.gif,.webp"
       help="Upload a new image"
-      @input="
-        (f: FormKitFile[]) => (uploadedImage = (f ?? [])[0]?.file ?? null)
-      "
+      @input="(f: FormKitFile[]) => (uploadedImage = f[0] ?? null)"
     />
     <div class="flex w-full justify-end gap-1">
       <button
+        v-if="imageValue"
+        class="block text-white bg-red-700 disabled:bg-gray-300 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+        @click="() => deleteImage()"
+      >
+        Delete Selected
+      </button>
+      <button
+        v-if="imageValue && !validation?.includes('required')"
+        class="block text-white bg-gray-400 disabled:bg-gray-300 hover:bg-gray-500 focus:ring-4 focus:outline-none focus:ring-gray-400 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+        @click="() => (imageValue = undefined)"
+      >
+        Clear Selected
+      </button>
+      <button
         v-if="uploadedImage"
-        class="block text-white bg-green-700 disabled:bg-gray-300 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+        class="inline-block text-white bg-green-700 disabled:bg-gray-300 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
         @click="() => uploadImage()"
       >
         Upload
       </button>
       <button
         class="block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
-        @click="() => confirm()"
+        @click="() => (modalOpen = false)"
       >
         Confirm
       </button>
