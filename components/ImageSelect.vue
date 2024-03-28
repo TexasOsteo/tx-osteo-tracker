@@ -29,7 +29,7 @@ const props = defineProps<{
   validation?: string
 }>()
 
-const imageValue = ref<string>() // Uses undefined install of null for FormKit
+const imageValue = ref<string>() // Uses undefined instead of null for FormKit
 const modalOpen = ref<boolean>(false)
 const images = ref<BlobInfo[] | null>(null)
 const uploadedImage = ref<FormKitFile | null>(null)
