@@ -6,7 +6,7 @@
 export default {
   // Global styles apply to _all_ inputs with matching section keys
   global: {
-    fieldset: 'max-w-md border border-gray-400 rounded px-2 pb-1',
+    fieldset: 'border border-gray-400 rounded px-2 pb-1',
     help: 'text-xs text-gray-500',
     inner:
       'formkit-disabled:bg-gray-200 formkit-disabled:cursor-not-allowed formkit-disabled:pointer-events-none',
