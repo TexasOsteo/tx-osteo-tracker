@@ -6,7 +6,7 @@ definePageMeta({
 
 <template>
   <div
-    class="h-20 w-[100%] bg-white flex absolute items-center shadow z-10 overflow-hidden-x-hidden mx-auto"
+    class="h-20 w-[100%] bg-white flex absolute items-center shadow z-10 overflow-hidden-x-hidden mx-auto font-lexend"
   >
     <div class="h-full w-1/2 flex items-center justify-left ml-10">
       <h1 class="text-xl hidden sm:block">TEXAS OSTEOPOROSIS FOUNDATION</h1>
@@ -35,6 +35,8 @@ definePageMeta({
     >
       <div class="text-center items-center justify-center lg:mr-20 font-lexend">
         <h1 class="text-5xl font-bold">VOLUNTEER AT TOF</h1>
+      <div class="text-center items-center justify-center lg:mr-20 font-lexend">
+        <h1 class="text-5xl font-bold ">VOLUNTEER AT TOF</h1>
         <p class="py-5 text-xl">
           Start volunteering and make a change in the world today!
         </p>
@@ -59,7 +61,7 @@ definePageMeta({
     </div>
 
     <div
-      class="w-full bg-[#0DA49B] flex flex-wrap-reverse items-center justify-center"
+      class="w-full bg-[#0DA49B] flex flex-wrap-reverse items-center justify-center font-sans"
     >
       <div>
         <div class="container flex my-10 text-white">
