@@ -7,7 +7,6 @@ export enum UserEmailCategories {
   EVENT_REMINDER = 'EVENT_REMINDER',
   EVENT_SIGNUP = 'EVENT_SIGNUP',
   NEWSLETTER = 'NEWSLETTER',
-  REPORT = 'REPORT',
   OTHER = 'OTHER',
 }
 
