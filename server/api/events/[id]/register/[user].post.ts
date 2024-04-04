@@ -74,6 +74,18 @@ export default defineEventHandler(async (event) => {
   if (!event.context.txOsteoClaims?.admin) {
     newEvent.code = ''
   }
+  try {
+    await $fetch('/api/email/signup', {
+      method: 'POST',
+      headers: event.headers,
+      body: {
+        id: eventId,
+      },
+    })
+  } catch {
+    // eslint-disable-next-line no-console
+    console.warn('Failed to send sign up confirmation email')
+  }
 
   return newEvent
 })

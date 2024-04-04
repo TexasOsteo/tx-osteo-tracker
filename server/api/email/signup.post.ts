@@ -1,6 +1,7 @@
 import { string, object } from 'yup'
 import { format } from 'date-fns'
-import { AdminEmailCategories } from '~/utils/constants'
+import { throwErrorIfNotAdmin } from '~/utils/auth'
+import { UserEmailCategories } from '~/utils/constants'
 import {
   renderEmail,
   sendEmail,
@@ -11,23 +12,25 @@ import {
 import { validateBody } from '~/utils/validation'
 
 const schema = object({
-  title: string().required(),
-  content: string().required(),
+  id: string().required(),
 })
 
 /**
  * --- API INFO
- * POST /api/email/report
+ * POST /api/email/signup
  * Send an email using Azure
  */
 export default defineEventHandler(async (event) => {
+  throwErrorIfNotAdmin(event)
   await throwErrorIfRateLimited(event)
 
-  const body = await validateBody(event, schema)
+  const { id } = await validateBody(event, schema)
 
   const recipients = await event.context.prisma.user.findMany({
     where: {
-      isAdmin: true,
+      subscribedEmailCategories: {
+        has: UserEmailCategories.EVENT_SIGNUP,
+      },
     },
   })
 
@@ -36,10 +39,20 @@ export default defineEventHandler(async (event) => {
   }
   if (recipients.length === 0) return returnObj
 
-  // Generates HTML based on the report template with the information from the request body
-  const emailHTML = await renderEmail('user-report', event, {
-    emailCategory: AdminEmailCategories.USER_REPORT,
-    ...body,
+  const eventInfo = await event.context.prisma.event.findFirst({
+    where: { id },
+  })
+  if (!eventInfo) {
+    throw createError({
+      statusCode: 404,
+      statusMessage: 'Event not found',
+    })
+  }
+
+  // Generates HTML based on the event_signup template with the information from the request body
+  const emailHTML = await renderEmail('sign-up', event, {
+    emailCategory: UserEmailCategories.EVENT_SIGNUP,
+    ...eventInfo,
   })
 
   await sendEmail({
@@ -47,7 +60,10 @@ export default defineEventHandler(async (event) => {
     senderAddress:
       'DoNotReply@a47fc2ce-80d8-41bc-bf85-dd31d4ff6b81.azurecomm.net',
     content: {
-      subject: `Texas Osteo Report Form - ${format(new Date(), 'MMM d, y')}`,
+      subject: `Texas Osteo Sign Up Confirmation - ${format(
+        new Date(),
+        'MMM d, y',
+      )}`,
       html: emailHTML,
     },
     recipients: {
