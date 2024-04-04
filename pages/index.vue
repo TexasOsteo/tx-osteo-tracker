@@ -33,12 +33,12 @@ definePageMeta({
     <div
       class="h-screen max-w-screen-xl mx-auto my-auto flex flex-wrap-reverse items-center justify-center text-center pt-20"
     >
-      <div class="text-center items-center justify-center lg:mr-20">
-        <h1 class="text-5xl font-bold font-sans">VOLUNTEER AT TOF</h1>
+      <div class="text-center items-center justify-center lg:mr-20 font-lexend">
+        <h1 class="text-5xl font-bold">VOLUNTEER AT TOF</h1>
         <p class="py-5 text-xl">
           Start volunteering and make a change in the world today!
         </p>
-        <div class="flex flex-wrap items-center justify-center">
+        <div class="flex flex-wrap items-center justify-center font-lexend">
           <a href="/api/auth/login">
             <button
               class="py-5 px-10 mr-5 bg-[#0DA49B] text-white rounded-md hover:bg-[#F0CC5A] hover:text-white transition duration-300 ease-in-out text-2xl mb-20"
@@ -108,5 +108,3 @@ definePageMeta({
     </div>
   </div>
 </template>
-
-
