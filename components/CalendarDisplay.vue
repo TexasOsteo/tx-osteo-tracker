@@ -180,7 +180,7 @@ fetchEvents()
 
 <template>
   <div>
-    <h1 class="title font-sans font-bold text-5xl text-center pt-10">
+    <h1 class="title font-lexend font-bold text-5xl text-center pt-10">
       Sign Up
     </h1>
 

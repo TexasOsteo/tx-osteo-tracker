@@ -11,7 +11,6 @@ const showPopup = ref(false)
 const currentEvent = ref(null)
 const isSidebar = ref(false)
 
-
 const toggleSidebar = () => {
   isSidebar.value = !isSidebar.value
 }
@@ -76,15 +75,15 @@ function displayDate(dateTime: string) {
 
     <main
       id="MyEvents"
-      class=" w-full flex flex-col overflow-auto bg-gray-100 border-2 border-gray-100 border-t-gray-200 border-l-[#EEE]"
+      class="w-full flex flex-col overflow-auto bg-gray-100 border-2 border-gray-100 border-t-gray-200 border-l-[#EEE]"
     >
       <div id="UFEvents" class="flex-col overflow-y-auto bg-gray-100">
         <div class="z-[10]">
           <button
             @click="toggleSidebar"
-            class="w-full bg-red-500 block md:hidden"
+            class="w-full bg-blue-500 block md:hidden"
           >
-            :D
+            Click for User Information
           </button>
         </div>
         <div class="z-[0]">
