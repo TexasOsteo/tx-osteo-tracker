@@ -23,6 +23,7 @@
     "@fullcalendar/vue3": "^6.1.9",
     "@nuxt/devtools": "latest",
     "@nuxtjs/eslint-config-typescript": "^12.1.0",
+    "@nuxtjs/google-fonts": "^3.2.0",
     "@pinia/nuxt": "^0.5.1",
     "@prisma/client": "^5.4.2",
     "@types/jsonwebtoken": "^9.0.3",
