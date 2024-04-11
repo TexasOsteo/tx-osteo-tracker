@@ -1,14 +1,28 @@
 <script setup lang="ts">
 const formErrors = ref<string[]>()
 
+const formData = ref({})
+
 async function handleSubmit(fields: any) {
+  // Map the positions and replace 'None' with an empty string
+  fields.positions = fields.positions.map((position: any) => {
+    let prerequisites = position.prerequisites.filter((id: any) => id !== null)
+    if (prerequisites.length === 0) {
+      prerequisites = []
+    }
+    return {
+      ...position,
+      prerequisites,
+    }
+  })
+
   const { error } = await useFetch('/api/events', {
     method: 'POST',
     body: {
       ...fields,
       attendees: [],
       signedUpUsers: [],
-      positions: [], // TODO: Create form for positions
+      // If this was the issue, kill me now! IT WASSSSS positions: [], // TODO: Create form for positions
       code: generateEventCode(),
     },
   })
@@ -37,6 +51,7 @@ async function handleSubmit(fields: any) {
         CREATE EVENT
       </h1>
       <FormKit
+        v-model="formData"
         type="form"
         :errors="formErrors"
         class-name="items-center"
@@ -156,14 +171,14 @@ async function handleSubmit(fields: any) {
             outer-class="mb-5 w-4/5"
           />
 
-          <!-- <TextMultiple
-            title="Volunteer Positions"
-            placeholder="Enter new position"
-            add-text="Add new position"
-            name="positions"
-            empty
-          /> -->
+          <!--Positions & Capacity
+            A list of groups -> An array of objects
+            List of positions -> An array of EventPositions
+            @update:positions="fields.positions = $event" 
+          -->
+          <PositionCapacity />
         </div>
+        <pre>{{ formData }}</pre>
       </FormKit>
     </div>
   </div>

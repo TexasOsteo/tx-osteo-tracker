@@ -374,6 +374,14 @@ function toggleExpanded() {
             </div>
           </NuxtLink>
 
+          <NuxtLink :to="`/event/${event.id}/register`">
+            <div
+              class="w-full p-3 text-center bg-emerald-300 text-white rounded-md hover:bg-white hover:text-black shadow mt-3"
+            >
+              <button :onclick="refreshEventList">ROLE REGISTER</button>
+            </div>
+          </NuxtLink>
+
           <EventRegisterButton :id="event.id" />
         </div>
       </div>

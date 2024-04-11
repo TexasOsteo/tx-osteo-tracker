@@ -3,6 +3,7 @@ import { string, object, number, date, array, bool } from 'yup'
 import { parseIDsToPrismaConnectObject } from '~/utils/prisma-parsing'
 import { throwErrorIfNotAdmin } from '~/utils/auth'
 import { validateBody } from '~/utils/validation'
+// import { id } from 'date-fns/locale'
 
 /**
  * --- API INFO
@@ -29,7 +30,18 @@ export const eventSchema = object({
   languages: array(string().defined()).defined(),
   attendees: array(string().defined()).defined(),
   signedUpUsers: array(string().defined()).defined(),
-  positions: array(string().defined()).defined(),
+  positions: array(
+    object({
+      name: string().required(),
+      maxCapacity: number().required(),
+      prerequisites: array(
+        object({
+          id: string().required(),
+          name: string().required(),
+        }).defined(),
+      ).defined(),
+    }).defined(),
+  ).defined(),
   notifyVolunteers: bool().default(true),
 })
 
@@ -43,7 +55,18 @@ export default defineEventHandler(async (event) => {
       ...body,
       attendees: parseIDsToPrismaConnectObject(body.attendees),
       signedUpUsers: parseIDsToPrismaConnectObject(body.signedUpUsers),
-      positions: parseIDsToPrismaConnectObject(body.positions),
+      positions: {
+        create: body.positions.map((position) => ({
+          name: position.name,
+          maxCapacity: position.maxCapacity,
+          currentCapacity: 0,
+          prerequisites: {
+            connect: position.prerequisites.map((prerequisite) => ({
+              id: prerequisite.id,
+            })),
+          },
+        })),
+      },
     },
     include: {
       positions: true,
