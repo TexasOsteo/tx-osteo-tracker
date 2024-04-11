@@ -1,4 +1,5 @@
 import type { DefaultEvent } from './types'
+import { getRealRequestURL } from './server'
 
 /**
  * Generates the oauth login url for Auth0
@@ -8,12 +9,9 @@ import type { DefaultEvent } from './types'
 export function getLoginRedirect(event: DefaultEvent): string {
   const redirectUrl = new URL('/authorize', getAuth0Domain())
 
-  // const currentUrl = getRequestURL(event)
+  const currentUrl = getRealRequestURL(event)
 
-  const redirectUri = new URL(
-    '/api/auth/callback/login',
-    'https://txosteo.samuelpreston.me/',
-  )
+  const redirectUri = new URL('/api/auth/callback/login', currentUrl.origin)
 
   redirectUrl.searchParams.append('redirect_uri', redirectUri.href)
   redirectUrl.searchParams.append(
@@ -38,7 +36,7 @@ export function getLoginRedirect(event: DefaultEvent): string {
 export function getLogoutRedirect(event: DefaultEvent, token: string): string {
   const redirectUrl = new URL('/oidc/logout', getAuth0Domain())
 
-  const currentUrl = getRequestURL(event)
+  const currentUrl = getRealRequestURL(event)
   const redirectUri = new URL('/api/auth/callback/logout', currentUrl.origin)
 
   redirectUrl.searchParams.append('post_logout_redirect_uri', redirectUri.href)
@@ -68,7 +66,7 @@ function getAuth0Domain(): string {
  */
 export function throwErrorIfNotAdmin(event: DefaultEvent, message?: string) {
   if (!event.context.txOsteoClaims || !event.context.txOsteoClaims.admin) {
-    const currentUrl = getRequestURL(event)
+    const currentUrl = getRealRequestURL(event)
     throw createError({
       statusCode: 401,
       message:

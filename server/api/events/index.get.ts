@@ -1,3 +1,5 @@
+import { getRealRequestURL } from '~/utils/server'
+
 /**
  * --- API INFO
  * GET /api/events
@@ -8,7 +10,7 @@
  */
 
 export default defineEventHandler(async (event) => {
-  const url = getRequestURL(event)
+  const url = getRealRequestURL(event)
 
   // If the param is not null, attempt to parse it as a number then as a string
   const afterDateParam = url.searchParams.get('after')
