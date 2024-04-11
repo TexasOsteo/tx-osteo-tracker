@@ -8,8 +8,12 @@ import type { DefaultEvent } from './types'
 export function getLoginRedirect(event: DefaultEvent): string {
   const redirectUrl = new URL('/authorize', getAuth0Domain())
 
-  const currentUrl = getRequestURL(event)
-  const redirectUri = new URL('/api/auth/callback/login', currentUrl.origin)
+  // const currentUrl = getRequestURL(event)
+
+  const redirectUri = new URL(
+    '/api/auth/callback/login',
+    'https://txosteo.samuelpreston.me/',
+  )
 
   redirectUrl.searchParams.append('redirect_uri', redirectUri.href)
   redirectUrl.searchParams.append(
