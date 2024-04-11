@@ -90,7 +90,7 @@ export function stringified<T extends AnySchema>(innerType: T) {
  * @returns
  */
 export function ensureRouteParam(event: DefaultEvent, param: string): string {
-  const value = getRouterParam(event, 'id')
+  const value = getRouterParam(event, param)
   if (!value) {
     throw createError({
       statusCode: 400,
