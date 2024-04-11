@@ -10,7 +10,7 @@ on:
       - prepare-deployment
 
 env:
-  - DISABLE_ENV_CHECKING: true
+  DISABLE_ENV_CHECKING: true
 
 jobs:
   build_and_deploy_job:
