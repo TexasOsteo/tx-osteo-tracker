@@ -35,8 +35,6 @@ definePageMeta({
     >
       <div class="text-center items-center justify-center lg:mr-20 font-lexend">
         <h1 class="text-5xl font-bold">VOLUNTEER AT TOF</h1>
-      <div class="text-center items-center justify-center lg:mr-20 font-lexend">
-        <h1 class="text-5xl font-bold ">VOLUNTEER AT TOF</h1>
         <p class="py-5 text-xl">
           Start volunteering and make a change in the world today!
         </p>
