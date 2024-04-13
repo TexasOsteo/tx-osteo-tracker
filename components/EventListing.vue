@@ -293,7 +293,7 @@ function toggleExpanded() {
           <li>
             <div
               v-if="event.positions.length > 0"
-              class="flex items-center mt-5 "
+              class="flex items-center mt-5"
             >
               <div>
                 <svg
