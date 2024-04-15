@@ -1,4 +1,5 @@
 import ical from 'ical-generator'
+import { getRealRequestURL } from '~/utils/server'
 
 /**
  * --- API INFO
@@ -10,7 +11,7 @@ export default defineEventHandler(async (event) => {
   const events = await event.context.prisma.event.findMany()
   const calendar = ical({ name: 'Texas Osteoporosis Foundation Events' })
 
-  const url = getRequestURL(event)
+  const url = getRealRequestURL(event)
 
   events.forEach((e) => {
     calendar.createEvent({
