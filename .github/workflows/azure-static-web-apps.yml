@@ -1,13 +1,14 @@
 name: Azure Static Web Apps CI/CD
 
 on:
-  push:
-    branches:
-      - prepare-deployment
-  pull_request:
-    types: [opened, synchronize, reopened, closed]
-    branches:
-      - prepare-deployment
+  workflow_dispatch
+  # push:
+  # branches:
+  # - main
+  # pull_request:
+  # types: [opened, synchronize, reopened, closed]
+  # branches:
+  # - main
 
 env:
   DISABLE_ENV_CHECKING: true
