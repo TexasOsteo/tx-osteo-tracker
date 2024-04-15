@@ -27,6 +27,9 @@ export default defineNuxtConfig({
       txosteo_token: 'txosteo_volunteer_token',
     },
   },
+
+  buildModules: ['@nuxtjs/google-fonts'],
+  googleFonts: { families: { Inter: [400, 500, 600, 700] } },
   modules: ['@formkit/nuxt', '@pinia/nuxt', 'nuxt-icon'],
   formkit: {
     autoImport: true,

@@ -1,4 +1,5 @@
 import { throwErrorIfNotAdmin } from '~/utils/auth'
+import { ensureRouteParam } from '~/utils/validation'
 
 /**
  * --- API INFO
@@ -16,16 +17,18 @@ export default defineEventHandler(async (event) => {
     })
   }
 
-  let userId = getRouterParam(event, 'user')
-  if (!userId) {
+  const cookieUserId = event.context.txOsteoClaims?.sub
+  if (!cookieUserId) {
     throw createError({
-      status: 400,
-      message: 'No user id provided',
+      statusCode: 402,
+      statusMessage: 'You are unauthenticated',
     })
   }
 
-  const cookieUserId = event.context.txOsteoClaims?.sub
-  if (userId === 'me') userId = cookieUserId
+  let userId = ensureRouteParam(event, 'user')
+  if (userId === 'me') {
+    userId = cookieUserId
+  }
 
   // Only allow if this is the user, or if the user is an admin
   // Checks by making sure the user ids are the same
@@ -74,6 +77,17 @@ export default defineEventHandler(async (event) => {
   if (!event.context.txOsteoClaims?.admin) {
     newEvent.code = ''
   }
+
+  try {
+    await $fetch('/api/email/signup', {
+      method: 'POST',
+      headers: event.headers,
+      body: {
+        eventId,
+        userId,
+      },
+    })
+  } catch {}
 
   return newEvent
 })

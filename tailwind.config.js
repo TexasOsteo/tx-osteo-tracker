@@ -13,7 +13,14 @@ module.exports = {
     './assets/*.{js,ts}',
   ],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        bitter: ['Bitter', 'serif',],
+        ubuntu: ['Ubuntu', 'sans-serif',],
+        sacramento: ['Sacramento', 'sans-serif',],
+        lexend: ['Lexend Deca', 'sans-serif'],
+      },
+    },
   },
   plugins: [FormKitVariants],
 }
