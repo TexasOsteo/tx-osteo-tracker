@@ -5,12 +5,22 @@ import type { Event } from '@prisma/client'
 import { generateEventCode } from '../../../utils/universal'
 import type { SerializeObject, FullEvent } from '~/utils/types'
 
+type Position = {
+  id: string
+  name: string
+  currentCapacity: number
+  maxCapacity: number
+  eventId: string
+  prerequisites: (string | { id: string; name: string })[]
+}
+
 // Custom types used by FormKit
-type SFullEvent = SerializeObject<FullEvent>
+type SFullEvent = SerializeObject<FullEvent> & { positions: Position[] }
 type FormKitEventData = Partial<
   SerializeObject<Event> & {
     attendees: string[]
     signedUpUsers: string[]
+    positions: Position[]
   }
 >
 
@@ -33,6 +43,7 @@ function toFormData(event: SFullEvent | null): FormKitEventData {
     // Convert volunteers into id strings
     attendees: event.attendees.map((user) => user.id),
     signedUpUsers: event.signedUpUsers.map((user) => user.id),
+    positions: event.positions,
   } as FormKitEventData
 }
 
@@ -66,6 +77,7 @@ async function deleteEvent() {
 }
 
 async function patchEvent(fields: any) {
+  // console.log(JSON.stringify(fields))
   const { error } = await useFetch(`/api/events/${eventId}`, {
     method: 'PUT',
     body: fields,
@@ -86,7 +98,7 @@ async function patchEvent(fields: any) {
     <CurveBackground />
 
     <div
-      class="max-w-screen-lg bg-gray-100 opacity-95 rounded-3xl shadow-xl z-30 p-10 flex justify-center flex-wrap items-center"
+      class="max-w-screen-lg bg-gray-100 opacity-95 rounded-3xl shadow-xl p-10 flex justify-center flex-wrap items-center mx-2"
     >
       <h1 class="title font-lexend font-bold text-5xl text-center mb-10">
         EDIT EVENT
@@ -218,7 +230,8 @@ async function patchEvent(fields: any) {
             add-text="Add new position"
             name="volunteerPositions"
             empty
-          /> -->
+            /> -->
+          <PositionCapacity mode="edit" />
 
           <h1
             class="title font-lexend font-bold text-4xl text-center mt-8 mb-4"
@@ -243,30 +256,29 @@ async function patchEvent(fields: any) {
             name="attendees"
             validation="noDuplicates"
           />
-
-          <h1
-            class="title font-lexend font-bold text-4xl text-center mt-8 mb-4"
-          >
-            GENERATE CODE
-          </h1>
-          <div class="flex justify-center items-center flex-wrap">
-            <FormKit
-              id="code"
-              type="text"
-              name="code"
-              label="Event Code"
-              help="This code is used to check in volunteers"
-              placeholder="Event Code"
-              outer-class="mb-5 w-4/5"
-            />
+          <div class="w-full flex flex-wrap items-center justify-center">
+            <h1
+              class="title font-sans font-bold text-4xl text-center mt-8 mb-4 w-full"
+            >
+              GENERATE CODE
+            </h1>
+            <div class="flex justify-center items-center flex-wrap w-full ">
+              <FormKit
+                id="code"
+                type="text"
+                name="code"
+                label="Event Code"
+                help="This code can be used to check in volunteers"
+                placeholder="Event Code"
+                outer-class="w-4/5"
+              />
+            </div>
+            <div class="w-4/5 align">
+              <FormKit type="button" @click="generateCode">
+                Generate Code
+              </FormKit>
+            </div>
           </div>
-          <FormKit
-            type="button"
-            help="You can bind event listeners."
-            @click="generateCode"
-          >
-            Click me!
-          </FormKit>
         </div>
       </FormKit>
       <button
@@ -275,6 +287,10 @@ async function patchEvent(fields: any) {
       >
         Delete Event
       </button>
+      <!-- formData is new Data sent to api, fullEventData is old data, what is currently in database before PUT  -->
+      <pre>{{ formData }}</pre>
+      <br />
+      <pre> {{ fullEventData }}</pre>
     </div>
   </div>
 </template>

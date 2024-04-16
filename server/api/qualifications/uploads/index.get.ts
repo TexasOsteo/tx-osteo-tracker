@@ -1,4 +1,5 @@
 import { throwErrorIfNotAdmin } from '~/utils/auth'
+import { getRealRequestURL } from '~/utils/server'
 
 /**
  * --- API INFO
@@ -12,7 +13,7 @@ import { throwErrorIfNotAdmin } from '~/utils/auth'
 export default defineEventHandler(async (event) => {
   throwErrorIfNotAdmin(event)
 
-  const url = getRequestURL(event)
+  const url = getRealRequestURL(event)
   const qualificationParam = url.searchParams.get('qualification')
   const userParam = url.searchParams.get('user')
 

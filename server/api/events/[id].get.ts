@@ -21,7 +21,12 @@ export default defineEventHandler(async (event) => {
     include: {
       attendees: true,
       signedUpUsers: true,
-      positions: true,
+      positions: {
+        include: {
+          // get the qualifictions for each position
+          prerequisites: true,
+        },
+      },
     },
   })
 

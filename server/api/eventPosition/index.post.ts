@@ -32,8 +32,7 @@ export default defineEventHandler(async (event) => {
       name: body.name,
       maxCapacity: body.maxCapacity,
       prerequisites: parseIDsToPrismaConnectObject(body.prerequisites ?? []),
-      // Set the current capacity to the number of users if any, or 0
-      currentCapacity: body.users ? body.users.length : 0,
+      currentCapacity: body.users ? body.users.length : 0, // Set the current capacity to the number of users if any, or 0
       users: parseIDsToPrismaConnectObject(body.users ?? []),
       event: {
         // Connect the event position to the event
@@ -42,8 +41,10 @@ export default defineEventHandler(async (event) => {
         },
       },
     },
+    include: {
+      prerequisites: true,
+    },
   })
 
-  // Return the newly created event position
   return newEventPosition
 })

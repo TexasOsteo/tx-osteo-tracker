@@ -3,6 +3,7 @@ import { string, object, number, date, array, bool } from 'yup'
 import { parseIDsToPrismaConnectObject } from '~/utils/prisma-parsing'
 import { throwErrorIfNotAdmin } from '~/utils/auth'
 import { validateBody } from '~/utils/validation'
+// import { id } from 'date-fns/locale'
 
 /**
  * --- API INFO
@@ -13,7 +14,7 @@ import { validateBody } from '~/utils/validation'
  * Returns the newly created event
  */
 
-export const eventSchema = object({
+const eventSchema = object({
   id: string().optional(),
   name: string().required(),
   organizer: string().required(),
@@ -29,7 +30,13 @@ export const eventSchema = object({
   languages: array(string().defined()).defined(),
   attendees: array(string().defined()).defined(),
   signedUpUsers: array(string().defined()).defined(),
-  positions: array(string().defined()).defined(),
+  positions: array(
+    object({
+      name: string().required(),
+      maxCapacity: number().required(),
+      prerequisites: array(string().required()).required(),
+    }).defined(),
+  ).defined(),
   notifyVolunteers: bool().default(true),
 })
 
@@ -43,7 +50,14 @@ export default defineEventHandler(async (event) => {
       ...body,
       attendees: parseIDsToPrismaConnectObject(body.attendees),
       signedUpUsers: parseIDsToPrismaConnectObject(body.signedUpUsers),
-      positions: parseIDsToPrismaConnectObject(body.positions),
+      positions: {
+        create: body.positions.map((position) => ({
+          name: position.name,
+          maxCapacity: position.maxCapacity,
+          currentCapacity: 0,
+          prerequisites: parseIDsToPrismaConnectObject(position.prerequisites),
+        })),
+      },
     },
     include: {
       positions: true,

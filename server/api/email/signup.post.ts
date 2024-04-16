@@ -12,7 +12,8 @@ import {
 import { validateBody } from '~/utils/validation'
 
 const schema = object({
-  id: string().required(),
+  eventId: string().required(),
+  userId: string().required(),
 })
 
 /**
@@ -21,26 +22,33 @@ const schema = object({
  * Send an email using Azure
  */
 export default defineEventHandler(async (event) => {
-  throwErrorIfNotAdmin(event)
-  await throwErrorIfRateLimited(event)
+  const { eventId, userId } = await validateBody(event, schema)
 
-  const { id } = await validateBody(event, schema)
+  if (event.context.txOsteoClaims?.sub === userId) {
+    await throwErrorIfRateLimited(event)
+  } else {
+    throwErrorIfNotAdmin(event)
+  }
 
-  const recipients = await event.context.prisma.user.findMany({
+  const recipient = await event.context.prisma.user.findUnique({
     where: {
+      id: userId,
       subscribedEmailCategories: {
         has: UserEmailCategories.EVENT_SIGNUP,
       },
     },
   })
 
-  const returnObj = {
-    recipients: recipients.length,
+  if (!recipient) {
+    throw createError({
+      statusCode: 400,
+      statusMessage:
+        'User does not exist, or is not subscribed to this category',
+    })
   }
-  if (recipients.length === 0) return returnObj
 
   const eventInfo = await event.context.prisma.event.findFirst({
-    where: { id },
+    where: { id: eventId },
   })
   if (!eventInfo) {
     throw createError({
@@ -67,11 +75,11 @@ export default defineEventHandler(async (event) => {
       html: emailHTML,
     },
     recipients: {
-      bcc: usersToRecipients(recipients),
+      bcc: usersToRecipients([recipient]),
     },
   })
 
   await updateUserRateLimit(event)
 
-  return returnObj
+  return recipient
 })

@@ -17,6 +17,9 @@ async function deleteUser() {
   const cookieRef2 = useCookie(useRuntimeConfig().public.auth0_token)
   cookieRef1.value = null
   cookieRef2.value = null
+
+  const router = useRouter()
+  router.push('/')
 }
 </script>
 <template>
@@ -42,15 +45,15 @@ async function deleteUser() {
         Total Hours: {{ data?.numHours }}
       </p>
       <br />
-      <p id="MyEmail" class="text-gray-700 text-large">
+      <p id="MyEmail" class="text-gray-700 text-large mb-2">
         Email: {{ data?.email }}
       </p>
-      <p id="MyBirthday" class="text-gray-700 text-large">
+      <p id="MyBirthday" class="text-gray-700 text-large mb-2">
         <span class="text-gray-700">Birthday</span>
         <span class="text-gray-700">: {{ formattedDOB }}</span>
       </p>
 
-      <div id="MyLanguages" class="text-gray-700 text-large">
+      <div id="MyLanguages" class="text-gray-700 text-large mb-2">
         <p>
           Languages:
           <span v-if="!data?.languages || data.languages.length == 0">
@@ -64,7 +67,10 @@ async function deleteUser() {
         </ul>
       </div>
 
-      <div id="MyNotes" class="text-gray-700 text-large font-lexend">
+      <div
+        id="MyNotes"
+        class="text-gray-700 text-large font-['Work Sans'] mb-2"
+      >
         <p>
           Notes:
           <span v-if="!(data?.userNotes && data.userNotes.length > 0)">
@@ -117,11 +123,6 @@ async function deleteUser() {
       class="flex flex-col items-center bg-white rounded-sm"
     >
       <!-- font-light makes the font malnourished-->
-      <button
-        class="rounded-lg bg-teal-500 w-full p-3 mt-4 mb-4 text-white text-lg hover:bg-teal-600"
-      >
-        Sign Out
-      </button>
       <NuxtLink
         to="/users/me/edit"
         class="rounded-lg bg-yellow-500 w-full p-3 mb-4 text-white text-lg hover:bg-yellow-600"

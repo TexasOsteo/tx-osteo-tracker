@@ -27,44 +27,38 @@ const maxCapacity = computed(() =>
   ),
 )
 
-const canCheckIn = computed(() => {
-  let date = props.event.dateAndTime
-  if (typeof date === 'string') date = new Date(date)
-  const currentDate = new Date()
-  return date.toDateString() === currentDate.toDateString()
-})
-
 // Create var to toggle expanded view
 const isOpen = ref<boolean>(false)
 
 function toggleExpanded() {
   isOpen.value = !isOpen.value
 }
+
+const canCheckIn = computed(() => {
+  let date = props.event.dateAndTime
+  if (typeof date === 'string') date = new Date(date)
+  const currentDate = new Date()
+  return date.toDateString() === currentDate.toDateString()
+})
 </script>
 
 <template>
   <div
-    class="bg-white mx-10 p-5 sm:2 mb-5 rounded-lg shadow-lg lg:w-2/3 lg:mx-auto"
+    class="bg-white mx-10 p-5 sm:2 mb-5 rounded-lg shadow-lg flex flex-wrap block lg:w-2/3 lg:mx-auto"
   >
-    <div class="flex flex-wrap">
-      <div class="flex flex-wrap mb-5 w-[90%]">
-        <div class="flex flex-wrap items-center">
+    <div class="w-full flex flex-wrap">
+      <div class="flex flex-wrap w-[95%]">
+        <div class="flex flex-wrap items-center w-full">
           <div class="flex rounded-md">
-            <img
-              :src="event.thumbnail"
-              alt="Event Thumbnail"
-              class="w-32 h-32 rounded-xl mt-3"
-            />
-
             <div class="w-fit ml-3">
               <h1
-                class="text-4xl font-bold mr-7 my-5 ml-3 w-4/5 overflow-hidden overflow-ellipsis line-clamp-2"
+                class="text-2xl font-bold my-5 w-4/5 overflow-hidden overflow-ellipsis line-clamp-2"
               >
                 {{ event.name }}
               </h1>
 
               <h3
-                class="mr-20 mt-3 ml-3"
+                class="mr-20 mt-3 text-md"
                 :class="{
                   'text-yellow-500':
                     currentCapacity / maxCapacity < 0.75 &&
@@ -79,11 +73,11 @@ function toggleExpanded() {
           </div>
         </div>
         <div v-if="!isOpen" class="flex flex-wrap mt-5">
-          <div class="flex items-center mt-5 w-1/3">
+          <div class="flex items-center mb-3">
             <div>
               <svg
-                width="24"
-                height="24"
+                width="18"
+                height="18"
                 viewBox="0 0 24 24"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
@@ -94,13 +88,13 @@ function toggleExpanded() {
                 />
               </svg>
             </div>
-            <h3 class="mr-20 ml-3">{{ event.organizer }}</h3>
+            <h3 class="mr-20 ml-1 text-md">{{ event.organizer }}</h3>
           </div>
-          <div class="flex items-center mt-5 w-1/3">
+          <div class="flex items-center mb-3">
             <div>
               <svg
-                width="24"
-                height="24"
+                width="18"
+                height="18"
                 viewBox="0 0 24 24"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
@@ -112,15 +106,15 @@ function toggleExpanded() {
               </svg>
             </div>
 
-            <h3 class="mr-20 ml-3">
+            <h3 class="mr-20 ml-1 text-md">
               <p class="location">{{ event.location }}</p>
             </h3>
           </div>
-          <div class="flex items-center mt-5 w-1/3">
+          <div class="flex items-center">
             <div>
               <svg
-                width="24"
-                height="24"
+                width="18"
+                height="18"
                 viewBox="0 0 24 24"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
@@ -131,7 +125,7 @@ function toggleExpanded() {
                 />
               </svg>
             </div>
-            <h3 class="mr-20 ml-3">
+            <h3 class="mr-20 ml-1 text-md">
               {{
                 new Date(event.dateAndTime).toLocaleString('en-US', {
                   year: 'numeric',
@@ -147,15 +141,15 @@ function toggleExpanded() {
         </div>
         <div
           v-if="isOpen"
-          class="flex flex-wrap transform translate-y-5 bg-slate-200 px-5 pb-5 rounded-lg m-2 w-full"
+          class="flex flex-wrap transform translate-y-5 px-5 pb-5 rounded-lg m-2 w-[95%]"
         >
           <ul class="w-full mb-5 block sm:w-1/2">
             <li>
-              <div class="flex items-center mt-5">
+              <div class="flex items-center pb-3">
                 <div>
                   <svg
-                    width="24"
-                    height="24"
+                    width="18"
+                    height="18"
                     viewBox="0 0 24 24"
                     fill="none"
                     xmlns="http://www.w3.org/2000/svg"
@@ -166,16 +160,16 @@ function toggleExpanded() {
                     />
                   </svg>
                 </div>
-                <h3 class="mr-20 ml-3">{{ event.organizer }}</h3>
+                <h3 class="mr-20 ml-1 text-sm">{{ event.organizer }}</h3>
               </div>
             </li>
 
             <li>
-              <div class="flex items-center mt-5">
+              <div class="flex items-center pb-3">
                 <div>
                   <svg
-                    width="24"
-                    height="24"
+                    width="18"
+                    height="18"
                     viewBox="0 0 24 24"
                     fill="none"
                     xmlns="http://www.w3.org/2000/svg"
@@ -186,7 +180,7 @@ function toggleExpanded() {
                     />
                   </svg>
                 </div>
-                <h3 class="mr-20 ml-3">
+                <h3 class="mr-20 ml-1 text-sm">
                   {{
                     new Date(event.dateAndTime).toLocaleString('en-US', {
                       year: 'numeric',
@@ -202,10 +196,10 @@ function toggleExpanded() {
             </li>
 
             <li>
-              <div class="flex items-center mt-5">
+              <div class="flex items-center pb-3">
                 <svg
-                  width="24"
-                  height="20"
+                  width="18"
+                  height="16"
                   viewBox="0 0 16 20"
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
@@ -219,7 +213,7 @@ function toggleExpanded() {
                   v-if="
                     event.duration === event.hoursOffered || !event.hoursOffered
                   "
-                  class="mr-20 ml-3"
+                  class="mr-20 ml-1 text-sm"
                 >
                   {{ event.duration }} Hours
                 </h3>
@@ -234,11 +228,11 @@ function toggleExpanded() {
             </li>
 
             <li>
-              <div class="flex items-center mt-5">
+              <div class="flex items-center pb-3">
                 <div>
                   <svg
-                    width="24"
-                    height="24"
+                    width="18"
+                    height="18"
                     viewBox="0 0 24 24"
                     fill="none"
                     xmlns="http://www.w3.org/2000/svg"
@@ -250,17 +244,15 @@ function toggleExpanded() {
                   </svg>
                 </div>
 
-                <h3 class="mr-20 ml-3">{{ event.location }}</h3>
+                <h3 class="mr-20 ml-1 text-sm">{{ event.location }}</h3>
               </div>
             </li>
-          </ul>
-          <ul class="w-full mb-5 block sm:w-1/2">
             <li>
-              <div class="flex items-center mt-5">
+              <div class="flex items-center pb-3">
                 <div>
                   <svg
-                    width="24"
-                    height="24"
+                    width="18"
+                    height="18"
                     viewBox="0 0 24 24"
                     fill="none"
                     xmlns="http://www.w3.org/2000/svg"
@@ -273,15 +265,16 @@ function toggleExpanded() {
                     />
                   </svg>
                 </div>
-                <h3 class="mr-20 ml-3">{{ event.phoneNumber }}</h3>
+                <h3 class="mr-20 ml-1 text-sm">{{ event.phoneNumber }}</h3>
               </div>
             </li>
+
             <li>
-              <div class="flex items-center mt-5">
+              <div class="flex items-center pb-3">
                 <div>
                   <svg
-                    width="24"
-                    height="24"
+                    width="18"
+                    height="18"
                     viewBox="0 0 24 24"
                     fill="none"
                     xmlns="http://www.w3.org/2000/svg"
@@ -292,19 +285,19 @@ function toggleExpanded() {
                     />
                   </svg>
                 </div>
-                <h3 class="mr-20 ml-3">{{ event.email }}</h3>
+                <h3 class="mr-20 ml-1 text-sm">{{ event.email }}</h3>
               </div>
             </li>
 
             <li>
               <div
                 v-if="event.positions.length > 0"
-                class="flex items-center mt-5"
+                class="flex items-center pb-3"
               >
                 <div>
                   <svg
-                    width="24"
-                    height="24"
+                    width="18"
+                    height="18"
                     viewBox="0 0 24 24"
                     fill="none"
                     xmlns="http://www.w3.org/2000/svg"
@@ -315,19 +308,21 @@ function toggleExpanded() {
                     />
                   </svg>
                 </div>
-                <h3>{{ event.positions.map((p) => p.name).join(', ') }}</h3>
+                <h3 class="mr-20 ml-1 text-sm">
+                  {{ event.positions.map((p) => p.name).join(', ') }}
+                </h3>
               </div>
             </li>
 
             <li>
               <div
                 v-if="event.languages.length > 0"
-                class="flex items-center mt-5"
+                class="flex items-center pb-3"
               >
                 <div>
                   <svg
-                    width="24"
-                    height="24"
+                    width="18"
+                    height="18"
                     viewBox="0 0 24 24"
                     fill="none"
                     xmlns="http://www.w3.org/2000/svg"
@@ -342,7 +337,7 @@ function toggleExpanded() {
                     <!------------------------------------------------------------------------------------------>
                   </svg>
                 </div>
-                <h3 class="mr-20 ml-3">
+                <h3 class="mr-20 ml-1 text-sm">
                   {{
                     event.languages
                       .map((languageCode) => ISO6391.getName(languageCode))
@@ -351,48 +346,11 @@ function toggleExpanded() {
                 </h3>
               </div>
             </li>
+            <p class="text-sm">{{ event.description }}</p>
           </ul>
-
-          <div class="w-full">
-            <p class="mb-5">{{ event.description }}</p>
-            <NuxtLink v-if="isAdmin" :to="`/event/edit/${event.id}`">
-              <div
-                class="w-full p-3 text-center bg-[#F0CC5A] text-white rounded-md hover:bg-white hover:text-black shadow"
-              >
-                <button :onclick="refreshEventList">EDIT EVENT</button>
-              </div>
-            </NuxtLink>
-            <NuxtLink
-              v-if="!isAdmin && canCheckIn"
-              :to="`/event/checkin/${event.id}`"
-            >
-              <div
-                class="w-full p-3 text-center bg-indigo-600 text-white rounded-md hover:bg-white hover:text-black shadow mt-3"
-              >
-                <button :onclick="refreshEventList">CHECK IN</button>
-              </div>
-            </NuxtLink>
-            <NuxtLink v-if="isAdmin" :to="`/event/code/${event.id}`">
-              <div
-                class="w-full p-3 text-center bg-indigo-600 text-white rounded-md hover:bg-white hover:text-black shadow mt-3"
-              >
-                <button :onclick="refreshEventList">GENERATE CODE</button>
-              </div>
-            </NuxtLink>
-            <NuxtLink v-if="isAdmin" :to="`/event/${event.id}/volunteers`">
-              <div
-                class="w-full p-3 text-center bg-emerald-300 text-white rounded-md hover:bg-white hover:text-black shadow mt-3"
-              >
-                <button :onclick="refreshEventList">VOLUNTEER LIST</button>
-              </div>
-            </NuxtLink>
-            <div class="mt-3">
-              <EventRegisterButton v-if="!isAdmin" :id="event.id" />
-            </div>
-          </div>
         </div>
       </div>
-      <div class="w-[10%] flex align-bottom justify-center">
+      <div class="w-[5%] flex align-bottom justify-center">
         <button class="text-blue-500 hover:underline" @click="toggleExpanded">
           <svg
             v-if="!isOpen"
@@ -428,6 +386,43 @@ function toggleExpanded() {
             />
           </svg>
         </button>
+      </div>
+    </div>
+    <div v-if="isOpen" class="w-full text-sm">
+      <NuxtLink v-if="isAdmin" :to="`/event/edit/${event.id}`">
+        <div
+          class="w-full p-3 text-center bg-[#F0CC5A] text-white rounded-md hover:bg-white hover:text-black shadow"
+        >
+          <button :onclick="refreshEventList">EDIT EVENT</button>
+        </div>
+      </NuxtLink>
+      <NuxtLink
+        v-if="!isAdmin && canCheckIn"
+        :to="`/event/checkin/${event.id}`"
+      >
+        <div
+          class="w-full p-3 text-center bg-indigo-600 text-white rounded-md hover:bg-white hover:text-black shadow mt-3"
+        >
+          <button :onclick="refreshEventList">CHECK IN</button>
+        </div>
+      </NuxtLink>
+      <NuxtLink v-if="isAdmin" :to="`/event/code/${event.id}`">
+        <div
+          class="w-full p-3 text-center bg-indigo-600 text-white rounded-md hover:bg-white hover:text-black shadow mt-3"
+        >
+          <button :onclick="refreshEventList">GENERATE CODE</button>
+        </div>
+      </NuxtLink>
+      <NuxtLink v-if="isAdmin" :to="`/event/${event.id}/volunteers`">
+        <div
+          class="w-full p-3 text-center bg-emerald-300 text-white rounded-md hover:bg-white hover:text-black shadow mt-3"
+        >
+          <button :onclick="refreshEventList">VOLUNTEER LIST</button>
+        </div>
+      </NuxtLink>
+
+      <div class="mt-3">
+        <EventRegisterButton v-if="!isAdmin" :id="event.id" />
       </div>
     </div>
   </div>

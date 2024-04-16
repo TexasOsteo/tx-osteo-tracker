@@ -1,10 +1,5 @@
 <script setup lang="ts">
-import ISO6391 from 'iso-639-1'
-
 const { data } = await useFetch('/api/users/me')
-const userID = ref(data && data.value ? [data.value.id] : [])
-const DOB = ref(data.value?.dateOfBirth)
-const formattedDOB = DOB.value?.split('T')[0]
 const isExpanded1 = ref(false)
 const isExpanded2 = ref(false)
 const showPopup = ref(false)
@@ -30,19 +25,6 @@ const openPopup = (event: any) => {
 
 const closePopup = () => {
   showPopup.value = false
-}
-
-async function deleteUser() {
-  if (!confirm('Are you sure? This action cannot be undone')) return
-
-  await useFetch(`/api/users/${userID.value}`, {
-    method: 'DELETE',
-  })
-
-  const cookieRef1 = useCookie(useRuntimeConfig().public.txosteo_token)
-  const cookieRef2 = useCookie(useRuntimeConfig().public.auth0_token)
-  cookieRef1.value = null
-  cookieRef2.value = null
 }
 
 function displayDate(dateTime: string) {
@@ -130,12 +112,12 @@ function displayDate(dateTime: string) {
 
           <div
             v-if="isExpanded2 && data"
-            class="flex flex-1 items-center justify-center py-3"
+            class="flex flex-wrap flex-1 items-center justify-center py-3 w-full"
           >
             <div
               v-for="(event, index) in data.eventHistory"
               :key="index"
-              class="bg-white flex items-center p-2 m-2 rounded-xl w-5/6 m:w-full shadow"
+              class="bg-white flex flex-wrap items-center p-2 m-2 rounded-xl w-full shadow"
             >
               <div class="flex">
                 <h1 class="mr-4">{{ event.name }}</h1>
