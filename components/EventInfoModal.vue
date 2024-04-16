@@ -20,7 +20,7 @@ defineProps<{
       class="flex justify-between items-center p-4 border-b rounded-t dark:border-gray-600"
     >
       <h2
-        class="text-5xl font-sans font-bold text-cyan-950 uppercase break-all"
+        class="text-5xl font-lexend font-bold text-cyan-950 uppercase break-all"
       >
         {{ event.name }}
       </h2>

@@ -17,6 +17,7 @@ async function deleteUser() {
   const cookieRef2 = useCookie(useRuntimeConfig().public.auth0_token)
   cookieRef1.value = null
   cookieRef2.value = null
+
   const router = useRouter()
   router.push('/')
 }
@@ -85,7 +86,7 @@ async function deleteUser() {
 
       <div
         id="MyQualifications"
-        class="mb-3 text-gray-700 text-large font-['Work Sans']"
+        class="mb-3 text-gray-700 text-large font-lexend"
       >
         <p>
           Qualifications:

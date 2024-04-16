@@ -20,7 +20,9 @@ export default {
     <div class="flex flex-wrap mb-5 w-[90%]">
       <div class="flex flex-wrap items-center">
         <img class="w-16 h-16 rounded" />
-        <h1 class="text-4xl font-bold font-sans mr-7 my-5 ml-3">Event Name</h1>
+        <h1 class="text-4xl font-bold font-lexend mr-7 my-5 ml-3">
+          Event Name
+        </h1>
         <h3 class="mr-20 mt-3 ml-3">Capacity</h3>
       </div>
       <div v-if="!isExpanded" class="flex flex-wrap mt-5">

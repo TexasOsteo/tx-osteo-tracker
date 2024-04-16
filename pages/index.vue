@@ -29,6 +29,7 @@ definePageMeta({
       </a>
     </div>
   </div>
+
   <div class="flex flex-wrap z-0 overflow-x-hidden overflow-y-hidden">
     <div
       class="h-screen max-w-screen-xl mx-auto my-auto flex flex-wrap-reverse items-center justify-center text-center pt-20"
@@ -59,7 +60,7 @@ definePageMeta({
     </div>
 
     <div
-      class="w-full bg-[#0DA49B] flex flex-wrap-reverse items-center justify-center font-sans"
+      class="w-full bg-[#0DA49B] flex flex-wrap-reverse items-center justify-center font-lexend"
     >
       <div>
         <div class="container flex my-10 text-white">

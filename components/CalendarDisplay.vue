@@ -270,7 +270,7 @@ fetchEvents()
       >
         <h2
           id="modalTitle"
-          class="text-5xl font-sans font-bold text-cyan-950 uppercase"
+          class="text-5xl font-lexend font-bold text-cyan-950 uppercase"
         >
           {{ modalEvent.title }}
         </h2>
@@ -386,7 +386,7 @@ fetchEvents()
                   <span
                     v-for="(language, index) in modalEvent.languages"
                     :key="index"
-                    class="font-sans text-cyan-950"
+                    class="font-lexend text-cyan-950"
                   >
                     <span v-if="index !== 0">,</span>
                     {{ language }}
@@ -434,7 +434,7 @@ fetchEvents()
                 <span
                   v-for="(position, index) in modalEvent.positions"
                   :key="index"
-                  class="font-sans text-cyan-950"
+                  class="font-lexend text-cyan-950"
                 >
                   <span v-if="index !== 0">,</span>
                   {{ position.name }}
@@ -502,7 +502,7 @@ fetchEvents()
 
           <p class="text-base leading-relaxed text-cyan-900">
             Description:
-            <span id="modalDescription" class="font-sans text-cyan-950">
+            <span id="modalDescription" class="font-lexend text-cyan-950">
               {{ modalEvent.description }}
             </span>
           </p>
