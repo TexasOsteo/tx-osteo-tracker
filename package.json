@@ -47,7 +47,7 @@
     "pinia": "^2.1.7",
     "postcss": "^8.4.29",
     "prettier": "^3.0.3",
-    "prisma": "^5.4.2",
+    "prisma": "^5.12.1",
     "tailwindcss": "^3.3.3",
     "typescript": "^5.2.2",
     "vite-plugin-mjml": "^0.4.0",

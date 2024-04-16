@@ -114,12 +114,12 @@ function displayDate(dateTime: string) {
 
           <div
             v-if="isExpanded2 && data"
-            class="flex flex-1 items-center justify-center py-3"
+            class="flex flex-wrap flex-1 items-center justify-center py-3 w-full"
           >
             <div
               v-for="(event, index) in data.eventHistory"
               :key="index"
-              class="bg-white flex items-center p-2 m-2 rounded-xl w-5/6 m:w-full shadow"
+              class="bg-white flex flex-wrap items-center p-2 m-2 rounded-xl w-full shadow"
             >
               <div class="flex">
                 <h1 class="mr-4">{{ event.name }}</h1>
