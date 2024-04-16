@@ -88,7 +88,7 @@ async function patchEvent(fields: any) {
     <div
       class="max-w-screen-lg bg-gray-100 opacity-95 rounded-3xl shadow-xl z-30 p-10 flex justify-center flex-wrap items-center"
     >
-      <h1 class="title font-sans font-bold text-5xl text-center mb-10">
+      <h1 class="title font-lexend font-bold text-5xl text-center mb-10">
         EDIT EVENT
       </h1>
       <FormKit
@@ -220,7 +220,9 @@ async function patchEvent(fields: any) {
             empty
           /> -->
 
-          <h1 class="title font-sans font-bold text-4xl text-center mt-8 mb-4">
+          <h1
+            class="title font-lexend font-bold text-4xl text-center mt-8 mb-4"
+          >
             MODIFY VOLUNTEERS
           </h1>
 
@@ -242,7 +244,9 @@ async function patchEvent(fields: any) {
             validation="noDuplicates"
           />
 
-          <h1 class="title font-sans font-bold text-4xl text-center mt-8 mb-4">
+          <h1
+            class="title font-lexend font-bold text-4xl text-center mt-8 mb-4"
+          >
             GENERATE CODE
           </h1>
           <div class="flex justify-center items-center flex-wrap">

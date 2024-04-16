@@ -8,7 +8,7 @@ const menuItemClass =
 </script>
 
 <template>
-  <div class=" font-lexend">
+  <div class="font-lexend">
     <div
       class="fixed top-0 h-20 w-full max-w-full bg-white flex items-center justify-between shadow z-10 px-4"
     >

@@ -64,13 +64,10 @@ function displayDate(dateTime: string) {
 
 <template>
   <div id="WholePage" class="min-h-screen flex text-center">
-    <div class="hidden md:block z-0">
+    <div
+      :class="isSidebar ? 'block md:hidden z-20 fixed' : 'hidden md:block z-0'"
+    >
       <UserSideNavbar />
-    </div>
-    <div v-if="isSidebar" class="block md:hidden z-20 relative">
-      <div class="">
-        <UserSideNavbar />
-      </div>
     </div>
 
     <main
@@ -78,12 +75,13 @@ function displayDate(dateTime: string) {
       class="w-full flex flex-col overflow-auto bg-gray-100 border-2 border-gray-100 border-t-gray-200 border-l-[#EEE]"
     >
       <div id="UFEvents" class="flex-col overflow-y-auto bg-gray-100">
-        <div class="z-[10]">
+        <div class="fixed bottom-4 right-4">
           <button
+            class="w-20 h-20 bg-[#0DA49B] rounded-full flex items-center justify-center text-white block md:hidden"
             @click="toggleSidebar"
-            class="w-full bg-blue-500 block md:hidden"
+            style="font-size: 35px"
           >
-            Click for User Information
+            <Icon name="mdi:account" />
           </button>
         </div>
         <div class="z-[0]">
@@ -111,8 +109,8 @@ function displayDate(dateTime: string) {
               </div>
 
               <button
-                class="bg-teal-400 hover:bg-teal-500 p-2 rounded-xl text-white"
                 @click="openPopup(event)"
+                class="bg-teal-400 hover:bg-teal-500 p-2 rounded-xl text-white"
               >
                 View
               </button>
