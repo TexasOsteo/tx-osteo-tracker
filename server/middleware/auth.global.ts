@@ -1,6 +1,7 @@
 import { PrismaClient } from '@prisma/client'
 import { getLoginRedirect } from '~/utils/auth'
 import { getAuth0Claims, getTXOsteoJWTClaims } from '~/utils/jwt'
+import { getRealRequestURL } from '~/utils/server'
 
 type PathFilter = {
   path: string | RegExp
@@ -41,7 +42,7 @@ export default defineEventHandler(async (event) => {
   const txOsteoClaims = osteoCookie ? getTXOsteoJWTClaims(osteoCookie) : null
   event.context.txOsteoClaims = txOsteoClaims
 
-  const currentUrl = getRequestURL(event)
+  const currentUrl = getRealRequestURL(event)
 
   // Skip authentication if the path matches a public path filter
   if (
