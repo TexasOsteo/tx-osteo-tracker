@@ -1,16 +1,23 @@
-import {
-  string,
-  object,
-  number,
-  array,
-  date,
-  ObjectSchema,
-  type InferType,
-} from 'yup'
-import type { eventSchema } from './index.post'
-import { validateBody } from '~/utils/validation'
+import { string, object, number, array, date, mixed } from 'yup'
+import { ensureRouteParam, validateBody } from '~/utils/validation'
 import { throwErrorIfNotAdmin } from '~/utils/auth'
-import { parseIDsToPrismaSetObject } from '~/utils/prisma-parsing'
+import {
+  parseIDsToPrismaConnectObject,
+  parseIDsToPrismaSetObject,
+} from '~/utils/prisma-parsing'
+
+type Position =
+  | {
+      maxCapacity: number
+      name: string
+      prerequisites?: string[]
+    }
+  | {
+      id: string
+      maxCapacity?: number
+      name?: string
+      prerequisites?: string[]
+    }
 
 /**
  * --- API INFO
@@ -22,7 +29,7 @@ import { parseIDsToPrismaSetObject } from '~/utils/prisma-parsing'
  * ---
  */
 
-const schema: ObjectSchema<Partial<InferType<typeof eventSchema>>> = object({
+const schema = object({
   id: string().optional(),
   name: string().optional(),
   organizer: string().optional(),
@@ -34,50 +41,92 @@ const schema: ObjectSchema<Partial<InferType<typeof eventSchema>>> = object({
   phoneNumber: string().optional(),
   email: string().optional(),
   description: string().optional(),
-  code: string().required(),
+  code: string().optional(),
   attendees: array(string().defined()).optional(),
   signedUpUsers: array(string().defined()).optional(),
   languages: array(string().defined()).optional(),
-  positions: array(string().defined()).optional(),
+  positions: array(
+    mixed((v): v is Position => typeof v === 'object')
+      .required()
+      .test(
+        'positions-with-ids-should-be-defined',
+        () => 'New positions must have defined attributes',
+        (v) => {
+          if (!v) return false
+          if ('id' in v) {
+            return object({
+              id: string().required(),
+              name: string(),
+              maxCapacity: number(),
+              prerequisites: array(string().required()),
+            }).isValidSync(v)
+          }
+          return object({
+            id: string().required(),
+            name: string().required(),
+            maxCapacity: number().required(),
+            prerequisites: array(string().required()),
+          }).isValidSync(v)
+        },
+      ),
+  ).defined(),
 })
 
 export default defineEventHandler(async (event) => {
   throwErrorIfNotAdmin(event)
 
-  // find id
-  const id = getRouterParam(event, 'id')
-  if (!id) {
-    // If there is no id, throw a 400 (BAD REQUEST) error
-    throw createError({
-      status: 400,
-      message: 'No event id provided',
-    })
-  }
+  const id = ensureRouteParam(event, 'id')
 
   const oldData = await event.context.prisma.event.findUnique({
     where: {
       id,
     },
+    include: {
+      positions: true,
+    },
   })
   if (!oldData) {
     throw createError({
       status: 404,
-      message: 'Not found event id',
+      message: 'Could not find event',
     })
   }
 
-  const body = await validateBody(event, schema)
+  const { positions, ...body } = await validateBody(event, schema)
 
-  const updated = event.context.prisma.event.update({
+  for (const pos of positions) {
+    if ('id' in pos) {
+      await event.context.prisma.eventPosition.update({
+        where: { id: pos.id },
+        data: {
+          ...pos,
+          prerequisites: parseIDsToPrismaSetObject(pos.prerequisites),
+        },
+      })
+    } else {
+      await event.context.prisma.eventPosition.create({
+        data: {
+          ...pos,
+          currentCapacity: 0,
+          event: {
+            connect: {
+              id,
+            },
+          },
+          prerequisites: parseIDsToPrismaConnectObject(pos.prerequisites ?? []),
+        },
+      })
+    }
+  }
+
+  const updated = await event.context.prisma.event.update({
     where: {
       id,
     },
     data: {
-      ...oldData,
       ...body,
       attendees: parseIDsToPrismaSetObject(body.attendees),
       signedUpUsers: parseIDsToPrismaSetObject(body.signedUpUsers),
-      positions: parseIDsToPrismaSetObject(body.positions),
     },
     include: {
       positions: true,

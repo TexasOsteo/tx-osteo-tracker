@@ -45,11 +45,11 @@ export default defineEventHandler(async (event) => {
       users: parseIDsToPrismaConnectObject(body.users ?? []),
       event: body.eventId
         ? {
-          // Connect the event position to the event
-          connect: {
-            id: body.eventId,
-          },
-        }
+            // Connect the event position to the event
+            connect: {
+              id: body.eventId,
+            },
+          }
         : {},
     },
   })

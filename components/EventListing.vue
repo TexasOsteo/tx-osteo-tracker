@@ -27,6 +27,13 @@ const maxCapacity = computed(() =>
   ),
 )
 
+const canCheckIn = computed(() => {
+  let date = props.event.dateAndTime
+  if (typeof date === 'string') date = new Date(date)
+  const currentDate = new Date()
+  return date.toDateString() === currentDate.toDateString()
+})
+
 // Create var to toggle expanded view
 const isOpen = ref<boolean>(false)
 
@@ -62,11 +69,11 @@ function toggleExpanded() {
                   'text-yellow-500':
                     currentCapacity / maxCapacity < 0.75 &&
                     currentCapacity / maxCapacity > 0.25,
-                  'text-red-500': currentCapacity / maxCapacity <= 0.25,
-                  'text-green-500': currentCapacity / maxCapacity >= 0.75,
+                  'text-red-500': currentCapacity / maxCapacity >= 0.75,
+                  'text-green-500': currentCapacity / maxCapacity <= 0.25,
                 }"
               >
-                {{ currentCapacity }} SLOTS LEFT
+                {{ maxCapacity - currentCapacity }} SLOTS LEFT
               </h3>
             </div>
           </div>
@@ -247,7 +254,6 @@ function toggleExpanded() {
               </div>
             </li>
           </ul>
-
           <ul class="w-full mb-5 block sm:w-1/2">
             <li>
               <div class="flex items-center mt-5">
@@ -270,7 +276,6 @@ function toggleExpanded() {
                 <h3 class="mr-20 ml-3">{{ event.phoneNumber }}</h3>
               </div>
             </li>
-
             <li>
               <div class="flex items-center mt-5">
                 <div>
@@ -357,7 +362,10 @@ function toggleExpanded() {
                 <button :onclick="refreshEventList">EDIT EVENT</button>
               </div>
             </NuxtLink>
-            <NuxtLink v-if="!isAdmin" :to="`/event/checkin/${event.id}`">
+            <NuxtLink
+              v-if="!isAdmin && canCheckIn"
+              :to="`/event/checkin/${event.id}`"
+            >
               <div
                 class="w-full p-3 text-center bg-indigo-600 text-white rounded-md hover:bg-white hover:text-black shadow mt-3"
               >
@@ -378,8 +386,9 @@ function toggleExpanded() {
                 <button :onclick="refreshEventList">VOLUNTEER LIST</button>
               </div>
             </NuxtLink>
-
-            <EventRegisterButton v-if="!isAdmin" :id="event.id" />
+            <div class="mt-3">
+              <EventRegisterButton v-if="!isAdmin" :id="event.id" />
+            </div>
           </div>
         </div>
       </div>

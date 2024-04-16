@@ -5,12 +5,22 @@ import type { Event } from '@prisma/client'
 import { generateEventCode } from '../../../utils/universal'
 import type { SerializeObject, FullEvent } from '~/utils/types'
 
+type Position = {
+  id: string
+  name: string
+  currentCapacity: number
+  maxCapacity: number
+  eventId: string
+  prerequisites: (string | { id: string; name: string })[]
+}
+
 // Custom types used by FormKit
-type SFullEvent = SerializeObject<FullEvent>
+type SFullEvent = SerializeObject<FullEvent> & { positions: Position[] }
 type FormKitEventData = Partial<
   SerializeObject<Event> & {
     attendees: string[]
     signedUpUsers: string[]
+    positions: Position[]
   }
 >
 
@@ -33,6 +43,7 @@ function toFormData(event: SFullEvent | null): FormKitEventData {
     // Convert volunteers into id strings
     attendees: event.attendees.map((user) => user.id),
     signedUpUsers: event.signedUpUsers.map((user) => user.id),
+    positions: event.positions,
   } as FormKitEventData
 }
 
@@ -66,6 +77,7 @@ async function deleteEvent() {
 }
 
 async function patchEvent(fields: any) {
+  // console.log(JSON.stringify(fields))
   const { error } = await useFetch(`/api/events/${eventId}`, {
     method: 'PUT',
     body: fields,
@@ -218,7 +230,8 @@ async function patchEvent(fields: any) {
             add-text="Add new position"
             name="volunteerPositions"
             empty
-          /> -->
+            /> -->
+          <PositionCapacity mode="edit" />
 
           <h1 class="title font-sans font-bold text-4xl text-center mt-8 mb-4">
             MODIFY VOLUNTEERS
@@ -272,6 +285,10 @@ async function patchEvent(fields: any) {
       >
         Delete Event
       </button>
+      <!-- formData is new Data sent to api, fullEventData is old data, what is currently in database before PUT  -->
+      <pre>{{ formData }}</pre>
+      <br />
+      <pre> {{ fullEventData }}</pre>
     </div>
   </div>
 </template>

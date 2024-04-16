@@ -1,6 +1,8 @@
 <script setup lang="ts">
 // Fetch API call by destructing the events response object into its data
-const { data: eventsRes } = await useFetch(`/api/events?after=${Date.now()}`)
+const { data: eventsRes } = await useFetch(
+  `/api/events?after=${Date.now() - 24 * 60 * 60 * 1000}`,
+)
 const events = computed(() => {
   const arr = eventsRes.value ?? []
   // Sort events by date

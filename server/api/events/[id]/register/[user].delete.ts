@@ -1,4 +1,5 @@
 import { throwErrorIfNotAdmin } from '~/utils/auth'
+import { ensureRouteParam } from '~/utils/validation'
 
 /**
  * --- API INFO
@@ -7,23 +8,16 @@ import { throwErrorIfNotAdmin } from '~/utils/auth'
  */
 
 export default defineEventHandler(async (event) => {
-  const eventId = getRouterParam(event, 'id')
-  if (!eventId) {
-    throw createError({
-      status: 400,
-      message: 'No event id provided',
-    })
-  }
-
-  let userId = getRouterParam(event, 'user')
-  if (!userId) {
-    throw createError({
-      status: 400,
-      message: 'No user id provided',
-    })
-  }
+  const eventId = ensureRouteParam(event, 'id')
+  let userId = ensureRouteParam(event, 'user')
 
   const cookieUserId = event.context.txOsteoClaims?.sub
+  if (!cookieUserId) {
+    throw createError({
+      statusCode: 402,
+      statusMessage: 'You must be authenticated.',
+    })
+  }
   if (userId === 'me') userId = cookieUserId
 
   // Only allow if this is the user, or if the user is an admin
@@ -32,7 +26,27 @@ export default defineEventHandler(async (event) => {
     throwErrorIfNotAdmin(event) // Check if user is admin
   }
 
-  // TODO: Update position capacity
+  // Need to use findMany since this "where" criteria is not unique
+  const positions = await event.context.prisma.eventPosition.findMany({
+    where: { eventId, users: { some: { id: userId } } },
+  })
+
+  for (const pos of positions) {
+    await event.context.prisma.eventPosition.update({
+      where: { id: pos.id },
+      data: {
+        users: {
+          disconnect: {
+            id: userId,
+          },
+        },
+        currentCapacity: {
+          decrement: 1,
+        },
+      },
+    })
+  }
+
   const newEvent = await event.context.prisma.event.update({
     where: { id: eventId },
     data: {

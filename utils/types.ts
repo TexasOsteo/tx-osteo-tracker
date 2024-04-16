@@ -32,6 +32,10 @@ export type UserWithEvents = Prisma.UserGetPayload<{
   }
 }>
 
+export type PositionWithPrereqs = Prisma.EventPositionGetPayload<{
+  include: { prerequisites: true }
+}>
+
 /**
  * This shims the normal H3 event context to include the fields that are added
  * in the auth middleware

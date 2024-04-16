@@ -32,7 +32,11 @@ export default defineEventHandler(async (event) => {
       },
     },
     include: {
-      positions: true,
+      positions: {
+        include: {
+          prerequisites: true,
+        },
+      },
     },
   })
   if (!event.context.txOsteoClaims?.admin) {
