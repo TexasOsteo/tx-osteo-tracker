@@ -1,5 +1,6 @@
+import { object, string } from 'yup'
 import { throwErrorIfNotAdmin } from '~/utils/auth'
-import { ensureRouteParam } from '~/utils/validation'
+import { ensureRouteParam, validateBody } from '~/utils/validation'
 
 /**
  * --- API INFO
@@ -9,13 +10,10 @@ import { ensureRouteParam } from '~/utils/validation'
  */
 
 export default defineEventHandler(async (event) => {
-  const eventId = getRouterParam(event, 'id')
-  if (!eventId) {
-    throw createError({
-      status: 400,
-      message: 'No event id provided',
-    })
-  }
+  const { position: positionId } = await validateBody(
+    event,
+    object({ position: string().required() }),
+  )
 
   const cookieUserId = event.context.txOsteoClaims?.sub
   if (!cookieUserId) {
@@ -25,6 +23,7 @@ export default defineEventHandler(async (event) => {
     })
   }
 
+  const eventId = ensureRouteParam(event, 'id')
   let userId = ensureRouteParam(event, 'user')
   if (userId === 'me') {
     userId = cookieUserId
@@ -40,6 +39,11 @@ export default defineEventHandler(async (event) => {
     where: { id: eventId },
     include: {
       signedUpUsers: true,
+      positions: {
+        include: {
+          prerequisites: true,
+        },
+      },
     },
   })
 
@@ -59,7 +63,57 @@ export default defineEventHandler(async (event) => {
 
   // TODO: Update position capacity and check if it is full
 
-  const newEvent = await event.context.prisma.event.update({
+  const position = eventData.positions.find((p) => p.id === positionId)
+  if (!position) {
+    throw createError({
+      statusCode: 404,
+      statusMessage: `Unknown position id: ${positionId}`,
+    })
+  }
+
+  if (position.currentCapacity >= position.maxCapacity) {
+    throw createError({
+      statusCode: 400,
+      statusMessage: 'This position is at capacity.',
+    })
+  }
+
+  const user = await event.context.prisma.user.findFirst({
+    where: { id: userId },
+    include: { verifiedQualifications: true },
+  })
+
+  if (!user) {
+    throw createError({
+      statusCode: 404,
+      statusMessage: 'User does not have data in the database ',
+    })
+  }
+
+  if (
+    position.prerequisites.some(
+      (p) => !user.verifiedQualifications.find((q) => q.id === p.id),
+    )
+  ) {
+    throw createError({
+      statusCode: 402,
+      statusMessage: 'You do not have the qualifications for this position.',
+    })
+  }
+
+  await event.context.prisma.eventPosition.update({
+    where: { id: positionId },
+    data: {
+      currentCapacity: { increment: 1 },
+      users: {
+        connect: {
+          id: userId,
+        },
+      },
+    },
+  })
+
+  const updatedEvent = await event.context.prisma.event.update({
     where: { id: eventId },
     data: {
       signedUpUsers: {
@@ -68,14 +122,10 @@ export default defineEventHandler(async (event) => {
         },
       },
     },
-    include: {
-      attendees: true,
-      signedUpUsers: true,
-    },
   })
 
   if (!event.context.txOsteoClaims?.admin) {
-    newEvent.code = ''
+    updatedEvent.code = ''
   }
 
   try {
@@ -89,5 +139,5 @@ export default defineEventHandler(async (event) => {
     })
   } catch {}
 
-  return newEvent
+  return updatedEvent
 })

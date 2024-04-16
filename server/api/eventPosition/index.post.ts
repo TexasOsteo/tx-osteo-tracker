@@ -19,9 +19,7 @@ export default defineEventHandler(async (event) => {
     object({
       name: string().required(), // Event position name is required
       maxCapacity: number().required(), // Maximum capacity is required
-      prerequisites: array(
-        object({ id: string().required(), name: string().required() }),
-      ), // Prerequisites are optional
+      prerequisites: array(string().required()), // Prerequisites are optional
       currentCapacity: number(), // Current capacity is optional
       users: array(string().required()), // Users are optional
       eventId: string().required(), // Event ID is required
@@ -33,13 +31,8 @@ export default defineEventHandler(async (event) => {
     data: {
       name: body.name,
       maxCapacity: body.maxCapacity,
-      prerequisites: {
-        connect: body.prerequisites?.map((prerequisite) => ({
-          id: prerequisite.id,
-        })),
-      },
-      // Set the current capacity to the number of users if any, or 0
-      currentCapacity: body.users ? body.users.length : 0,
+      prerequisites: parseIDsToPrismaConnectObject(body.prerequisites ?? []),
+      currentCapacity: body.users ? body.users.length : 0, // Set the current capacity to the number of users if any, or 0
       users: parseIDsToPrismaConnectObject(body.users ?? []),
       event: {
         // Connect the event position to the event
@@ -47,6 +40,9 @@ export default defineEventHandler(async (event) => {
           id: body.eventId,
         },
       },
+    },
+    include: {
+      prerequisites: true,
     },
   })
 

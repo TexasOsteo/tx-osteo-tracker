@@ -65,7 +65,7 @@ function toggleExpanded() {
                 'text-green-500': currentCapacity / maxCapacity >= 0.75,
               }"
             >
-              {{ currentCapacity }} SLOTS LEFT
+              {{ maxCapacity - currentCapacity }} SLOTS LEFT
             </h3>
           </div>
         </div>
@@ -271,7 +271,7 @@ function toggleExpanded() {
           </li>
 
           <li>
-            <div class="flex items-center mt-5 ">
+            <div class="flex items-center mt-5">
               <div>
                 <svg
                   width="24"
@@ -293,7 +293,7 @@ function toggleExpanded() {
           <li>
             <div
               v-if="event.positions.length > 0"
-              class="flex items-center mt-5 "
+              class="flex items-center mt-5"
             >
               <div>
                 <svg

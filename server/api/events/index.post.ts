@@ -14,7 +14,7 @@ import { validateBody } from '~/utils/validation'
  * Returns the newly created event
  */
 
-export const eventSchema = object({
+const eventSchema = object({
   id: string().optional(),
   name: string().required(),
   organizer: string().required(),
@@ -34,12 +34,7 @@ export const eventSchema = object({
     object({
       name: string().required(),
       maxCapacity: number().required(),
-      prerequisites: array(
-        object({
-          id: string().required(),
-          name: string().required(),
-        }).defined(),
-      ).defined(),
+      prerequisites: array(string().required()).required(),
     }).defined(),
   ).defined(),
   notifyVolunteers: bool().default(true),
@@ -60,11 +55,7 @@ export default defineEventHandler(async (event) => {
           name: position.name,
           maxCapacity: position.maxCapacity,
           currentCapacity: 0,
-          prerequisites: {
-            connect: position.prerequisites.map((prerequisite) => ({
-              id: prerequisite.id,
-            })),
-          },
+          prerequisites: parseIDsToPrismaConnectObject(position.prerequisites),
         })),
       },
     },

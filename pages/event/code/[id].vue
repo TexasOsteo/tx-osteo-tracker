@@ -1,22 +1,17 @@
 <script setup lang="ts">
-const router = useRouter()
 const route = useRoute()
 const eventId = route.params.id as string
 const { data: fullEventData } = await useFetch(`/api/events/${eventId}`)
-const { data } = await useFetch('/api/users/me')
-const userID = ref(data && data.value ? [data.value.id] : [])
 
-
-
-const eventCode = ref('')
+const eventCode = ref(fullEventData.value?.code ?? '')
 
 async function updateCode() {
   eventCode.value = generateEventCode()
   await useFetch(`/api/events/${eventId}`, {
     method: 'PUT',
-    body: JSON.stringify({
+    body: {
       code: eventCode.value,
-    }),
+    },
   })
 }
 </script>
