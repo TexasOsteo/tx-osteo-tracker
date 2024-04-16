@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import type { Qualifications } from '@prisma/client'
 import { VueFinalModal } from 'vue-final-modal'
 import { useCurrentUserStore } from '~/store/currentuser'
 import type { PositionWithPrereqs } from '~/utils/types'
@@ -12,7 +11,7 @@ const modalOpen = ref(false)
 const positions = ref<PositionWithPrereqs[] | null>(null)
 
 const userStore = useCurrentUserStore()
-if (userStore.currentUser == null) await userStore.getUser()
+if (userStore.currentUser == null) userStore.getUser()
 
 const deregister = computed(
   () => userStore.currentUser?.signedUpEvents.some((ev) => ev.id === props.id),
