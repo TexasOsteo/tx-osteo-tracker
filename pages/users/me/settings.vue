@@ -1,10 +1,5 @@
 <script setup lang="ts">
-import ISO6391 from 'iso-639-1'
-
 const { data } = await useFetch('/api/users/me')
-const userID = ref(data && data.value ? [data.value.id] : [])
-const DOB = ref(data.value?.dateOfBirth)
-const formattedDOB = DOB.value?.split('T')[0]
 const isExpanded1 = ref(false)
 const isExpanded2 = ref(false)
 const showPopup = ref(false)
@@ -30,19 +25,6 @@ const openPopup = (event: any) => {
 
 const closePopup = () => {
   showPopup.value = false
-}
-
-async function deleteUser() {
-  if (!confirm('Are you sure? This action cannot be undone')) return
-
-  await useFetch(`/api/users/${userID.value}`, {
-    method: 'DELETE',
-  })
-
-  const cookieRef1 = useCookie(useRuntimeConfig().public.txosteo_token)
-  const cookieRef2 = useCookie(useRuntimeConfig().public.auth0_token)
-  cookieRef1.value = null
-  cookieRef2.value = null
 }
 
 function displayDate(dateTime: string) {
@@ -80,8 +62,8 @@ function displayDate(dateTime: string) {
       <div id="UFEvents" class="flex-col overflow-y-auto bg-gray-100">
         <div class="z-[10]">
           <button
+            class="w-full bg-gray-200 block md:hidden"
             @click="toggleSidebar"
-            class="w-full bg-blue-500 block md:hidden"
           >
             Click for User Information
           </button>

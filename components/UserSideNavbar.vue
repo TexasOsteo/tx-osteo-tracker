@@ -17,28 +17,14 @@ async function deleteUser() {
   const cookieRef2 = useCookie(useRuntimeConfig().public.auth0_token)
   cookieRef1.value = null
   cookieRef2.value = null
-}
-
-function displayDate(dateTime: string) {
-  const d = new Date(dateTime)
-  const year = d.getUTCFullYear()
-  const month = ('0' + (d.getUTCMonth() + 1)).slice(-2)
-  const day = ('0' + d.getUTCDate()).slice(-2)
-
-  let hours = d.getUTCHours()
-  const minutes = ('0' + d.getUTCMinutes()).slice(-2)
-  const ampm = hours >= 12 ? 'pm' : 'am'
-
-  hours = hours % 12
-  hours = hours > 0 ? hours : 12 // the hour '0' should be '12'
-
-  return `${year}-${month}-${day} @ ${hours}:${minutes} ${ampm}`
+  const router = useRouter()
+  router.push('/')
 }
 </script>
 <template>
   <nav
     id="AccountInfo"
-    class="z-20 w-full shadow-sm  p-2 flex-none bg-white border-2 border-teal-200 border-t-gray-200 border-r-gray-200 justify-center "
+    class="z-20 w-full shadow-sm p-2 flex-none bg-white border-2 border-teal-200 border-t-gray-200 border-r-gray-200 justify-center"
   >
     <div
       id="OsteoLogoFiller"
@@ -58,15 +44,15 @@ function displayDate(dateTime: string) {
         Total Hours: {{ data?.numHours }}
       </p>
       <br />
-      <p id="MyEmail" class="text-gray-700 text-large">
+      <p id="MyEmail" class="text-gray-700 text-large mb-2">
         Email: {{ data?.email }}
       </p>
-      <p id="MyBirthday" class="text-gray-700 text-large">
+      <p id="MyBirthday" class="text-gray-700 text-large mb-2">
         <span class="text-gray-700">Birthday</span>
         <span class="text-gray-700">: {{ formattedDOB }}</span>
       </p>
 
-      <div id="MyLanguages" class="text-gray-700 text-large">
+      <div id="MyLanguages" class="text-gray-700 text-large mb-2">
         <p>
           Languages:
           <span v-if="!data?.languages || data.languages.length == 0">
@@ -80,7 +66,10 @@ function displayDate(dateTime: string) {
         </ul>
       </div>
 
-      <div id="MyNotes" class="text-gray-700 text-large font-['Work Sans']">
+      <div
+        id="MyNotes"
+        class="text-gray-700 text-large font-['Work Sans'] mb-2"
+      >
         <p>
           Notes:
           <span v-if="!(data?.userNotes && data.userNotes.length > 0)">
@@ -133,11 +122,6 @@ function displayDate(dateTime: string) {
       class="flex flex-col items-center bg-white rounded-sm"
     >
       <!-- font-light makes the font malnourished-->
-      <button
-        class="rounded-lg bg-teal-500 w-full p-3 mt-4 mb-4 text-white text-lg hover:bg-teal-600"
-      >
-        Sign Out
-      </button>
       <NuxtLink
         to="/users/me/edit"
         class="rounded-lg bg-yellow-500 w-full p-3 mb-4 text-white text-lg hover:bg-yellow-600"
