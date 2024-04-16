@@ -18,14 +18,16 @@ async function updateCode() {
 
 <template>
   <div class="flex justify-center flex-wrap items-center">
-    <div class=""><CurveBackground /></div>
+    <div class="-z-50"><CurveBackground /></div>
 
-    <div class="w-full h-[90vh] flex flex-wrap items-center justify-center">
+    <div
+      class="w-full h-[90vh] flex flex-wrap items-center justify-center mx-2"
+    >
       <div
-        class="w-1/2 flex flex-wrap items-center justify-center rounded-xl z-20 bg-white bg-opacity-80 p-10"
+        class="w-full md:w-1/2 flex flex-wrap items-center justify-center rounded-xl  bg-white bg-opacity-80 p-10 px-5"
       >
-        <div class="z-30">
-          <h1 class="text-5xl font-bold pb-5 w-full text-center">
+        <div class="">
+          <h1 class="text-4xl lg:text-5xl font-bold pb-5 w-full text-center">
             ATTENDANCE CODE
           </h1>
           <h1

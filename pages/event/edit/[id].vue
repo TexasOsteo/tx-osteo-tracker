@@ -98,7 +98,7 @@ async function patchEvent(fields: any) {
     <CurveBackground />
 
     <div
-      class="max-w-screen-lg bg-gray-100 opacity-95 rounded-3xl shadow-xl z-30 p-10 flex justify-center flex-wrap items-center"
+      class="max-w-screen-lg bg-gray-100 opacity-95 rounded-3xl shadow-xl p-10 flex justify-center flex-wrap items-center mx-2"
     >
       <h1 class="title font-sans font-bold text-5xl text-center mb-10">
         EDIT EVENT
@@ -254,28 +254,29 @@ async function patchEvent(fields: any) {
             name="attendees"
             validation="noDuplicates"
           />
-
-          <h1 class="title font-sans font-bold text-4xl text-center mt-8 mb-4">
-            GENERATE CODE
-          </h1>
-          <div class="flex justify-center items-center flex-wrap">
-            <FormKit
-              id="code"
-              type="text"
-              name="code"
-              label="Event Code"
-              help="This code is used to check in volunteers"
-              placeholder="Event Code"
-              outer-class="mb-5 w-4/5"
-            />
+          <div class="w-full flex flex-wrap items-center justify-center">
+            <h1
+              class="title font-sans font-bold text-4xl text-center mt-8 mb-4 w-full"
+            >
+              GENERATE CODE
+            </h1>
+            <div class="flex justify-center items-center flex-wrap w-full ">
+              <FormKit
+                id="code"
+                type="text"
+                name="code"
+                label="Event Code"
+                help="This code can be used to check in volunteers"
+                placeholder="Event Code"
+                outer-class="w-4/5"
+              />
+            </div>
+            <div class="w-4/5 align">
+              <FormKit type="button" @click="generateCode">
+                Generate Code
+              </FormKit>
+            </div>
           </div>
-          <FormKit
-            type="button"
-            help="You can bind event listeners."
-            @click="generateCode"
-          >
-            Click me!
-          </FormKit>
         </div>
       </FormKit>
       <button

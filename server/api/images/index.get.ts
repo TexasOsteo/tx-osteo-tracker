@@ -1,5 +1,6 @@
 import { throwErrorIfNotAdmin } from '~/utils/auth'
 import { getAllBlobs } from '~/utils/blob'
+import { getRealRequestURL } from '~/utils/server'
 
 /**
  * --- API INFO
@@ -12,7 +13,7 @@ import { getAllBlobs } from '~/utils/blob'
 export default defineEventHandler(async (event) => {
   throwErrorIfNotAdmin(event)
 
-  const url = getRequestURL(event)
+  const url = getRealRequestURL(event)
   const typeParam = url.searchParams.get('type')
 
   const blobs = await getAllBlobs('images')
