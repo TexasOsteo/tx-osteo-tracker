@@ -36,33 +36,27 @@ definePageMeta({
     >
       <div class="text-center items-center justify-center lg:mr-20 font-lexend">
         <h1 class="text-5xl font-bold">VOLUNTEER AT TOF</h1>
-        <div
-          class="text-center items-center justify-center lg:mr-20 font-lexend"
-        >
-          <p class="py-5 text-xl">
-            Start volunteering and make a change in the world today!
-          </p>
-          <div class="flex justify-center">
-            <CompanyLogo class="w-48 h-auto" />
-          </div>
-          <div class="flex flex-wrap items-center justify-center font-lexend">
-            <a href="/api/auth/login">
-              <button
-                class="py-5 px-10 mr-5 bg-[#0DA49B] text-white rounded-md hover:bg-[#F0CC5A] hover:text-white transition duration-300 ease-in-out text-2xl mb-20"
-              >
-                Sign Up
-              </button>
-            </a>
-            <a href="/api/auth/login">
-              <button
-                class="py-5 px-10 mr-5 bg-[#0DA49B] text-white rounded-md hover:bg-[#F0CC5A] hover:text-white transition duration-300 ease-in-out text-2xl mb-20"
-              >
-                Log In
-              </button>
-            </a>
-          </div>
+        <p class="py-5 text-xl">
+          Start volunteering and make a change in the world today!
+        </p>
+        <div class="flex flex-wrap items-center justify-center font-lexend">
+          <a href="/api/auth/login">
+            <button
+              class="py-5 px-10 mr-5 bg-[#0DA49B] text-white rounded-md hover:bg-[#F0CC5A] hover:text-white transition duration-300 ease-in-out text-2xl mb-20"
+            >
+              Sign Up
+            </button>
+          </a>
+          <a href="/api/auth/login">
+            <button
+              class="py-5 px-10 mr-5 bg-[#0DA49B] text-white rounded-md hover:bg-[#F0CC5A] hover:text-white transition duration-300 ease-in-out text-2xl mb-20"
+            >
+              Log In
+            </button>
+          </a>
         </div>
       </div>
+      <CompanyLogo />
     </div>
 
     <div
