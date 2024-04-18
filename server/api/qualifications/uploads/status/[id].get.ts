@@ -15,17 +15,28 @@ export default defineEventHandler(async (event) => {
 
   // Fetch the QualificationUpload
   const qUpload = await event.context.prisma.qualificationUpload.findUnique({
-    where: {
-      id,
-    },
-    select: {
-      processed: true,
+    where: { id },
+    include: {
+      user: {
+        include: { verifiedQualifications: true },
+      },
+      qualifications: true,
     },
   })
 
   if (!qUpload) {
-    throw new Error('QualificationUpload not found')
+    throw createError({
+      statusCode: 404,
+      statusMessage: 'QualificationUpload not found',
+    })
   }
 
-  return qUpload.processed
+  return {
+    processed: qUpload.processed,
+    approved:
+      qUpload.processed &&
+      qUpload.qualifications.every((q) =>
+        qUpload.user.verifiedQualifications.some((v) => v.id === q.id),
+      ),
+  }
 })
