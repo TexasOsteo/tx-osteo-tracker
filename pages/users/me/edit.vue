@@ -57,7 +57,7 @@ async function handleSubmit(fields: any) {
     <CurveBackground />
 
     <div
-      class="max-w-screen-lg bg-gray-100 opacity-95 rounded-3xl shadow-xl z-30 p-10 flex justify-center flex-wrap items-center"
+      class="max-w-screen-lg bg-gray-100 opacity-95 rounded-3xl shadow-xl p-10 flex justify-center flex-wrap items-center"
     >
       <h1 class="title font-sans font-bold text-5xl text-center mb-10 w-full">
         Edit Settings
@@ -94,15 +94,6 @@ async function handleSubmit(fields: any) {
           />
 
           <LanguageSelect />
-
-          <!-- <TextMultiple
-            title="Qualifications"
-            placeholder="Enter qualification description"
-            add-text="Add new qualification"
-            name="verifiedQualifications"
-            outer-class="mb-5 w-4/5"
-            empty
-          /> -->
 
           <FormKit
             id="userNotes"

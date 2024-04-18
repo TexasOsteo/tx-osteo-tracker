@@ -45,7 +45,7 @@ async function mainButtonPress() {
 const extendedPositions = computed(() => {
   if (!positions.value) return []
   const quals = userStore.currentUser?.verifiedQualifications ?? []
-  const temp = positions.value.map((pos) => {
+  return positions.value.map((pos) => {
     let disabled = false
     let buttonText = 'Register'
     if (pos.currentCapacity >= pos.maxCapacity) {
@@ -63,8 +63,6 @@ const extendedPositions = computed(() => {
       buttonText,
     }
   })
-  console.log(temp)
-  return temp
 })
 
 async function registerPosition(pos: PositionWithPrereqs) {

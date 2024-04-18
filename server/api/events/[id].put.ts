@@ -60,7 +60,6 @@ const schema = object({
               prerequisites: array(string().required()),
             }).isValidSync(v)
           }
-          console.log(v)
           return object({
             name: string().required(),
             maxCapacity: number().required(),
