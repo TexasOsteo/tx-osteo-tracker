@@ -1,12 +1,12 @@
 import { object, boolean } from 'yup'
 import { throwErrorIfNotAdmin } from '~/utils/auth'
+import { parseIDsToPrismaConnectObject } from '~/utils/prisma-parsing'
 import { ensureRouteParam, validateBody } from '~/utils/validation'
 
 /**
  * --- API INFO
  * PUT /api/qualifications/uploads/[id]
- * Updates the qualification upload status (processed) by id
- *
+ * Approves or rejects a qualification upload
  */
 
 export default defineEventHandler(async (event) => {
@@ -14,25 +14,46 @@ export default defineEventHandler(async (event) => {
 
   const id = ensureRouteParam(event, 'id')
 
-  const body = await validateBody(
+  const { approved } = await validateBody(
     event,
     object({
-      processed: boolean().required(),
+      approved: boolean().required(),
     }),
   )
 
-  // Update the QualificationUpload
   const updatedQUpload = await event.context.prisma.qualificationUpload.update({
     where: {
       id,
     },
     data: {
-      processed: body.processed,
+      processed: true,
+    },
+    include: {
+      qualifications: true,
     },
   })
 
+  if (approved) {
+    const approvedQualifications = updatedQUpload.qualifications.map(
+      (q) => q.id,
+    )
+    await event.context.prisma.user.update({
+      where: {
+        id: updatedQUpload.userId,
+      },
+      data: {
+        verifiedQualifications: parseIDsToPrismaConnectObject(
+          approvedQualifications,
+        ),
+      },
+    })
+  }
+
   if (!updatedQUpload) {
-    throw new Error('QualificationUpload not found')
+    throw createError({
+      statusCode: 404,
+      statusMessage: 'QualificationUpload not found',
+    })
   }
 
   return updatedQUpload

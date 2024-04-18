@@ -93,7 +93,7 @@ async function registerPosition(pos: PositionWithPrereqs) {
       <div
         v-for="p in extendedPositions"
         :key="p.position.id"
-        class="flex flex-row gap-4 items-center"
+        class="flex flex-row gap-4 items-center mb-2"
       >
         <button
           :disabled="p.disabled"

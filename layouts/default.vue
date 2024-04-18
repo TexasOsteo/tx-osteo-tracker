@@ -4,6 +4,15 @@ import { ModalsContainer } from 'vue-final-modal'
 const isAdmin = isSignedInUserAdmin()
 const isMenuOpen = ref(false)
 
+useSeoMeta({
+  title: 'Texas Osteoperosis Foundation Volunteering',
+  ogTitle: 'Texas Osteoperosis Foundation Volunteering',
+  description:
+    'Start volunteering at TOF and make a change in the world today!',
+  ogDescription:
+    'Start volunteering at TOF and make a change in the world today!',
+})
+
 const menuItemClass =
   'bg-gray-100 hover:bg-gray-200 p-3 rounded-md flex items-center gap-2 drop-shadow-sm'
 </script>

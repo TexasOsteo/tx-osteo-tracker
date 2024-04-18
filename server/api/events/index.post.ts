@@ -9,7 +9,7 @@ import { validateBody } from '~/utils/validation'
  * --- API INFO
  * POST /api/events
  * Creates a new event with a generated id
- * The body is a prisma user object, except the 'attendees' and 'signedUpUsers' fields accepts user ids.
+ * The body is a prisma user object, except the 'attendees' field which accepts user ids.
  * Similarly, the 'positions' field accepts an array of objects with a name, capacity, and string of qualifications.
  * Returns the newly created event
  */
@@ -29,7 +29,6 @@ const eventSchema = object({
   code: string().required(),
   languages: array(string().defined()).defined(),
   attendees: array(string().defined()).defined(),
-  signedUpUsers: array(string().defined()).defined(),
   positions: array(
     object({
       name: string().required(),
@@ -49,7 +48,6 @@ export default defineEventHandler(async (event) => {
     data: {
       ...body,
       attendees: parseIDsToPrismaConnectObject(body.attendees),
-      signedUpUsers: parseIDsToPrismaConnectObject(body.signedUpUsers),
       positions: {
         create: body.positions.map((position) => ({
           name: position.name,
