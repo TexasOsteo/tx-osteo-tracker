@@ -1,5 +1,3 @@
-import { throwErrorIfNotAdmin } from '~/utils/auth'
-
 /**
  * --- API INFO
  * GET /api/qualifications
@@ -8,8 +6,6 @@ import { throwErrorIfNotAdmin } from '~/utils/auth'
  */
 
 export default defineEventHandler(async (event) => {
-  throwErrorIfNotAdmin(event) // Admin-only endpoint
-
   const quals = await event.context.prisma.qualifications.findMany()
   return quals
 })
