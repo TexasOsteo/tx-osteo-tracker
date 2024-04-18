@@ -2,48 +2,47 @@
 import { ref } from 'vue'
 import { format } from 'date-fns'
 import type { Event } from '@prisma/client'
-import { generateEventCode } from '../../../utils/universal'
-import type { SerializeObject, FullEvent } from '~/utils/types'
+import type { SerializeObject } from '~/utils/types'
 
-type Position = {
+type FormKitPosition = {
   id: string
   name: string
-  currentCapacity: number
   maxCapacity: number
-  eventId: string
-  prerequisites: (string | { id: string; name: string })[]
+  prerequisites: string[]
 }
 
 // Custom types used by FormKit
-type SFullEvent = SerializeObject<FullEvent> & { positions: Position[] }
 type FormKitEventData = Partial<
-  SerializeObject<Event> & {
-    attendees: string[]
-    signedUpUsers: string[]
-    positions: Position[]
-  }
+  SerializeObject<Event> & { positions: FormKitPosition[] }
 >
 
 const router = useRouter()
 const route = useRoute()
 const eventId = route.params.id as string
-const userClaims = getCurrentUserTxOsteoClaims()
-const userId = userClaims!.sub
-
-const { data: usersData } = await useFetch('/api/users')
 const { data: fullEventData } = await useFetch(`/api/events/${eventId}`)
 
+type EventData = (typeof fullEventData)['value']
+
 // This converts the serialized response from useFetch to an Event partial usable by FormKit
-function toFormData(event: SFullEvent | null): FormKitEventData {
+function toFormData(event: EventData | null): FormKitEventData {
   if (!event) return {}
+
   return {
     ...event,
     // Formkit needs date in this format:
     dateAndTime: format(new Date(event.dateAndTime), `yyyy-MM-dd'T'HH:MM`),
-    // Convert volunteers into id strings
-    attendees: event.attendees.map((user) => user.id),
-    signedUpUsers: event.signedUpUsers.map((user) => user.id),
-    positions: event.positions,
+    positions: event.positions.map(
+      (p) =>
+        ({
+          id: p.id,
+          name: p.name,
+          maxCapacity: p.maxCapacity,
+          prerequisites: p.prerequisites.map((req) => req.id),
+        }) as FormKitPosition,
+    ),
+    attendees: undefined,
+    signedUpUsers: undefined,
+    code: undefined,
   } as FormKitEventData
 }
 
@@ -52,17 +51,9 @@ const formData = ref<FormKitEventData>(toFormData(fullEventData.value))
 watch(fullEventData, (value) => (formData.value = toFormData(value)))
 const formErrors = ref<string[]>()
 
-const allUsers = computed(() =>
-  Object.fromEntries(
-    (usersData.value ?? []).map((u) => [u.id, `${u.name} (${u.email})`]),
-  ),
-)
-
-const generateCode = () => {
-  formData.value.code = generateEventCode()
-}
-
 async function deleteEvent() {
+  if (!confirm('Are you sure? This action cannot be undone.')) return
+
   const { error } = await useFetch(`/api/events/${eventId}`, {
     method: 'DELETE',
   })
@@ -77,7 +68,6 @@ async function deleteEvent() {
 }
 
 async function patchEvent(fields: any) {
-  // console.log(JSON.stringify(fields))
   const { error } = await useFetch(`/api/events/${eventId}`, {
     method: 'PUT',
     body: fields,
@@ -224,59 +214,7 @@ async function patchEvent(fields: any) {
             outer-class="mb-5 w-4/5"
           />
 
-          <!-- <TextMultiple
-            title="Volunteer Positions"
-            placeholder="Enter new position"
-            add-text="Add new position"
-            name="volunteerPositions"
-            empty
-            /> -->
-          <PositionCapacity mode="edit" />
-
-          <h1 class="title font-sans font-bold text-4xl text-center mt-8 mb-4">
-            MODIFY VOLUNTEERS
-          </h1>
-
-          <SelectMultiple
-            :options="allUsers"
-            title="Signed Up Users"
-            add-text="Sign up new user"
-            :default-value="userId"
-            name="signedUpUsers"
-            validation="noDuplicates"
-          />
-
-          <SelectMultiple
-            :options="allUsers"
-            title="Attendees"
-            add-text="Add new attendee"
-            :default-value="userId"
-            name="attendees"
-            validation="noDuplicates"
-          />
-          <div class="w-full flex flex-wrap items-center justify-center">
-            <h1
-              class="title font-sans font-bold text-4xl text-center mt-8 mb-4 w-full"
-            >
-              GENERATE CODE
-            </h1>
-            <div class="flex justify-center items-center flex-wrap w-full ">
-              <FormKit
-                id="code"
-                type="text"
-                name="code"
-                label="Event Code"
-                help="This code can be used to check in volunteers"
-                placeholder="Event Code"
-                outer-class="w-4/5"
-              />
-            </div>
-            <div class="w-4/5 align">
-              <FormKit type="button" @click="generateCode">
-                Generate Code
-              </FormKit>
-            </div>
-          </div>
+          <PositionEdit />
         </div>
       </FormKit>
       <button
@@ -285,10 +223,6 @@ async function patchEvent(fields: any) {
       >
         Delete Event
       </button>
-      <!-- formData is new Data sent to api, fullEventData is old data, what is currently in database before PUT  -->
-      <pre>{{ formData }}</pre>
-      <br />
-      <pre> {{ fullEventData }}</pre>
     </div>
   </div>
 </template>

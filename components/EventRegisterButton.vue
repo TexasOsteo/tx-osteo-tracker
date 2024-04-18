@@ -45,7 +45,7 @@ async function mainButtonPress() {
 const extendedPositions = computed(() => {
   if (!positions.value) return []
   const quals = userStore.currentUser?.verifiedQualifications ?? []
-  return positions.value.map((pos) => {
+  const temp = positions.value.map((pos) => {
     let disabled = false
     let buttonText = 'Register'
     if (pos.currentCapacity >= pos.maxCapacity) {
@@ -63,6 +63,8 @@ const extendedPositions = computed(() => {
       buttonText,
     }
   })
+  console.log(temp)
+  return temp
 })
 
 async function registerPosition(pos: PositionWithPrereqs) {
@@ -93,7 +95,7 @@ async function registerPosition(pos: PositionWithPrereqs) {
       <div
         v-for="p in extendedPositions"
         :key="p.position.id"
-        class="flex flex-row gap-4 items-center"
+        class="flex flex-row gap-4 items-center mb-2"
       >
         <button
           :disabled="p.disabled"
