@@ -12,7 +12,7 @@ const { data } = await useFetch(`/api/events/${route.params.id}`)
   </h1>
   <div v-if="data !== null">
     <h1>
-      <b class="text-4xl font-bold font-sans mr-7 my-5">{{ data.name }}</b>
+      <b class="text-4xl font-bold font-lexend mr-7 my-5">{{ data.name }}</b>
     </h1>
     <div class="flex flex-wrap items-center mt-5">
       <div>

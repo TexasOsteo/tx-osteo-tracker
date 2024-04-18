@@ -4,6 +4,15 @@ import { ModalsContainer } from 'vue-final-modal'
 const isAdmin = isSignedInUserAdmin()
 const isMenuOpen = ref(false)
 
+useSeoMeta({
+  title: 'Texas Osteoperosis Foundation Volunteering',
+  ogTitle: 'Texas Osteoperosis Foundation Volunteering',
+  description:
+    'Start volunteering at TOF and make a change in the world today!',
+  ogDescription:
+    'Start volunteering at TOF and make a change in the world today!',
+})
+
 const menuItemClass =
   'bg-gray-100 hover:bg-gray-200 p-3 rounded-md flex items-center gap-2 drop-shadow-sm'
 </script>
@@ -19,7 +28,7 @@ const menuItemClass =
       <div
         class="h-full w-full sm:w-auto justify-between flex items-center sm:gap-8 gap-2 text-lg hidden sm:flex"
       >
-        <NuxtLink :class="menuItemClass" to="/event/calendar" >
+        <NuxtLink :class="menuItemClass" to="/event/calendar">
           <Icon name="mdi:calendar" />
           <span class="hidden lg:block">Calendar</span>
         </NuxtLink>
@@ -48,14 +57,17 @@ const menuItemClass =
       <div class="sm:hidden">
         <button @click="isMenuOpen = !isMenuOpen">
           <!-- Your menu icon goes here -->
-          <div v-if="!isMenuOpen   ">
-            
-            <div class="bg-gray-100 hover:bg-gray-200 px-3 py-2 rounded-md drop-shadow-sm">
+          <div v-if="!isMenuOpen">
+            <div
+              class="bg-gray-100 hover:bg-gray-200 px-3 py-2 rounded-md drop-shadow-sm"
+            >
               <Icon name="mdi:menu" />
             </div>
           </div>
           <div v-if="isMenuOpen">
-            <div class="bg-gray-100 hover:bg-gray-200 px-3 py-2 rounded-md drop-shadow-sm">
+            <div
+              class="bg-gray-100 hover:bg-gray-200 px-3 py-2 rounded-md drop-shadow-sm"
+            >
               <Icon name="mdi:close" />
             </div>
           </div>
@@ -79,7 +91,7 @@ const menuItemClass =
           >
             Calendar
           </NuxtLink>
-          
+
           <NuxtLink
             to="/resources"
             class="block px-4 py-2 text-lg hover:bg-gray-200"
