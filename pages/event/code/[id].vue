@@ -35,9 +35,9 @@ async function updateCode() {
           >
             {{ eventCode }}
           </h1>
-          <div class="w-full flex flex-wrap items-center justify-between">
+          <div class="w-full flex flex-wrap items-center justify-between text-sm">
             <button
-              class="bg-[#0DA49B] py-3 px-5 font-medium text-xl text-white rounded-xl hover:bg-[#F0CC5A] hover:text-black transition duration-300 ease-in-out"
+              class="bg-[#0DA49B] py-3 px-5 text-xl text-white rounded-xl hover:bg-[#F0CC5A] hover:text-black transition duration-300 ease-in-out"
               :onclick="updateCode"
             >
               New Code

@@ -34,7 +34,9 @@ definePageMeta({
     <div
       class="h-screen max-w-screen-xl mx-auto my-auto flex flex-wrap-reverse items-center justify-center text-center pt-20"
     >
-      <div class="text-center items-center justify-center lg:mr-20 font-lexend">
+      <div
+        class="text-center items-center justify-center lg:mr-20 font-lexend px-2"
+      >
         <h1 class="text-5xl font-bold">VOLUNTEER AT TOF</h1>
         <p class="py-5 text-xl">
           Start volunteering and make a change in the world today!
@@ -42,32 +44,29 @@ definePageMeta({
         <div class="flex flex-wrap items-center justify-center font-lexend">
           <a href="/api/auth/login">
             <button
-              class="py-5 px-10 mr-5 bg-[#0DA49B] text-white rounded-md hover:bg-[#F0CC5A] hover:text-white transition duration-300 ease-in-out text-2xl mb-20"
+              class="py-5 px-10 mr-5 bg-[#0DA49B] text-white rounded-md hover:bg-[#F0CC5A] hover:text-white transition duration-300 ease-in-out mb-20 sm: text-md md:text-2xl"
             >
               Sign Up
             </button>
           </a>
           <a href="/api/auth/login">
             <button
-              class="py-5 px-10 mr-5 bg-[#0DA49B] text-white rounded-md hover:bg-[#F0CC5A] hover:text-white transition duration-300 ease-in-out text-2xl mb-20"
+              class="py-5 px-10 md:backdrop:mr-5 bg-[#0DA49B] text-white rounded-md hover:bg-[#F0CC5A] hover:text-white transition duration-300 ease-in-out mb-20 sm: text-md md:text-2xl"
             >
               Log In
             </button>
           </a>
         </div>
       </div>
-      <CompanyLogo />
+      <div class=" w-2/3 md:w-fit"><CompanyLogo /></div>
     </div>
 
     <div
-      class="w-full bg-[#0DA49B] flex flex-wrap-reverse items-center justify-center font-lexend"
+      class="w-full bg-[#0DA49B] flex flex-wrap-reverse items-center justify-center font-lexend px-2"
     >
       <div>
-        <div class="container flex my-10 text-white">
-          <div class="px-5">
-            <h4>Texas Osteoporosis Foundation ©</h4>
-          </div>
-          <div class="mr-10">
+        <div class="container flex flex-wrap my-10 text-white">
+          <div class="mr-10 sm: pt-5">
             <h2 class="text-lg font-bold">ABOUT</h2>
             <ul>
               <li>
@@ -87,7 +86,7 @@ definePageMeta({
             </ul>
           </div>
 
-          <div class="mr-10">
+          <div class="mr-10 sm: pt-5">
             <h2 class="text-lg font-bold">VOLUNTEER</h2>
             <ul>
               <li><a href="/api/auth/login">Sign In</a></li>
@@ -96,13 +95,16 @@ definePageMeta({
             </ul>
           </div>
 
-          <div class="mr-10">
+          <div class="mr-10 sm: pt-5">
             <h2 class="text-lg font-bold">HELP</h2>
             <ul>
               <li>
                 <a href="https://www.texasosteo.org/get-involved">Contact Us</a>
               </li>
             </ul>
+          </div>
+          <div class="sm: pt-5">
+            <h4>Texas Osteoporosis Foundation ©</h4>
           </div>
         </div>
       </div>

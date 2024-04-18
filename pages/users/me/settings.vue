@@ -78,12 +78,12 @@ function displayDate(dateTime: string) {
 
           <div
             v-if="isExpanded1 && data"
-            class="flex flex-1 items-center justify-center py-3"
+            class="flex flex-wrap items-center justify-center py-3"
           >
             <div
               v-for="(event, index) in data.signedUpEvents"
               :key="index"
-              class="bg-white flex items-center p-2 m-2 rounded-xl w-5/6 m:w-full shadow"
+              class="bg-white flex items-center p-2 m-2 rounded-xl w-full shadow"
             >
               <div class="flex flex-grow">
                 <h1 class="mr-4">{{ event.name }}</h1>
@@ -91,8 +91,8 @@ function displayDate(dateTime: string) {
               </div>
 
               <button
+                class="bg-teal-600 hover:bg-teal-500 p-2 rounded-md md:rounded-xl text-white"
                 @click="openPopup(event)"
-                class="bg-teal-400 hover:bg-teal-500 p-2 rounded-xl text-white"
               >
                 View
               </button>
@@ -112,20 +112,20 @@ function displayDate(dateTime: string) {
 
           <div
             v-if="isExpanded2 && data"
-            class="flex flex-wrap flex-1 items-center justify-center py-3 w-full"
+            class="flex flex-wrap items-center justify-center py-3 w-full"
           >
             <div
               v-for="(event, index) in data.eventHistory"
               :key="index"
-              class="bg-white flex flex-wrap items-center p-2 m-2 rounded-xl w-full shadow"
+              class="bg-white flex items-center p-2 m-2 rounded-xl w-full shadow"
             >
-              <div class="flex">
+              <div class="flex flex-grow">
                 <h1 class="mr-4">{{ event.name }}</h1>
                 <h1 class="mr-4">{{ displayDate(event.dateAndTime) }}</h1>
               </div>
 
               <button
-                class="bg-teal-400 hover:bg-teal-500 p-2 rounded-xl"
+                class="flex items-center bg-teal-600 hover:bg-teal-500 p-2 rounded-md md:rounded-xl text-white"
                 @click="openPopup(event)"
               >
                 View
