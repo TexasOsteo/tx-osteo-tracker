@@ -4,6 +4,8 @@
  * Returns the event with id
  */
 
+import { extendWithHiddenEventCodes } from '~/utils/prisma-parsing'
+
 export default defineEventHandler(async (event) => {
   // Get the id parameter (the last part of this url)
   const id = getRouterParam(event, 'id')
@@ -15,8 +17,10 @@ export default defineEventHandler(async (event) => {
     })
   }
 
+  const prisma = extendWithHiddenEventCodes(event)
+
   // Find the first event with the desired id. null is returned if none found
-  const data = await event.context.prisma.event.findFirst({
+  const data = await prisma.event.findFirst({
     where: { id },
     include: {
       attendees: true,
@@ -39,7 +43,8 @@ export default defineEventHandler(async (event) => {
   }
 
   if (!event.context.txOsteoClaims?.admin) {
-    data.code = ''
+    data.signedUpUsers = []
+    data.attendees = []
   }
 
   return data
