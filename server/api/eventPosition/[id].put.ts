@@ -1,4 +1,5 @@
 import { string, object, number, array } from 'yup'
+import { throwErrorIfNotAdmin } from '~/utils/auth'
 import { parseIDsToPrismaConnectObject } from '~/utils/prisma-parsing'
 import { validateBody } from '~/utils/validation'
 
@@ -8,6 +9,8 @@ import { validateBody } from '~/utils/validation'
  * Updates an event position by its id
  */
 export default defineEventHandler(async (event) => {
+  throwErrorIfNotAdmin(event)
+
   // Get the id parameter (the last part of this url)
   const positionId = getRouterParam(event, 'id')
   if (!positionId) {
