@@ -48,14 +48,6 @@ async function handleSubmit(fields: any) {
             outer-class="mb-5 w-4/5"
           />
 
-          <!--Thumbnail-->
-          <ImageSelect
-            type="thumbnail"
-            name="thumbnail"
-            label="Attach Any Supportive Images"
-            validation="required"
-          />
-
           <!--Description-->
           <FormKit
             id="description"
