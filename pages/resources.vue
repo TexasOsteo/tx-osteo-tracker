@@ -21,7 +21,7 @@
         ></iframe>
       </div>
       <div>
-        <h3 class="title text-xl mb-2 mt-5">How is Osteoprosis diagnosed?</h3>
+        <h3 class="title text-xl mb-2 mt-5">How is Osteoporosis diagnosed?</h3>
         <iframe
           width="560"
           height="315"
