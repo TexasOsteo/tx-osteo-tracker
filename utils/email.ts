@@ -3,6 +3,7 @@ import type { User } from '@prisma/client'
 import { format } from 'date-fns'
 import handlebars from 'handlebars'
 import type { DefaultEvent } from './types'
+import { getRealRequestURL } from '~/utils/server'
 
 type EmailContext = {
   [x: string]: any
@@ -31,7 +32,7 @@ export async function renderEmail(
   context: EmailContext,
 ): Promise<string> {
   if (!file.endsWith('.html')) file += '.html'
-  if (typeof origin !== 'string') origin = getRequestURL(origin).origin
+  if (typeof origin !== 'string') origin = getRealRequestURL(origin).origin
 
   const source = await useStorage('assets:server:mjml:rendered').getItem(file)
   if (source === null) {

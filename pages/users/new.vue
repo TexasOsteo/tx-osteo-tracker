@@ -33,9 +33,9 @@ async function handleSubmit(fields: any) {
     <CurveBackground />
 
     <div
-      class="max-w-screen-lg bg-gray-100 opacity-95 rounded-3xl shadow-xl z-30 p-10 flex justify-center flex-wrap items-center"
+      class="max-w-screen-lg bg-gray-100 opacity-95 rounded-3xl shadow-xl p-10 flex justify-center flex-wrap items-center"
     >
-      <h1 class="title font-sans font-bold text-5xl text-center mb-10 w-full">
+      <h1 class="title font-lexend font-bold text-5xl text-center mb-10 w-full">
         Welcome!
       </h1>
       <FormKit

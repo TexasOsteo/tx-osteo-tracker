@@ -6,22 +6,24 @@ type FormKitUserData = Partial<SerializeObject<UserWithEvents>>
 const formErrors = ref<string[]>()
 const { data: fetchData } = await useFetch('/api/users/me')
 
+// Needed for email input, but this can't be a part of the form body
+const isAdmin = ref<boolean>(false)
+
 // Parse the response from the server into something FormKit understands
 function toFormData(
   data: SerializeObject<UserWithEvents> | null,
 ): FormKitUserData {
   if (!data) return {}
+  isAdmin.value = data.isAdmin
   return {
-    ...data,
     // Formkit needs date in this format:
     dateOfBirth: data.dateOfBirth.split('T')[0],
-    // Remove unneeded fields
-    eventHistory: undefined,
-    signedUpEvents: undefined,
-    isAdmin: undefined,
-    numHours: undefined,
-    subscribedEmailCategories: undefined, // TODO: Add front-end for email changes
-    // adminNotes: undefined,
+    id: data.id,
+    name: data.name,
+    email: data.email,
+    languages: data.languages,
+    subscribedEmailCategories: data.subscribedEmailCategories,
+    userNotes: data.userNotes,
   }
 }
 
@@ -55,10 +57,10 @@ async function handleSubmit(fields: any) {
     <CurveBackground />
 
     <div
-      class="max-w-screen-lg bg-gray-100 opacity-95 rounded-3xl shadow-xl z-30 p-10 flex justify-center flex-wrap items-center"
+      class="max-w-screen-lg bg-gray-100 opacity-95 rounded-3xl shadow-xl p-10 flex justify-center flex-wrap items-center"
     >
       <h1 class="title font-sans font-bold text-5xl text-center mb-10 w-full">
-        Welcome!
+        Edit Settings
       </h1>
       <FormKit
         v-model="formData"
@@ -93,15 +95,6 @@ async function handleSubmit(fields: any) {
 
           <LanguageSelect />
 
-          <!-- <TextMultiple
-            title="Qualifications"
-            placeholder="Enter qualification description"
-            add-text="Add new qualification"
-            name="verifiedQualifications"
-            outer-class="mb-5 w-4/5"
-            empty
-          /> -->
-
           <FormKit
             id="userNotes"
             type="textarea"
@@ -111,6 +104,8 @@ async function handleSubmit(fields: any) {
             placeholder="Add information here"
             outer-class="mb-5 w-4/5"
           />
+
+          <EmailCategoryInput :is-admin="isAdmin" />
         </div>
       </FormKit>
     </div>

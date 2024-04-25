@@ -1,6 +1,6 @@
 import { string, object } from 'yup'
 import { format } from 'date-fns'
-import { UserEmailCategories } from '~/utils/constants'
+import { AdminEmailCategories } from '~/utils/constants'
 import {
   renderEmail,
   sendEmail,
@@ -37,8 +37,8 @@ export default defineEventHandler(async (event) => {
   if (recipients.length === 0) return returnObj
 
   // Generates HTML based on the report template with the information from the request body
-  const emailHTML = await renderEmail('report', event, {
-    emailCategory: UserEmailCategories.REPORT,
+  const emailHTML = await renderEmail('user-report', event, {
+    emailCategory: AdminEmailCategories.USER_REPORT,
     ...body,
   })
 

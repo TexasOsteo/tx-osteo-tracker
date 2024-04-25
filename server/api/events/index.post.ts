@@ -3,17 +3,18 @@ import { string, object, number, date, array, bool } from 'yup'
 import { parseIDsToPrismaConnectObject } from '~/utils/prisma-parsing'
 import { throwErrorIfNotAdmin } from '~/utils/auth'
 import { validateBody } from '~/utils/validation'
+// import { id } from 'date-fns/locale'
 
 /**
  * --- API INFO
  * POST /api/events
  * Creates a new event with a generated id
- * The body is a prisma user object, except the 'attendees' and 'signedUpUsers' fields accepts user ids.
+ * The body is a prisma user object, except the 'attendees' field which accepts user ids.
  * Similarly, the 'positions' field accepts an array of objects with a name, capacity, and string of qualifications.
  * Returns the newly created event
  */
 
-export const eventSchema = object({
+const eventSchema = object({
   id: string().optional(),
   name: string().required(),
   organizer: string().required(),
@@ -28,8 +29,13 @@ export const eventSchema = object({
   code: string().required(),
   languages: array(string().defined()).defined(),
   attendees: array(string().defined()).defined(),
-  signedUpUsers: array(string().defined()).defined(),
-  positions: array(string().defined()).defined(),
+  positions: array(
+    object({
+      name: string().required(),
+      maxCapacity: number().required(),
+      prerequisites: array(string().required()).required(),
+    }).defined(),
+  ).defined(),
   notifyVolunteers: bool().default(true),
 })
 
@@ -42,8 +48,14 @@ export default defineEventHandler(async (event) => {
     data: {
       ...body,
       attendees: parseIDsToPrismaConnectObject(body.attendees),
-      signedUpUsers: parseIDsToPrismaConnectObject(body.signedUpUsers),
-      positions: parseIDsToPrismaConnectObject(body.positions),
+      positions: {
+        create: body.positions.map((position) => ({
+          name: position.name,
+          maxCapacity: position.maxCapacity,
+          currentCapacity: 0,
+          prerequisites: parseIDsToPrismaConnectObject(position.prerequisites),
+        })),
+      },
     },
     include: {
       positions: true,

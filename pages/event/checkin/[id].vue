@@ -13,18 +13,16 @@ async function checkCode() {
   })
 }
 
-definePageMeta({
-  layout: false, // Disable default layout with navbar since this page has a custom one
-})
+
 </script>
 
 <template>
-  <div class="flex justify-center items-center h-screen">
+  <div class="flex justify-center items-center h-[90vh]">
     <div class=""><CurveBackground /></div>
 
-    <div class="z-10 w-full flex flex-wrap items-center justify-center">
+    <div class=" w-full flex flex-wrap items-center justify-center">
       <div
-        class="bg-slate-100 w-1/2 flex flex-wrap items-center justify-center rounded-xl opacity-80 p-10"
+        class="bg-slate-100 w-full lg:w-1/2 flex flex-wrap items-center justify-center rounded-xl opacity-80 p-10 mx-2"
         style="text-align: center"
       >
         <div>
@@ -52,6 +50,13 @@ definePageMeta({
           >
             Check Code
           </button>
+          <NuxtLink :to="`/event/listings`">
+            <div
+              class="py-3 px-5 text-xl text-black font-semibold rounded-xl hover:bg-[#F0CC5A] transition duration-300 ease-in-out"
+            >
+              Back
+            </div>
+          </NuxtLink>
         </div>
       </div>
     </div>

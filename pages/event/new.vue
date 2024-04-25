@@ -7,8 +7,6 @@ async function handleSubmit(fields: any) {
     body: {
       ...fields,
       attendees: [],
-      signedUpUsers: [],
-      positions: [], // TODO: Create form for positions
       code: generateEventCode(),
     },
   })
@@ -31,9 +29,9 @@ async function handleSubmit(fields: any) {
     <CurveBackground />
 
     <div
-      class="max-w-screen-lg bg-gray-100 opacity-95 rounded-3xl shadow-xl z-30 p-10 flex justify-center flex-wrap items-center"
+      class="max-w-screen-lg bg-gray-100 opacity-95 rounded-3xl shadow-xl p-10 flex justify-center flex-wrap items-center mx-2"
     >
-      <h1 class="title font-sans font-bold text-5xl text-center mb-10">
+      <h1 class="title font-lexend font-bold text-5xl text-center mb-10">
         CREATE EVENT
       </h1>
       <FormKit
@@ -156,13 +154,16 @@ async function handleSubmit(fields: any) {
             outer-class="mb-5 w-4/5"
           />
 
-          <!-- <TextMultiple
-            title="Volunteer Positions"
-            placeholder="Enter new position"
-            add-text="Add new position"
-            name="positions"
-            empty
-          /> -->
+          <PositionEdit />
+
+          <FormKit
+            type="checkbox"
+            label="Send notification to volunteers?"
+            help="This will send an email about this new event to all subscribed volunteers."
+            name="notifyVolunteers"
+            :value="true"
+            outer-class="mt-4 w-4/5"
+          />
         </div>
       </FormKit>
     </div>

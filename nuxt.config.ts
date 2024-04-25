@@ -19,6 +19,7 @@ export default defineNuxtConfig({
     AZURE_CDN_ORIGIN: ensureEnv('AZURE_CDN_ORIGIN'),
     AZURE_STORAGE_ACCOUNT_NAME: ensureEnv('AZURE_STORAGE_ACCOUNT_NAME'),
     AZURE_STORAGE_SHARED_KEY: ensureEnv('AZURE_STORAGE_SHARED_KEY'),
+    OVERRIDE_HOST: process?.env?.OVERRIDE_HOST ?? '', // Optional
     AZURE_COMMUNICATION_SERVICE_CONNECTION_STRING: ensureEnv(
       'AZURE_COMMUNICATION_SERVICE_CONNECTION_STRING',
     ),
@@ -27,7 +28,13 @@ export default defineNuxtConfig({
       txosteo_token: 'txosteo_volunteer_token',
     },
   },
-  modules: ['@formkit/nuxt', '@pinia/nuxt', 'nuxt-icon'],
+
+  modules: [
+    '@formkit/nuxt',
+    '@pinia/nuxt',
+    'nuxt-icon',
+    // ['@nuxtjs/google-fonts', { families: { Inter: [400, 500, 600, 700] } }],
+  ],
   formkit: {
     autoImport: true,
   },
@@ -59,6 +66,7 @@ function ensureEnv(envName: string): string {
     )
   }
   const value = process.env[envName]
+  if (process.env.DISABLE_ENV_CHECKING === 'true') return value!
   if (!value) {
     throw new Error(
       `Missing environment variable "${envName}." Please define it in .env`,
