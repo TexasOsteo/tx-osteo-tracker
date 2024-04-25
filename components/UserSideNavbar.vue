@@ -22,6 +22,14 @@ async function deleteUser() {
   router.push('/')
 }
 </script>
+
+<style>
+#AccountInfo {
+  max-height: 90vh;
+  overflow-y: auto;
+}
+</style>
+
 <template>
   <nav
     id="AccountInfo"
