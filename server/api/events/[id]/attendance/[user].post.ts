@@ -1,5 +1,6 @@
 import { object, string } from 'yup'
 import { throwErrorIfNotAdmin } from '~/utils/auth'
+import { extendWithHiddenEventCodes } from '~/utils/prisma-parsing'
 import { validateBody } from '~/utils/validation'
 
 /**
@@ -9,7 +10,7 @@ import { validateBody } from '~/utils/validation'
  */
 
 const schema = object({
-  code: string(),
+  code: string().optional(),
 })
 
 export default defineEventHandler(async (event) => {
@@ -62,7 +63,8 @@ export default defineEventHandler(async (event) => {
     })
   }
 
-  const newEvent = await event.context.prisma.event.update({
+  const prisma = extendWithHiddenEventCodes(event)
+  const newEvent = await prisma.event.update({
     where: { id: eventId },
     data: {
       attendees: {
@@ -71,13 +73,9 @@ export default defineEventHandler(async (event) => {
         },
       },
     },
-    include: {
-      attendees: true,
-      signedUpUsers: true,
-    },
   })
 
-  await event.context.prisma.user.update({
+  await prisma.user.update({
     where: { id: userId },
     data: {
       numHours: {
@@ -85,10 +83,6 @@ export default defineEventHandler(async (event) => {
       },
     },
   })
-
-  if (!event.context.txOsteoClaims?.admin) {
-    newEvent.code = ''
-  }
 
   return newEvent
 })
