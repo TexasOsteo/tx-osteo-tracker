@@ -33,7 +33,7 @@ async function deleteUser() {
 <template>
   <nav
     id="AccountInfo"
-    class="z-20 w-full shadow-sm p-2 flex-none bg-white border-2 border-teal-200 border-t-gray-200 border-r-gray-200 justify-center"
+    class="z-20 w-full p-2 flex-none bg-white border-2 border-t-gray-200 border-r-gray-200 justify-center"
   >
     <div
       id="OsteoLogoFiller"

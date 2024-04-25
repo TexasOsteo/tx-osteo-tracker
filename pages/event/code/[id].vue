@@ -24,7 +24,7 @@ async function updateCode() {
       class="w-full h-[90vh] flex flex-wrap items-center justify-center mx-2"
     >
       <div
-        class="w-full md:w-1/2 flex flex-wrap items-center justify-center rounded-xl bg-white bg-opacity-80 p-10 px-5"
+        class="w-full md:w-1/2 flex flex-wrap items-center justify-center rounded-xl bg-white bg-opacity-95 md:bg-opacity-80 shadow-2xl backdrop-blur-none md:backdrop-blur-md z-0 p-10 px-5"
       >
         <div class="">
           <h1 class="text-4xl lg:text-5xl font-bold pb-5 w-full text-center">

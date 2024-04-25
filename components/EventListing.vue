@@ -13,19 +13,32 @@ const props = defineProps<{
   event: EventWithPositions | SerializeObject<EventWithPositions>
 }>()
 
-const currentCapacity = computed(() =>
-  props.event.positions.reduce(
-    (acc, position) => acc + position.currentCapacity,
-    0,
-  ),
-)
+// const updatedEvent = ref<typeof props.event | null>(null)
+// const realEvent = computed(() => {
+//   return updatedEvent.value ?? props.event
+// })
 
-const maxCapacity = computed(() =>
-  props.event.positions.reduce(
-    (acc, position) => acc + position.maxCapacity,
-    0,
-  ),
-)
+const currentCapacity = computed(() => {
+  // Check if positions is defined and is an array
+  if (Array.isArray(props.event.positions)) {
+    return props.event.positions.reduce(
+      (acc, position) => acc + position.currentCapacity,
+      0,
+    )
+  }
+  return 0 // Return default value if positions is not available
+})
+
+const maxCapacity = computed(() => {
+  // Check if positions is defined and is an array
+  if (Array.isArray(props.event.positions)) {
+    return props.event.positions.reduce(
+      (acc, position) => acc + position.maxCapacity,
+      0,
+    )
+  }
+  return 0 // Return default value if positions is not available
+})
 
 const canCheckIn = computed(() => {
   let date = props.event.dateAndTime
@@ -298,7 +311,7 @@ function toggleExpanded() {
 
             <li>
               <div
-                v-if="event.positions.length > 0"
+                v-if="event.positions?.length > 0"
                 class="flex items-center mt-5"
               >
                 <div>
@@ -321,7 +334,7 @@ function toggleExpanded() {
 
             <li>
               <div
-                v-if="event.languages.length > 0"
+                v-if="event.languages?.length > 0"
                 class="flex items-center mt-5"
               >
                 <div>
@@ -359,7 +372,7 @@ function toggleExpanded() {
               <div
                 class="w-full p-3 text-center bg-[#F0CC5A] text-white rounded-md hover:bg-white hover:text-black shadow"
               >
-                <button :onclick="refreshEventList">EDIT EVENT</button>
+                <button>EDIT EVENT</button>
               </div>
             </NuxtLink>
             <NuxtLink
@@ -369,21 +382,21 @@ function toggleExpanded() {
               <div
                 class="w-full p-3 text-center bg-indigo-600 text-white rounded-md hover:bg-white hover:text-black shadow mt-3"
               >
-                <button :onclick="refreshEventList">CHECK IN</button>
+                <button >CHECK IN</button>
               </div>
             </NuxtLink>
             <NuxtLink v-if="isAdmin" :to="`/event/code/${event.id}`">
               <div
                 class="w-full p-3 text-center bg-indigo-600 text-white rounded-md hover:bg-white hover:text-black shadow mt-3"
               >
-                <button :onclick="refreshEventList">GENERATE CODE</button>
+                <button >GENERATE CODE</button>
               </div>
             </NuxtLink>
             <NuxtLink v-if="isAdmin" :to="`/event/${event.id}/volunteers`">
               <div
                 class="w-full p-3 text-center bg-emerald-300 text-white rounded-md hover:bg-white hover:text-black shadow mt-3"
               >
-                <button :onclick="refreshEventList">VOLUNTEER LIST</button>
+                <button>VOLUNTEER LIST</button>
               </div>
             </NuxtLink>
             <div class="mt-3">
