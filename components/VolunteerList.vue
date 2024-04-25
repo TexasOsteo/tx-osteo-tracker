@@ -54,13 +54,13 @@ const confirmRemoval = async () => {
 </script>
 
 <template>
-  <div class="py-20 flex justify-center flex-wrap items-center">
+  <div class="py-20 flex justify-center flex-wrap items-center px-4">
     <CurveBackground />
 
     <div
-      class="px-100 bg-gray-100 opacity-95 rounded-3xl shadow-lg z-80 p-10 flex justify-center flex-wrap items-center"
+      class="bg-white bg-opacity-95 md:bg-opacity-80 shadow-2xl backdrop-blur-none md:backdrop-blur-md rounded-3xl z-80 p-10 flex justify-center flex-wrap items-center w-full"
     >
-      <div v-if="isAdmin">
+      <div v-if="isAdmin" class="w-full">
         <div>
           <h1 class="text-center text-2xl mb-5">VOLUNTEER LIST</h1>
         </div>

@@ -5,6 +5,15 @@ const isExpanded2 = ref(false)
 const showPopup = ref(false)
 const currentEvent = ref(null)
 const isSidebar = ref(false)
+const showCustomPopup = ref(false)
+
+const openCustomPopup = () => {
+  showCustomPopup.value = true
+}
+
+const closeCustomPopup = () => {
+  showCustomPopup.value = false
+}
 
 const toggleSidebar = () => {
   isSidebar.value = !isSidebar.value
@@ -19,13 +28,24 @@ const togglePast = () => {
 }
 
 const openPopup = (event: any) => {
+  console.log('Opening popup for event:', event) // Debug: Check what event is being passed
   currentEvent.value = event
   showPopup.value = true
 }
 
 const closePopup = () => {
+  console.log('Closing popup.') // Debug: Confirm this is being called
   showPopup.value = false
 }
+
+const futureEvents = computed(() => {
+  const now = new Date()
+  return (
+    data.value?.signedUpEvents?.filter(
+      (event) => new Date(event.dateAndTime) > now,
+    ) || []
+  )
+})
 
 function displayDate(dateTime: string) {
   const d = new Date(dateTime)
@@ -43,6 +63,8 @@ function displayDate(dateTime: string) {
   return `${year}-${month}-${day} @ ${hours}:${minutes} ${ampm}`
 }
 </script>
+
+
 
 <template>
   <div id="WholePage" class="min-h-screen flex text-center">
@@ -81,7 +103,7 @@ function displayDate(dateTime: string) {
             class="flex flex-wrap items-center justify-center py-3"
           >
             <div
-              v-for="(event, index) in data.signedUpEvents"
+              v-for="(event, index) in futureEvents"
               :key="index"
               class="bg-white flex items-center p-2 m-2 rounded-xl w-full shadow"
             >
@@ -133,21 +155,41 @@ function displayDate(dateTime: string) {
             </div>
           </div>
         </div>
-      </div>
-
-      <div
-        v-if="showPopup"
-        class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 bg-opacity-50"
-      >
-        <div class="rounded-lg p-1 bg-opacity-100">
-          <div class="flex justify-end">
-            <button class="bg-[#FF0000]" @click="closePopup">
-              <img src="/icon-park_x.jpg" class="w-5 h-5" />
-            </button>
+        <div
+          v-if="showPopup"
+          class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50"
+        >
+          <div class="rounded-lg p-1 bg-opacity-100 w-full">
+            <div class="flex justify-end pr-10 pb-10">
+              <button
+                class="bg-red-600 hover:bg-red-500 rounded-full w-10 h-10 pb-1"
+                @click="closePopup"
+              >
+                <Icon name="mdi:close" class="text-white" />
+              </button>
+            </div>
+            <EventListing
+              v-if="currentEvent"
+              id="EventScroll"
+              class="hidden sm:block overflow-auto"
+              :event="currentEvent"
+            />
+            <EventListingMobile
+              v-if="currentEvent"
+              id="EventScroll"
+              class="block sm:hidden my-5 overflow-auto"
+              :event="currentEvent"
+            ></EventListingMobile>
           </div>
-          <EventListing v-if="currentEvent" :event="currentEvent" />
         </div>
       </div>
     </main>
   </div>
 </template>
+
+<style>
+#EventScroll {
+  max-height: 80vh;
+  overflow-y: auto;
+}
+</style>

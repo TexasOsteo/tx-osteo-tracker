@@ -3,7 +3,7 @@
     <CurveBackground />
 
     <div
-      class="w-full md:w-2/3 bg-gray-100 opacity-95 rounded-3xl shadow-xl p-10 flex justify-center flex-wrap items-center mx-2"
+      class="w-full md:w-2/3 bg-white bg-opacity-95 md:bg-opacity-80 shadow-2xl backdrop-blur-none md:backdrop-blur-md rounded-3xl  p-10 flex justify-center flex-wrap items-center mx-2"
     >
       <div class="w-full">
         <h1
