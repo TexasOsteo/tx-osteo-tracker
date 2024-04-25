@@ -1,3 +1,4 @@
+import { extendWithHiddenEventCodes } from '~/utils/prisma-parsing'
 import { getRealRequestURL } from '~/utils/server'
 
 /**
@@ -23,8 +24,10 @@ export default defineEventHandler(async (event) => {
     ? new Date(Number(beforeDateParam) || beforeDateParam)
     : undefined
 
+  const prisma = extendWithHiddenEventCodes(event)
+
   // Find every event by providing no search filters
-  const data = await event.context.prisma.event.findMany({
+  const data = await prisma.event.findMany({
     where: {
       dateAndTime: {
         gte: afterDate,
@@ -39,10 +42,5 @@ export default defineEventHandler(async (event) => {
       },
     },
   })
-  if (!event.context.txOsteoClaims?.admin) {
-    for (const ev of data) {
-      ev.code = ''
-    }
-  }
   return data
 })
