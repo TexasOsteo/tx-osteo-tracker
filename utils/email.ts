@@ -43,32 +43,38 @@ export async function renderEmail(
   return template({
     date: format(new Date(), 'EEEE MMM d, y'),
     origin,
-    // TODO: Update logo to not be a hotlink
-    logo: 'https://static.wixstatic.com/media/8c1f13_bd14a68191934239a53edefd6e80f734~mv2.png/v1/fill/w_357,h_357,al_c,q_85,usm_0.66_1.00_0.01,enc_auto/logo_whitecircle.png',
+    logo: new URL('/logo.png', origin).href,
     ...context,
   })
 }
+
+type CustomEmailMessage = Omit<EmailMessage, 'senderAddress'>
 
 /**
  * Sends an email using the default email client
  * @param message
  * @returns
  */
-export function sendEmail(message: EmailMessage) {
+export function sendEmail(message: CustomEmailMessage) {
   return new Promise<void>((resolve, reject) => {
     const client = getEmailClient()
-    client.beginSend(message).then((poller) => {
-      const cancelProgress = poller.onProgress((state) => {
-        if (state.error) {
-          cancelProgress()
-          reject(state.error)
-        } else if (state.isStarted) {
-          cancelProgress()
-          resolve()
-        }
+    client
+      .beginSend({
+        senderAddress: useRuntimeConfig().AZURE_EMAIL_ADDRESS,
+        ...message,
       })
-      poller.pollUntilDone()
-    })
+      .then((poller) => {
+        const cancelProgress = poller.onProgress((state) => {
+          if (state.error) {
+            cancelProgress()
+            reject(state.error)
+          } else if (state.isStarted) {
+            cancelProgress()
+            resolve()
+          }
+        })
+        poller.pollUntilDone()
+      })
   })
 }
 
