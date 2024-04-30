@@ -22,7 +22,7 @@ async function checkCode() {
 
     <div class=" w-full flex flex-wrap items-center justify-center">
       <div
-        class="bg-slate-100 w-full lg:w-1/2 flex flex-wrap items-center justify-center rounded-xl opacity-80 p-10 mx-2"
+        class="bg-white bg-opacity-95  md:bg-opacity-80 backdrop-blur-none md:backdrop-blur-md z-0 shadow-2xl w-full lg:w-1/2 flex flex-wrap items-center justify-center rounded-xl p-10 mx-2"
         style="text-align: center"
       >
         <div>

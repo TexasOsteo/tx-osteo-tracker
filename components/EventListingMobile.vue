@@ -13,19 +13,27 @@ const props = defineProps<{
   event: EventWithPositions | SerializeObject<EventWithPositions>
 }>()
 
-const currentCapacity = computed(() =>
-  props.event.positions.reduce(
-    (acc, position) => acc + position.currentCapacity,
-    0,
-  ),
-)
+const currentCapacity = computed(() => {
+  // Check if positions is defined and is an array
+  if (Array.isArray(props.event.positions)) {
+    return props.event.positions.reduce(
+      (acc, position) => acc + position.currentCapacity,
+      0,
+    )
+  }
+  return 0 // Return default value if positions is not available
+})
 
-const maxCapacity = computed(() =>
-  props.event.positions.reduce(
-    (acc, position) => acc + position.maxCapacity,
-    0,
-  ),
-)
+const maxCapacity = computed(() => {
+  // Check if positions is defined and is an array
+  if (Array.isArray(props.event.positions)) {
+    return props.event.positions.reduce(
+      (acc, position) => acc + position.maxCapacity,
+      0,
+    )
+  }
+  return 0 // Return default value if positions is not available
+})
 
 // Create var to toggle expanded view
 const isOpen = ref<boolean>(false)
@@ -291,7 +299,7 @@ const canCheckIn = computed(() => {
 
             <li>
               <div
-                v-if="event.positions.length > 0"
+                v-if="event.positions?.length > 0"
                 class="flex items-center pb-3"
               >
                 <div>
@@ -316,7 +324,7 @@ const canCheckIn = computed(() => {
 
             <li>
               <div
-                v-if="event.languages.length > 0"
+                v-if="event.languages?.length > 0"
                 class="flex items-center pb-3"
               >
                 <div>
@@ -334,7 +342,6 @@ const canCheckIn = computed(() => {
                       stroke-linecap="round"
                       stroke-linejoin="round"
                     />
-                    <!------------------------------------------------------------------------------------------>
                   </svg>
                 </div>
                 <h3 class="mr-20 ml-1 text-sm">
@@ -393,7 +400,7 @@ const canCheckIn = computed(() => {
         <div
           class="w-full p-3 text-center bg-[#F0CC5A] text-white rounded-md hover:bg-white hover:text-black shadow"
         >
-          <button :onclick="refreshEventList">EDIT EVENT</button>
+          <button>EDIT EVENT</button>
         </div>
       </NuxtLink>
       <NuxtLink
@@ -403,21 +410,21 @@ const canCheckIn = computed(() => {
         <div
           class="w-full p-3 text-center bg-indigo-600 text-white rounded-md hover:bg-white hover:text-black shadow mt-3"
         >
-          <button :onclick="refreshEventList">CHECK IN</button>
+          <button >CHECK IN</button>
         </div>
       </NuxtLink>
       <NuxtLink v-if="isAdmin" :to="`/event/code/${event.id}`">
         <div
           class="w-full p-3 text-center bg-indigo-600 text-white rounded-md hover:bg-white hover:text-black shadow mt-3"
         >
-          <button :onclick="refreshEventList">GENERATE CODE</button>
+          <button >GENERATE CODE</button>
         </div>
       </NuxtLink>
       <NuxtLink v-if="isAdmin" :to="`/event/${event.id}/volunteers`">
         <div
           class="w-full p-3 text-center bg-emerald-300 text-white rounded-md hover:bg-white hover:text-black shadow mt-3"
         >
-          <button :onclick="refreshEventList">VOLUNTEER LIST</button>
+          <button >VOLUNTEER LIST</button>
         </div>
       </NuxtLink>
 

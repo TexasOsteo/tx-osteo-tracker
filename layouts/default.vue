@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import { ModalsContainer } from 'vue-final-modal'
+import { ref } from 'vue'
 
 const isAdmin = isSignedInUserAdmin()
 const isMenuOpen = ref(false)
+const isAdminMenuOpen = ref(false)
 
 useSeoMeta({
   title: 'Texas Osteoperosis Foundation Volunteering',
@@ -23,7 +25,9 @@ const menuItemClass =
       class="fixed top-0 h-20 w-full max-w-full bg-white flex items-center justify-between shadow z-10 px-4"
     >
       <div class="h-full flex items-center">
-        <h1 class="text-xl hidden xl:block">TEXAS OSTEOPOROSIS FOUNDATION</h1>
+        <h1 class="text-xl md:text-md hidden xl:block">
+          TEXAS OSTEOPOROSIS FOUNDATION
+        </h1>
       </div>
       <div
         class="h-full w-full sm:w-auto justify-between flex items-center sm:gap-8 gap-2 text-lg hidden sm:flex"
@@ -48,6 +52,55 @@ const menuItemClass =
           <Icon name="mdi:logout-variant" />
           <span class="hidden lg:block">Log Out</span>
         </a>
+        <div class="relative">
+          <button
+            :class="menuItemClass"
+            type="button"
+            @mouseenter="isAdminMenuOpen = true"
+            @mouseleave="isAdminMenuOpen = false"
+          >
+            <Icon name="mdi:wrench" />
+            <span class="hidden lg:block">Admin Tools</span>
+          </button>
+          <!-- Dropdown menu -->
+          <div
+            v-show="isAdminMenuOpen"
+            class="z-10 absolute right-0 bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700"
+            @mouseenter="isAdminMenuOpen = true"
+            @mouseleave="isAdminMenuOpen = false"
+          >
+            <ul class="py-2 text-sm text-gray-700 dark:text-gray-200">
+              <li v-if="isAdmin">
+                <NuxtLink
+                  to="/email/newsletter"
+                  class="block px-4 py-2 text-lg hover:bg-gray-200"
+                  @click="isAdminMenuOpen = false"
+                >
+                  Email Newsletter
+                </NuxtLink>
+              </li>
+              <li v-if="isAdmin">
+                <NuxtLink
+                  to="/volunteer/list"
+                  class="block px-4 py-2 text-lg hover:bg-gray-200"
+                  @click="isAdminMenuOpen = false"
+                >
+                  Volunteer List
+                </NuxtLink>
+              </li>
+              <li v-if="isAdmin">
+                <NuxtLink
+                  to="/qualifications/list"
+                  class="block px-4 py-2 text-lg hover:bg-gray-200"
+                  @click="isAdminMenuOpen = false"
+                >
+                  Qualifications List
+                </NuxtLink>
+              </li>
+            </ul>
+          </div>
+        </div>
+
         <div class="h-full p-2 aspect-square">
           <NuxtLink to="/users/me/settings">
             <ProfileAvatar class="w-full h-full rounded-full drop-shadow-sm" />
@@ -77,6 +130,7 @@ const menuItemClass =
           class="absolute top-full left-0 w-full bg-white shadow z-20 pb-5"
         >
           <!-- Your dropdown menu items go here -->
+
           <NuxtLink
             to="/event/listings"
             class="block px-4 py-2 text-lg hover:bg-gray-200"
@@ -93,11 +147,60 @@ const menuItemClass =
           </NuxtLink>
 
           <NuxtLink
+            v-if="isAdmin"
+            class="block px-4 py-2 text-lg hover:bg-gray-200"
+            to="/event/new"
+            @click="isMenuOpen = !isMenuOpen"
+          >
+            New Event
+          </NuxtLink>
+
+          <NuxtLink
             to="/resources"
             class="block px-4 py-2 text-lg hover:bg-gray-200"
             @click="isMenuOpen = !isMenuOpen"
           >
             Resources
+          </NuxtLink>
+          <NuxtLink
+            v-if="isAdmin"
+            class="block px-4 py-2 text-lg hover:bg-gray-200 relative"
+            @click="isAdminMenuOpen = !isAdminMenuOpen"
+          >
+            Admin Tools
+            <ul
+              v-if="isAdminMenuOpen"
+              class="absolute left-0 mt-2 w-48 bg-white shadow-lg rounded-lg overflow-hidden z-10"
+              @mouseleave="isAdminMenuOpen = false"
+            >
+              <li>
+                <NuxtLink
+                  to="/email/newsletter"
+                  class="block px-4 py-2 text-lg hover:bg-gray-200"
+                  @click="isMenuOpen = !isMenuOpen"
+                >
+                  Email Newsletter
+                </NuxtLink>
+              </li>
+              <li>
+                <NuxtLink
+                  to="/volunteer/list"
+                  class="block px-4 py-2 text-lg hover:bg-gray-200"
+                  @click="isMenuOpen = !isMenuOpen"
+                >
+                  Volunteer List
+                </NuxtLink>
+              </li>
+              <li>
+                <NuxtLink
+                  to="/qualifications/list"
+                  class="block px-4 py-2 text-lg hover:bg-gray-200"
+                  @click="isMenuOpen = !isMenuOpen"
+                >
+                  Qualifications
+                </NuxtLink>
+              </li>
+            </ul>
           </NuxtLink>
           <a
             href="/api/auth/logout"
