@@ -52,14 +52,14 @@ const closeDetail = () => {
         v-model="search"
         type="text"
         placeholder="Search for a user by name or email"
-        class="w-1/3 p-2 mb-4 text-center border-b border-gray-400 hidden sm:block"
+        class="w-1/3 p-2 mb-4 text-center hidden sm:block bg-slate-200 p-2 m-2 rounded-lg"
       />
 
       <input
         v-model="search"
         type="text"
         placeholder="Search"
-        class="w-1/3 p-2 mb-4 text-center border-b border-gray-400 block sm:hidden"
+        class="w-1/3 p-2 mb-4 text-center block sm:hidden bg-slate-200 p-2 m-2 rounded-lg"
       />
     </div>
     <!-- User Profile Cards -->
