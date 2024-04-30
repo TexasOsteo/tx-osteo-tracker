@@ -13,11 +13,6 @@ const props = defineProps<{
   event: EventWithPositions | SerializeObject<EventWithPositions>
 }>()
 
-// const updatedEvent = ref<typeof props.event | null>(null)
-// const realEvent = computed(() => {
-//   return updatedEvent.value ?? props.event
-// })
-
 const currentCapacity = computed(() => {
   // Check if positions is defined and is an array
   if (Array.isArray(props.event.positions)) {
