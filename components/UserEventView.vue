@@ -62,9 +62,10 @@
         'rounded',
         'transition-colors',
         'duration-200',
+        'w-full',
         Object.keys(selectedPositions).length
-          ? 'text-[#FDFAF0] bg-yellow-500 hover:bg-yellow-550'
-          : 'text-[#FDFAF0] bg-gray-500',
+          ? 'text-[#FDFAF0] bg-yellow-500 hover:bg-yellow-600'
+          : 'text-[#FDFAF0] bg-gray-500 hover:bg-gray-600',
       ]"
       @click="registerUser"
     >

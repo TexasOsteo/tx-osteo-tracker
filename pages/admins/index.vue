@@ -43,7 +43,7 @@ const closeDetail = () => {
 
 <template>
   <div>
-    <h1 class="title font-bold text-5xl text-center py-10">
+    <h1 class="title font-bold text-4xl md:text-5xl text-center py-10">
       Volunteer Page - Utility
     </h1>
     <!-- Search Bar-->
@@ -52,11 +52,18 @@ const closeDetail = () => {
         v-model="search"
         type="text"
         placeholder="Search for a user by name or email"
-        class="w-1/3 p-2 mb-4 text-center border-b border-gray-400"
+        class="w-1/3 p-2 mb-4 text-center border-b border-gray-400 hidden sm:block"
+      />
+
+      <input
+        v-model="search"
+        type="text"
+        placeholder="Search"
+        class="w-1/3 p-2 mb-4 text-center border-b border-gray-400 block sm:hidden"
       />
     </div>
     <!-- User Profile Cards -->
-    <div class="flex flex-wrap gap-4">
+    <div class="flex flex-wrap gap-4 w-full items-center justify-center">
       <UserProfileCard
         v-for="user in filteredUsers"
         :id="user.id"

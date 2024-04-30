@@ -4,7 +4,7 @@
 
       <!-- Column 1 -->
       <div>
-        <p class="mb-1">
+        <p class="mb-1 truncate overflow-hidden">
           <strong>Email:</strong>
           {{ user.email }}
         </p>
@@ -74,7 +74,7 @@
           <strong>Admin Notes:</strong>
             <div v-if="!localUser.adminNotes" class="mt-2">
               <button
-              class="px-4 py-2 text-white bg-[#0DA49B] rounded"
+              class="px-4 py-2 text-white bg-[#0DA49B] hover:bg-teal-700 rounded w-full md:w-none"
               @click="createAdminNote"
               >
                 Create Note
@@ -92,13 +92,13 @@
 
     <div class="flex flex-col mt-4">
       <button
-        class="mt-4 mr-4 py-2 px-4 bg-yellow-500 text-[#FDFAF0] rounded w-full"
+        class="mt-4 mr-4 py-2 px-4 bg-yellow-500 hover:bg-yellow-600 text-[#FDFAF0] rounded w-full"
         @click="saveChanges"
       >
         Save Changes
       </button>
       <button
-        class="mb-2 mt-2 py-2 px-4 bg-red-500 text-[#FEF6F6] rounded w-full"
+        class="mb-2 mt-2 py-2 px-4 bg-red-500 hover:bg-red-600 text-[#FEF6F6] rounded w-full"
         @click="deleteUser"
       >
         Delete User

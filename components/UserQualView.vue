@@ -21,10 +21,10 @@
       </li>
     </ul>
     <button
-      class="w-full inline-flex rounded-md border border-transparent shadow-sm px-4 py-2 mt-2 text-[#FDFAF0] font-medium sm:w-auto sm:text-sm transition-colors duration-200"
+      class="w-full flex rounded-md shadow-sm px-4 py-2 mt-2 text-[#FDFAF0] font-medium text-center sm:text-sm transition-colors duration-200 items-center justify-center"
       :class="{
         'bg-yellow-500 hover:bg-yellow-600 focus:ring-yellow-600': isChanged,
-        'bg-gray-500': !isChanged,
+        'bg-gray-500 hover:bg-gray-600': !isChanged,
       }"
       :disabled="!isChanged"
       type="button"
