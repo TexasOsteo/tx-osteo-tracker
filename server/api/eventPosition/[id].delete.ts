@@ -1,9 +1,13 @@
+import { throwErrorIfNotAdmin } from '~/utils/auth'
+
 /**
  * --- API INFO
  * DELETE /api/eventPosition/[id]
  * Deletes an event position by its id
  */
 export default defineEventHandler(async (event) => {
+  throwErrorIfNotAdmin(event)
+
   // Get the id parameter (the last part of this url)
   const positionId = getRouterParam(event, 'id')
   if (!positionId) {

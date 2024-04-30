@@ -1,4 +1,5 @@
 import { throwErrorIfNotAdmin } from '~/utils/auth'
+import { ensureRouteParam } from '~/utils/validation'
 
 /**
  * --- API INFO
@@ -11,14 +12,8 @@ import { throwErrorIfNotAdmin } from '~/utils/auth'
 export default defineEventHandler(async (event) => {
   throwErrorIfNotAdmin(event) // Check if user is admin
 
-  const id = getRouterParam(event, 'id')
-  if (!id) {
-    // If there is no id, throw a 400 (BAD REQUEST) error
-    throw createError({
-      status: 400,
-      message: 'No event id provided',
-    })
-  }
+  const id = ensureRouteParam(event, 'id')
+
   try {
     const userDeletion = await event.context.prisma.user.delete({
       where: {

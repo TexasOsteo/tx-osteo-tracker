@@ -1,13 +1,20 @@
 <script setup lang="ts">
 const { data: fetchedQualifications } = await useFetch('/api/qualifications')
+const { data: user } = await useFetch('/api/users/me')
 
 const qualifications = computed(() => {
-  const quals = fetchedQualifications.value ?? []
+  let quals = fetchedQualifications.value ?? []
+  if (user.value) {
+    // Remove qualifications the user already has
+    quals = quals.filter(
+      (q) => !user.value!.verifiedQualifications.some((v) => v.id === q.id),
+    )
+  }
   return Object.fromEntries(quals.map((q) => [q.id, q.name]))
 })
 
 const defaultQualification = computed(
-  () => Object.keys(qualifications.value)[0] ?? 'None',
+  () => Object.keys(qualifications.value)[0] ?? '',
 )
 
 const router = useRouter()
@@ -52,6 +59,7 @@ async function handleSubmit(fields: any) {
         type="form"
         :errors="formErrors"
         class-name="items-center"
+        :disabled="Object.keys(qualifications).length === 0"
         @submit="handleSubmit"
       >
         <div class="flex justify-center items-center flex-wrap">
@@ -65,8 +73,10 @@ async function handleSubmit(fields: any) {
             validation="noDuplicates|required"
             :default-value="defaultQualification"
           />
+          <h1 v-if="Object.keys(qualifications).length === 0">
+            There are no new qualifications for you to apply for.
+          </h1>
           <FormKit
-            id="name"
             type="textarea"
             name="description"
             label="Description"

@@ -99,7 +99,7 @@ We use Microsoft Azure for our deployment, image CDN, and email notifications.
 
 The image CDN is done using a Blob Storage instance to store the files and a CDN Front Door instance for accessing the images anonymously. Files can be uploaded or deleted via the `/api/images` endpoint. Internally, the endpoints use the official [Azure JavaScript SDK](https://learn.microsoft.com/en-us/azure/developer/javascript/).
 
-As of December 2023, the project is not actively deployed on Azure. However, it is planned to be deployed using [Azure Static Web Apps](https://learn.microsoft.com/en-us/azure/static-web-apps/deploy-nuxtjs) and [Azure SQL](https://azure.microsoft.com/en-us/products/azure-sql/database).
+Nuxt is deployed via [Azure Static Web Apps](https://learn.microsoft.com/en-us/azure/static-web-apps/deploy-nuxtjs) which internally uses [Azure Functions](https://azure.microsoft.com/en-us/products/functions). Azure Functions are also used for sending timed email updates, which is done through [Azure Communication Services](https://learn.microsoft.com/en-us/azure/communication-services/concepts/email/email-overview). The database is hosted via [Azure SQL for Postgres](https://azure.microsoft.com/en-us/products/postgresql). Images and other documents are stored on [Azure Blob Storage](https://azure.microsoft.com/en-us/products/storage/blobs/) which is accessed via [Azure Frontdoor / CDN](https://learn.microsoft.com/en-us/azure/frontdoor/).
 
 In order to use Azure, the environment variables must be [setup](./setup.md) correctly.
 
@@ -109,7 +109,7 @@ Authentication is done using [Auth0](https://auth0.com/). It handles passwords, 
 
 Auth0 does not handle usernames or other user data. See how authentication and user data storage is done [here](./authentication.md).
 
-Fun fact, Auth0 is how ACM handles its logins.
+Fun fact, Auth0 is how [ACM](https://acmutd.co/) handles its logins.
 
 ### GitHub
 
@@ -122,3 +122,5 @@ Important takeaways:
 - Don't commit environment variables or other secrets to GitHub. If you add a new file with private data, add it to `.gitignore`.
 
 We recommend using VS Code's [built-in Git integration](https://code.visualstudio.com/docs/sourcecontrol/overview).
+
+[GitHub Actions](https://github.com/features/actions) is how the deployed website on Azure is updated automatically. Whenever a new change is merged, GitHub will automatically build it and push the changes to Azure.
