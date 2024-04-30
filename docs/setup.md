@@ -102,6 +102,9 @@ http://127.0.0.1:3001/api/auth/callback/logout
 ```
 
 - Click `Save`
+- Go to `Applications > APIs` and choose the default management API
+- Go to `Machine to Machine Applications` and click the dropdown for the created application
+- Add the `update:users` permission and click update
 - Add team members by going to `Tenant Settings > Tenant Members`
 
 # How to setup Azure
