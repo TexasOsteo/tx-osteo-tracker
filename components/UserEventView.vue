@@ -83,6 +83,7 @@ interface EventPositions {
 interface Event {
   id: string
   name: string
+  dateAndTime: string
   positions: EventPositions[]
 }
 
@@ -112,8 +113,12 @@ onMounted(async () => {
   }
   allEvents.value = await response.json()
 
+  const currentDate = new Date()
+
   unregisteredEvents.value = allEvents.value.filter(
-    (event) => !props.user.signedUpEvents.map((e) => e.id).includes(event.id),
+    (event) =>
+      !props.user.signedUpEvents.map((e) => e.id).includes(event.id) &&
+      new Date(event.dateAndTime) > currentDate, // admin can register user for future events only
   )
 })
 
@@ -157,6 +162,7 @@ const updateSelectedPositions = (
 // Loop through selectedPositions and make the API call for each position, admin override
 
 const registerUser = async () => {
+  console.log(selectedPositions.value)
   for (const eventId in selectedPositions.value) {
     for (const positionId of selectedPositions.value[eventId]) {
       const response = await fetch(
