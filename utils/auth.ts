@@ -1,3 +1,4 @@
+import { number, object, string } from 'yup'
 import type { DefaultEvent } from './types'
 import { getRealRequestURL } from './server'
 
@@ -54,7 +55,7 @@ export function getLogoutRedirect(event: DefaultEvent, token: string): string {
 /**
  * @returns The Auth0 issuer domain as a proper url
  */
-function getAuth0Domain(): string {
+export function getAuth0Domain(): string {
   const domain = useRuntimeConfig().AUTH0_DOMAIN
   return domain.startsWith('https://') ? domain : `https://${domain}`
 }
@@ -74,4 +75,27 @@ export function throwErrorIfNotAdmin(event: DefaultEvent, message?: string) {
         `You must be an admin to access this endpoint: ${currentUrl.pathname}`,
     })
   }
+}
+
+/**
+ * Returns Auth0 machine-to-machine token
+ */
+export async function getAuth0ManagementToken(scope: string) {
+  const res = await $fetch(new URL('/oauth/token', getAuth0Domain()).href, {
+    method: 'POST',
+    body: new URLSearchParams({
+      grant_type: 'client_credentials',
+      client_id: useRuntimeConfig().AUTH0_CLIENTID,
+      client_secret: useRuntimeConfig().AUTH0_SECRET,
+      audience: new URL('/api/v2/', getAuth0Domain()).href,
+      scope,
+    }),
+  })
+
+  return await object({
+    access_token: string().required(),
+    expires_in: number().required(),
+    scope: string().required(),
+    token_type: string().required(),
+  }).validate(res)
 }
