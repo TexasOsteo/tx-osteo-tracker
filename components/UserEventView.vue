@@ -1,5 +1,5 @@
 <template>
-  <div v-if="user" class="p-4 w-full bg-white rounded shadow">
+  <div v-if="user" class="p-4 w-full bg-white rounded shadow text-left">
     <p>
       <strong>Override Register:</strong>
     </p>
@@ -7,15 +7,23 @@
       <p class="pb-2">This user is registered for all events! 🎉</p>
     </div>
     <div v-else v-for="event in unregisteredEvents" :key="event.id">
-      <details>
+      <details @toggle="event.isExpanded = $event.target.open">
         <summary>
-          {{ event.name }}
+          <div class="flex items-center cursor-pointer">
+            <img
+              v-if="event.isExpanded"
+              src="/icon-park_up.jpg"
+              class="w-5 h-5 mr-2"
+            />
+            <img v-else src="/icon-park_down.jpg" class="w-5 h-5 mr-2" />
+            {{ event.name }}
+          </div>
         </summary>
 
         <div
           v-for="position in event.positions"
           :key="position.id"
-          class="pl-3"
+          class="pl-7"
         >
           <input
             type="checkbox"
@@ -41,7 +49,7 @@
      { 'event1': 
         ['position1', 'position2'],  
         'event2': 
-        ['position3'] }, 
+        ['position1'] }, 
     Object.keys(selectedPositions) will return ['event1', 'event2']. 
     If selectedPositions is {}, Object.keys(selectedPositions) will return []
     -->
@@ -50,12 +58,13 @@
       :class="[
         'px-4',
         'py-2',
+        'mt-4',
         'rounded',
         'transition-colors',
         'duration-200',
         Object.keys(selectedPositions).length
-          ? 'bg-green-500 hover:bg-green-700'
-          : 'bg-gray-500',
+          ? 'text-[#FDFAF0] bg-yellow-500 hover:bg-yellow-550'
+          : 'text-[#FDFAF0] bg-gray-500',
       ]"
       @click="registerUser"
     >
@@ -167,3 +176,13 @@ const registerUser = async () => {
   }
 }
 </script>
+
+<style scoped>
+details > summary {
+  list-style: none;
+}
+
+details > summary::-webkit-details-marker {
+  display: none;
+}
+</style>

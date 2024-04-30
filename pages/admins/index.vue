@@ -17,6 +17,21 @@ onMounted(async () => {
   users.value = await response.json()
 })
 
+// Search based on name or email, fuzzy
+const search = ref('')
+
+const filteredUsers = computed(() => {
+  if (!search.value) {
+    return users.value
+  }
+  const lowerCaseSearch = search.value.toLowerCase()
+  return users.value.filter(
+    (user) =>
+      user.name.toLowerCase().includes(lowerCaseSearch) ||
+      user.email.toLowerCase().includes(lowerCaseSearch),
+  )
+})
+
 const showDetail = (id: string) => {
   selectedUserId.value = id
 }
@@ -31,14 +46,26 @@ const closeDetail = () => {
     <h1 class="title font-bold text-5xl text-center py-10">
       Volunteer Page - Utility
     </h1>
-    <UserProfileCard
-      v-for="user in users"
-      :id="user.id"
-      :key="user.id"
-      :name="user.name"
-      :email="user.email"
-      @show-detail="showDetail"
-    />
+    <!-- Search Bar-->
+    <div class="flex justify-center">
+      <input
+        v-model="search"
+        type="text"
+        placeholder="Search for a user by name or email"
+        class="w-1/3 p-2 mb-4 text-center border-b border-gray-400"
+      />
+    </div>
+    <!-- User Profile Cards -->
+    <div class="flex flex-wrap gap-4">
+      <UserProfileCard
+        v-for="user in filteredUsers"
+        :id="user.id"
+        :key="user.id"
+        :name="user.name"
+        :email="user.email"
+        @show-detail="showDetail"
+      />
+    </div>
     <UserProfileDetail
       v-if="selectedUserId"
       :id="selectedUserId"

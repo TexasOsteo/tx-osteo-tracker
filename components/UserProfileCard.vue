@@ -16,7 +16,7 @@ const showModal = () => {
   <div>
     <button
       @click="showModal"
-      class="flex flex-wrap items-center justify-center p-4 mb-4 border rounded-md border-slate-300 shadow-lg w-96"
+      class="flex flex-wrap items-center justify-center p-4 mb-4 border rounded-md border-slate-300 shadow-lg w-64 h-72"
     >
       <div>
         <div

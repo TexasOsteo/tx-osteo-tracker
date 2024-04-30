@@ -1,13 +1,14 @@
 <template>
-  <div v-if="user" class="p-4 bg-white rounded shadow">
+  <div v-if="user" class="p-4 bg-white rounded shadow text-left">
     <p class="mb-1">
       <strong>Is Verfied in:</strong>
     </p>
     <ul>
-      <li v-for="qual in availableQuals" :key="qual.id" class="mb-2">
+      <li v-for="qual in availableQuals" :key="qual.id" class="mb-1">
         <div class="flex items-center">
           <input
             type="checkbox"
+            class=""
             :checked="
               user.verifiedQualifications.some(
                 (verifiedQual) => verifiedQual.id === qual.id,
@@ -15,15 +16,15 @@
             "
             @change="handleCheckboxChange(qual, $event)"
           />
-          <span class="mr-2">{{ qual.name }}</span>
+          <span class="ml-2">{{ qual.name }}</span>
         </div>
       </li>
     </ul>
     <button
-      class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 text-base font-medium sm:ml-3 sm:w-auto sm:text-sm"
+      class="w-full inline-flex rounded-md border border-transparent shadow-sm px-4 py-2 mt-2 text-[#FDFAF0] font-medium sm:w-auto sm:text-sm transition-colors duration-200"
       :class="{
-        'bg-green-600 hover:bg-green-700 focus:ring-green-500': isChanged,
-        'bg-gray-400': !isChanged,
+        'bg-yellow-500 hover:bg-yellow-600 focus:ring-yellow-600': isChanged,
+        'bg-gray-500': !isChanged,
       }"
       :disabled="!isChanged"
       type="button"
