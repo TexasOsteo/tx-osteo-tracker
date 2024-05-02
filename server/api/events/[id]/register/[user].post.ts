@@ -1,5 +1,6 @@
 import { object, string } from 'yup'
 import { throwErrorIfNotAdmin } from '~/utils/auth'
+import { extendWithHiddenEventCodes } from '~/utils/prisma-parsing'
 import { ensureRouteParam, validateBody } from '~/utils/validation'
 
 /**
@@ -117,7 +118,8 @@ export default defineEventHandler(async (event) => {
     },
   })
 
-  const updatedEvent = await event.context.prisma.event.update({
+  const prisma = extendWithHiddenEventCodes(event)
+  const updatedEvent = await prisma.event.update({
     where: { id: eventId },
     data: {
       signedUpUsers: {
@@ -127,10 +129,6 @@ export default defineEventHandler(async (event) => {
       },
     },
   })
-
-  if (!event.context.txOsteoClaims?.admin) {
-    updatedEvent.code = ''
-  }
 
   try {
     await $fetch('/api/email/signup', {

@@ -23,6 +23,7 @@ export default defineNuxtConfig({
     AZURE_COMMUNICATION_SERVICE_CONNECTION_STRING: ensureEnv(
       'AZURE_COMMUNICATION_SERVICE_CONNECTION_STRING',
     ),
+    AZURE_EMAIL_ADDRESS: ensureEnv('AZURE_EMAIL_ADDRESS'),
     public: {
       auth0_token: 'txosteo_volunteer_auth0_token',
       txosteo_token: 'txosteo_volunteer_token',
@@ -69,7 +70,7 @@ function ensureEnv(envName: string): string {
   if (process.env.DISABLE_ENV_CHECKING === 'true') return value!
   if (!value) {
     throw new Error(
-      `Missing environment variable "${envName}." Please define it in .env`,
+      `Missing environment variable "${envName}." Please define it in .env, or use DISABLE_ENV_CHECKING="true"`,
     )
   }
   return value

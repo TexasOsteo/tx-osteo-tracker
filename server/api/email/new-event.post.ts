@@ -56,9 +56,6 @@ export default defineEventHandler(async (event) => {
   })
 
   await sendEmail({
-    // TODO: Change address to use a verified domain, and to not be set manually
-    senderAddress:
-      'DoNotReply@a47fc2ce-80d8-41bc-bf85-dd31d4ff6b81.azurecomm.net',
     content: {
       subject: `Texas Osteo Event Listing - ${format(new Date(), 'MMM d, y')}`,
       html: emailHTML,

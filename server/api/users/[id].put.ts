@@ -9,7 +9,7 @@ import {
   type InferType,
 } from 'yup'
 import { userSchema } from './index.post'
-import { validateBody } from '~/utils/validation'
+import { ensureRouteParam, validateBody } from '~/utils/validation'
 import { throwErrorIfNotAdmin } from '~/utils/auth'
 import { parseIDsToPrismaSetObject } from '~/utils/prisma-parsing'
 
@@ -42,15 +42,7 @@ const schema: ObjectSchema<Partial<InferType<typeof userSchema>>> = object({
 })
 
 export default defineEventHandler(async (event) => {
-  // find id
-  const id = getRouterParam(event, 'id')
-  if (!id) {
-    // If there is no id, throw a 400 (BAD REQUEST) error
-    throw createError({
-      status: 400,
-      message: 'No event id provided',
-    })
-  }
+  const id = ensureRouteParam(event, 'id')
 
   // Only allow if this is the user, or if the user is an admin
   // It check by making sure the user ids are the same
@@ -78,7 +70,7 @@ export default defineEventHandler(async (event) => {
     })
   }
 
-  const updated = event.context.prisma.user.update({
+  const updated = await event.context.prisma.user.update({
     where: {
       id,
     },

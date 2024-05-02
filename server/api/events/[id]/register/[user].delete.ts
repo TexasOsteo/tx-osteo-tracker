@@ -1,4 +1,5 @@
 import { throwErrorIfNotAdmin } from '~/utils/auth'
+import { extendWithHiddenEventCodes } from '~/utils/prisma-parsing'
 import { ensureRouteParam } from '~/utils/validation'
 
 /**
@@ -47,7 +48,8 @@ export default defineEventHandler(async (event) => {
     })
   }
 
-  const newEvent = await event.context.prisma.event.update({
+  const prisma = extendWithHiddenEventCodes(event)
+  const newEvent = prisma.event.update({
     where: { id: eventId },
     data: {
       signedUpUsers: {
@@ -56,15 +58,7 @@ export default defineEventHandler(async (event) => {
         },
       },
     },
-    include: {
-      attendees: true,
-      signedUpUsers: true,
-    },
   })
-
-  if (!event.context.txOsteoClaims?.admin) {
-    newEvent.code = ''
-  }
 
   return newEvent
 })

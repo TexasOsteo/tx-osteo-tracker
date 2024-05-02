@@ -20,6 +20,8 @@ const publicPaths: PathFilter[] = [
   { path: '/api/users', methods: ['POST'] },
   { path: '/resources' },
   { path: '/api/calendar/ical' },
+  { path: '/email/unverified' },
+  { path: '/api/email/verification', methods: ['POST'] },
   { path: '/__nuxt_error' }, // Needed to show errors properly
 ]
 
@@ -67,6 +69,10 @@ export default defineEventHandler(async (event) => {
 
   if (!txOsteoClaims) {
     await sendRedirect(event, '/users/new')
+  }
+
+  if (!auth0Claims?.email_verified) {
+    await sendRedirect(event, '/email/unverified')
   }
 })
 

@@ -1,6 +1,6 @@
 # Setup
 
-Please follow all of these steps to setup your development environment correctly.
+Please follow all of these steps to setup your development environment correctly. For deployment, use the [Azure](#how-to-setup-azure) section.
 
 ### 1. Install required programs
 
@@ -51,22 +51,8 @@ AUTH0_CLIENTID="copied from client id field"
 AUTH0_SECRET="copied from client secret field"
 ```
 
-- If Azure is not setup, follow the instructions [here](#how-to-setup-azure).
-- Once Azure is setup, go to the storage account and go to `Access Keys`
-- Copy the first key's `Connection String` into a new line in `.env`:
-
-```
-AZURE_STORAGE_CONNECTION_STRING="copied from connection string field"
-```
-
-- Go to the storage account's `Front Door and CDN` page
-- Copy the host name of the first endpoint (should end in `azureedge.net`) into a new line:
-
-```
-AZURE_CDN_ORIGIN="https://SOMETHING.azureedge.net/"
-```
-
-- You should have a total of six environment variables similar to `.env.example`
+- If Azure is not setup, follow the instructions [here](#how-to-setup-azure). Setup the environment variables as described in the section.
+- You should have variables similar to `.env.example`
 
 ### 5. Start development
 
@@ -102,14 +88,53 @@ http://127.0.0.1:3001/api/auth/callback/logout
 ```
 
 - Click `Save`
+- Go to `Applications > APIs` and choose the default management API
+- Go to `Machine to Machine Applications` and click the dropdown for the created application
+- Add the `update:users` permission and click update
 - Add team members by going to `Tenant Settings > Tenant Members`
 
 # How to setup Azure
 
-- Create an Azure account through Microsoft or GitHub.
-  - GitHub provides a free $100 credit through its [education program](https://education.github.com/)
-- Follow the steps [here](https://learn.microsoft.com/en-us/azure/cdn/cdn-create-a-storage-account-with-cdn) how to create a storage account and enable CDN/Front Door
-  - Make sure the new endpoint is for a `Azure CDN`
-- Under the storage account, go to `Storage Browser`
-- Go to `Blob Containers`
-- Add a new container. Name it `images` exactly and give it a blob-level anonymous access level.
+The following services must be created and configured properly:
+
+- Azure SQL for Postgres
+  - Make sure connections are allowed via a url (i.e. `postgres://...`)
+- Static Web App
+  - Configure to deploy based on this GitHub repo
+  - Modify the generated Github action to include the environment variable `DISABLE_ENV_CHECKING="true"`
+  - **Make sure to include all required [environment variables](#4-setup-environment-variables) with a `NUXT_` prefix, except `DATABASE_URL`**
+- BLOB Storage
+  - Need `images` container (configure for BLOB-level anonymous access)
+  - Need `qualifications` container (no anonymous access)
+- Front Door / CDN Profile with Endpoint
+  - Configure to point to BLOB Storage
+- Communication Service
+  - Create associated email communication service and a `DoNotReply` email domain
+- Azure Functions
+  - Create a function app and copy the function code from this repository
+  - Create a timer trigger for weekly digest updates
+- If a custom domain is to be used, the DNS records for the domain should be setup to allow for Azure to use it. Static Web App and the email service should then be configured to use it.
+
+Once these services are correctly setup, they can be used to fill out the environment variables:
+
+- `AZURE_COMMUNICATION_SERVICE_CONNECTION_STRING`
+  - The connection string for the communication service
+  - Found in the Keys section
+- `AZURE_CDN_ORIGIN`
+  - The origin URL (i.e. `https://www.example.net/`) for the CDN/Frontdoor profile
+- `AZURE_EMAIL_ADDRESS`
+  - The created `DoNotReply` email domain
+- `AZURE_STORAGE_ACCOUNT_NAME`
+  - The literal name of the created BLOB Storage account
+- `AZURE_STORAGE_CONNECTION_STRING`
+  - The connection string for the BLOB Storage account
+  - Found in the Keys section
+- `AZURE_STORAGE_SHARED_KEY`
+  - The access key for the BLOB Storage account
+  - Found in the Keys section next to the connection string
+- `OVERRIDE_HOST`
+  - When deployed, set this to the host domain (i.e. `volunteer.texasosteo.org`)
+- `DATABASE_URL`
+  - The Postgres connection string (i.e. `postgres://...`) from Azure SQL
+
+If deploying, all these environment variables along with the Auth0 variables should be included in the Static Web App environment variable section. Make sure all environment variables except `DATABASE_URL` are prefixed with `NUXT_`.

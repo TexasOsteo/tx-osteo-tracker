@@ -1,4 +1,5 @@
 import { throwErrorIfNotAdmin } from '~/utils/auth'
+import { ensureRouteParam } from '~/utils/validation'
 
 /**
  * --- API INFO
@@ -9,15 +10,7 @@ import { throwErrorIfNotAdmin } from '~/utils/auth'
 // api/user/profile/[id]
 // Retrieve a user's profile
 export default defineEventHandler(async (event) => {
-  // Get the id parameter (the last part of this url)
-  const id = getRouterParam(event, 'id')
-  if (!id) {
-    // If there is no id, throw a 400 (BAD REQUEST) error
-    throw createError({
-      status: 400,
-      message: 'No user id provided',
-    })
-  }
+  const id = ensureRouteParam(event, 'id')
 
   // Only allow if this is the user, or if the user is an admin
   // Checks by making sure the user ids are the same

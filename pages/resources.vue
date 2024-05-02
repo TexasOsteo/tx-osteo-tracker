@@ -3,34 +3,44 @@
     <CurveBackground />
 
     <div
-      class="max-w-screen-lg bg-gray-100 opacity-95 rounded-3xl shadow-xl z-30 p-10 flex justify-center flex-wrap items-center"
+      class="w-full md:w-2/3 bg-white bg-opacity-95 md:bg-opacity-80 shadow-2xl backdrop-blur-none md:backdrop-blur-md rounded-3xl  p-10 flex justify-center flex-wrap items-center mx-2"
     >
-      <h1 class="title font-lexend font-bold text-5xl text-center mb-10 w-full">
-        Resources
-      </h1>
-      <div>
-        <h3 class="title text-xl mb-2">What is Osteopenia?</h3>
-        <iframe
-          width="560"
-          height="315"
-          src="https://www.youtube.com/embed/vkhj95jHCJY?si=SgXFIjxXXuBWTNxA"
-          title="YouTube video player"
-          frameborder="0"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-          allowfullscreen
-        ></iframe>
-      </div>
-      <div>
-        <h3 class="title text-xl mb-2 mt-5">How is Osteoprosis diagnosed?</h3>
-        <iframe
-          width="560"
-          height="315"
-          src="https://www.youtube.com/embed/FfJZOZh2C4I?si=80aAv3A5jj_Z1kJQ"
-          title="YouTube video player"
-          frameborder="0"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-          allowfullscreen
-        ></iframe>
+      <div class="w-full">
+        <h1
+          class="title font-lexend font-bold text-5xl text-center mb-10 w-full"
+        >
+          Resources
+        </h1>
+        <div class="w-full flex items-center justify-center mx-auto pb-10">
+          <div class="w-full flex flex-wrap items-center justify-center">
+            <h3 class="title text-xl mb-2 w-full text-center">
+              What is Osteopenia?
+            </h3>
+            <iframe
+              class="w-full lg:w-2/3 h-[30vh] md:h-[50vh] rounded-md"
+              src="https://www.youtube.com/embed/vkhj95jHCJY?si=SgXFIjxXXuBWTNxA"
+              title="YouTube video player"
+              frameborder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowfullscreen
+            ></iframe>
+          </div>
+        </div>
+        <div class="w-full flex items-center justify-center mx-auto pb-10">
+          <div class="w-full flex flex-wrap items-center justify-center">
+            <h3 class="title text-xl mb-2 w-full text-center">
+              How is Osteoprosis diagnosed?
+            </h3>
+            <iframe
+              class="w-full lg:w-2/3 h-[30vh] md:h-[50vh] rounded-md"
+              src="https://www.youtube.com/embed/FfJZOZh2C4I?si=80aAv3A5jj_Z1kJQ"
+              title="YouTube video player"
+              frameborder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowfullscreen
+            ></iframe>
+          </div>
+        </div>
       </div>
     </div>
   </div>
