@@ -69,7 +69,7 @@ const menuItemClass =
             @mouseenter="isAdminMenuOpen = true"
             @mouseleave="isAdminMenuOpen = false"
           >
-            <ul class="py-2 text-sm  ">
+            <ul class="py-2 text-sm">
               <li v-if="isAdmin">
                 <NuxtLink
                   to="/email/newsletter"
@@ -95,6 +95,15 @@ const menuItemClass =
                   @click="isAdminMenuOpen = false"
                 >
                   Qualifications List
+                </NuxtLink>
+              </li>
+              <li v-if="isAdmin">
+                <NuxtLink
+                  to="/qualifications/new"
+                  class="block px-4 py-2 text-lg hover:bg-gray-200"
+                  @click="isAdminMenuOpen = false"
+                >
+                  Add Qualifications
                 </NuxtLink>
               </li>
             </ul>
@@ -198,6 +207,15 @@ const menuItemClass =
                   @click="isMenuOpen = !isMenuOpen"
                 >
                   Qualifications
+                </NuxtLink>
+              </li>
+              <li>
+                <NuxtLink
+                  to="/qualifications/new"
+                  class="block px-4 py-2 text-lg hover:bg-gray-200"
+                  @click="isMenuOpen = !isMenuOpen"
+                >
+                  Add Qualification
                 </NuxtLink>
               </li>
             </ul>

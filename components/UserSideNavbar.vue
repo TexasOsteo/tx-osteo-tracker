@@ -23,13 +23,6 @@ async function deleteUser() {
 }
 </script>
 
-<style>
-#AccountInfo {
-  max-height: 90vh;
-  overflow-y: auto;
-}
-</style>
-
 <template>
   <nav
     id="AccountInfo"
@@ -130,7 +123,12 @@ async function deleteUser() {
       id="AccountInteraction"
       class="flex flex-col items-center bg-white rounded-sm"
     >
-      <!-- font-light makes the font malnourished-->
+      <NuxtLink
+        to="/qualifications/application"
+        class="rounded-lg bg-yellow-500 w-full p-3 mb-4 text-white text-lg hover:bg-yellow-600"
+      >
+        Apply For Qualification
+      </NuxtLink>
       <NuxtLink
         to="/users/me/edit"
         class="rounded-lg bg-yellow-500 w-full p-3 mb-4 text-white text-lg hover:bg-yellow-600"
@@ -146,3 +144,10 @@ async function deleteUser() {
     </div>
   </nav>
 </template>
+
+<style>
+#AccountInfo {
+  max-height: 90vh;
+  overflow-y: auto;
+}
+</style>
