@@ -22,6 +22,8 @@ const publicPaths: PathFilter[] = [
   { path: '/api/calendar/ical' },
   { path: '/email/unverified' },
   { path: '/api/email/verification', methods: ['POST'] },
+  { path: '/api/email/digest', methods: ['POST'] },
+  { path: '/api/email/event-reminder', methods: ['POST'] },
   { path: '/__nuxt_error' }, // Needed to show errors properly
 ]
 
