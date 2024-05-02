@@ -1,3 +1,29 @@
+<script setup lang="ts">
+import UserDetailView from './UserDetailView.vue'
+import UserQualView from './UserQualView.vue'
+import UserEventView from './UserEventView.vue'
+
+const props = defineProps<{
+  id: string
+}>()
+
+const emit = defineEmits(['close'])
+
+const { data: fetchedUser } = await useFetch(`/api/users/${props.id}`)
+const user = computed(() => (fetchedUser.value as FullUser) ?? null)
+
+const activeTab = ref(0)
+const tabs = ref([
+  { name: 'Profile', component: UserDetailView },
+  { name: 'Qualifications', component: UserQualView },
+  { name: 'Attendance', component: UserEventView },
+])
+
+const closeDetail = () => {
+  emit('close')
+}
+</script>
+
 <template>
   <div v-if="user" class="fixed z-10 inset-0 overflow-y-auto">
     <div
@@ -63,43 +89,3 @@
     </div>
   </div>
 </template>
-
-<script setup lang="ts">
-import UserDetailView from './UserDetailView.vue'
-import UserQualView from './UserQualView.vue'
-import UserEventView from './UserEventView.vue'
-
-interface User {
-  id: string
-  name: string
-  email: string
-  // add other properties as needed
-}
-
-const props = defineProps({
-  id: String,
-})
-
-const emit = defineEmits(['close'])
-
-const user = ref<User | null>(null)
-const activeTab = ref(0)
-const tabs = ref([
-  { name: 'Profile', component: UserDetailView },
-  { name: 'Qualifications', component: UserQualView },
-  { name: 'Register', component: UserEventView },
-  // add more tabs as needed
-])
-
-onMounted(async () => {
-  const response = await fetch(`/api/users/${props.id}`)
-  if (!response.ok) {
-    throw new Error('Failed to fetch user details')
-  }
-  user.value = await response.json()
-})
-
-const closeDetail = () => {
-  emit('close')
-}
-</script>

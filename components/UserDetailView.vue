@@ -1,7 +1,90 @@
+<script setup lang="ts">
+import type { AdminNotes } from '@prisma/client'
+import ISO6391 from 'iso-639-1'
+
+const props = defineProps<{
+  user: SerializeObject<FullUser>
+}>()
+
+// Copy default values to new objects to avoid proxying of same object
+const updatedUser = ref({ ...props.user })
+const updatedAdminNotes = ref<AdminNotes | null>(
+  props.user.adminNotes ? { ...props.user.adminNotes } : null,
+)
+
+const router = useRouter()
+
+// Function to format the date
+const formatDate = (dateStr: string) => {
+  const [year, month, day] = dateStr.split('T')[0].split('-')
+  const date = new Date(Number(year), Number(month) - 1, Number(day))
+  return date.toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  })
+}
+
+const createAdminNote = async () => {
+  const { data } = await useFetch('/api/adminNotes', {
+    method: 'POST',
+    body: {
+      note: 'New Note',
+      userId: props.user.id,
+    },
+  })
+
+  if (!data.value) {
+    alert('Failed to create admin note')
+  } else {
+    updatedAdminNotes.value = data.value
+  }
+}
+
+// Function to handle the form submission
+const saveChanges = async () => {
+  if (
+    updatedAdminNotes.value &&
+    updatedAdminNotes.value.note !== props.user.adminNotes?.note
+  ) {
+    await useFetch(`/api/adminNotes/${updatedAdminNotes.value.id}`, {
+      method: 'PUT',
+      body: {
+        note: updatedAdminNotes.value.note,
+      },
+    })
+  }
+
+  await useFetch(`/api/users/${props.user.id}`, {
+    method: 'PUT',
+    body: {
+      isAdmin: updatedUser.value.isAdmin,
+      // ...updatedUser.value,
+    },
+  })
+
+  // Exit the modal, "refreshing the page"
+  router.go(0)
+}
+
+const deleteUser = async () => {
+  const confirmation = window.confirm(
+    'Are you sure you want to delete this user? This action cannot be undone.',
+  )
+
+  if (confirmation) {
+    await useFetch(`/api/users/${props.user.id}`, {
+      method: 'DELETE',
+    })
+
+    router.go(0)
+  }
+}
+</script>
+
 <template>
   <div v-if="user" class="p-4 bg-white rounded shadow text-left">
     <div class="sm:grid sm:grid-cols-2 sm:gap-4">
-
       <!-- Column 1 -->
       <div>
         <p class="mb-1 truncate overflow-hidden">
@@ -12,6 +95,10 @@
           <strong>DoB:</strong>
           {{ formatDate(user.dateOfBirth) }}
         </p>
+        <p class="mb-1">
+          <strong>Hours:</strong>
+          {{ user.numHours }}
+        </p>
 
         <div>
           <p class="mb-1">
@@ -21,74 +108,56 @@
             </span>
           </p>
           <ul v-if="user.languages && user.languages.length > 0">
-            <li v-for="(lang, index) in user.languages" :key="index" class="ml-5">
+            <li
+              v-for="(lang, index) in user.languages"
+              :key="index"
+              class="ml-5"
+            >
               • {{ ISO6391.getName(lang) }}
             </li>
-            </ul>
+          </ul>
         </div>
-  
+
         <p class="mt-6 mb-1 flex items-center">
           <strong>An Admin:</strong>
-          <input v-model="localUser.isAdmin" type="checkbox" class="ml-3" />
+          <input v-model="updatedUser.isAdmin" type="checkbox" class="ml-3" />
         </p>
-  
-        <p class="mb-1">
-          <div class="flex items-center">
-            <strong>Email Preferences</strong>
-            <button
-            class="ml-2 pt-1"
-            @click="showEmailPreferences = !showEmailPreferences"
-            >
-              <img v-if="showEmailPreferences" src="/icon-park_up.jpg" class="w-5 h-5" />
-              <img v-else src="/icon-park_down.jpg" class="w-5 h-5" />
-            </button>
-          </div>
-        </p>
-  
-        <div v-if="showEmailPreferences" class="mt-2">
-          <div v-for="option in emailPreferenceOptions" :key="option" class="mb-1">
-            <input
-              v-model="localUser.subscribedEmailCategories"
-              type="checkbox"
-              :value="option"
-              class="mr-2"
-            />
-            {{ option }}
-          </div>
+        <div v-if="updatedUser.isAdmin !== user.isAdmin" class="text-sm">
+          Adding or removing admin status requires the other user to
+          re-authenticate before changes are applied.
         </div>
-  
       </div>
-  
+
       <!-- Column 2 -->
       <div>
-        <p class="mb-1">
+        <div class="mb-1">
           <strong>User Notes:</strong>
           <div
-          class="w-full p-2 mt-2 border rounded bg-gray-100 whitespace-pre-wrap h-40"
+            class="w-full p-2 mt-2 border rounded bg-gray-100 whitespace-pre-wrap h-40"
           >
-            {{ localUser.userNotes }}
+            {{ user.userNotes }}
           </div>
-        </p>
-  
-        <p class="mb-1">
+        </div>
+        <div class="mb-1">
           <strong>Admin Notes:</strong>
-            <div v-if="!localUser.adminNotes" class="mt-2">
-              <button
+          <div v-if="!updatedAdminNotes" class="mt-2">
+            <button
               class="px-4 py-2 text-white bg-[#0DA49B] hover:bg-teal-700 rounded w-full md:w-none"
               @click="createAdminNote"
-              >
-                Create Note
-              </button>
-            </div>
-            <div v-else>
-              <textarea
-              v-model="localUser.adminNotes.note"
+            >
+              Create Note
+            </button>
+          </div>
+          <div v-else>
+            <textarea
+              v-model="updatedAdminNotes.note"
               class="w-full p-2 mt-2 border rounded bg-gray-100 h-40"
-              ></textarea>
-            </div>
-        </p>
+            />
+          </div>
+        </div>
       </div>
-    </div> <!-- End of Grid -->
+    </div>
+    <!-- End of Grid -->
 
     <div class="flex flex-col mt-4">
       <button
@@ -105,159 +174,4 @@
       </button>
     </div>
   </div>
-
 </template>
-
-<script setup lang="ts">
-import ISO6391 from 'iso-639-1'
-
-interface AdminNotes {
-  id: string
-  note: string
-}
-
-interface User {
-  id: string
-  name: string
-  email: string
-  dateOfBirth: string
-  languages: string[]
-  isAdmin: boolean
-  subscribedEmailCategories: string[]
-  userNotes: string
-  adminNotes: AdminNotes | null
-}
-
-const props = defineProps({
-  user: {
-    type: Object as () => User,
-    required: true,
-  },
-})
-
-// Function to format the date
-const formatDate = (dateStr: string) => {
-  const [year, month, day] = dateStr.split('T')[0].split('-');
-  const date = new Date(Number(year), Number(month) - 1, Number(day));
-  return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
-}
-
-// Display names for languages: from "en" to English, not supported on Internet Explorer
-const languageNames = new Intl.DisplayNames(['en'], {type: 'language'});
-
-const getLanguageName = (code: string) => {
-  return languageNames.of(code);
-}
-
-// Email preference options
-const emailPreferenceOptions = [
-  'NEW_EVENT',
-  'EVENT_REMINDER',
-  'EVENT_SIGNUP',
-  'NEWSLETTER',
-  'REPORT',
-  'OTHER',
-]
-
-// State for showing/hiding the email preferences
-const showEmailPreferences = ref(true)
-
-// Vue doesnt allow to directly modify props -> create a copy of the prop
-// Otherwise will get error, Unexpected mutation of "user" prop
-// Create a local copy of the user prop
-const localUser = ref({
-  ...props.user,
-  adminNotes: props.user.adminNotes ? { ...props.user.adminNotes } : null,
-})
-
-// Watch for changes in the user prop and update the local copy accordingly
-watch(
-  () => props.user,
-  (newUser) => {
-    localUser.value = {
-      ...newUser,
-      adminNotes: newUser.adminNotes ? { ...newUser.adminNotes } : null,
-    }
-  },
-  { immediate: true },
-)
-
-const createAdminNote = async () => {
-  const requestBody = {
-    note: 'New note',
-    userId: localUser.value.id,
-  }
-
-  const response = await fetch('/api/adminNotes', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(requestBody),
-  })
-
-  if (!response.ok) {
-    throw new Error('Failed to create admin note')
-  }
-
-  const adminNote = await response.json()
-  localUser.value.adminNotes = adminNote
-}
-
-// Function to handle the form submission
-const saveChanges = async () => {
-
-  // Dont save the placeholder text for new adminNote
-  const noteContent = localUser.value.adminNotes?.note === 'New note'
-    ? ' '
-    : localUser.value.adminNotes?.note
-
-  // If there is an "true" note
-  if (localUser.value.adminNotes) {
-    await fetch(`/api/adminNotes/${localUser.value.adminNotes.id}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        note: noteContent,
-        userId: localUser.value.id,
-      }),
-    })
-  }
-
-
-  // Send a PUT request with the local copy of the user data
-  await fetch(`/api/users/${localUser.value.id}`, {
-    method: 'PUT',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({...localUser.value,
-      adminNotes: undefined,
-      signedUpPositions: undefined,
-      signedUpEvents: undefined,
-      verifiedQualifications: undefined,
-      qualificationUploads: undefined,
-    }),
-  })
-}
-
-const deleteUser = async () => {
-  const confirmation = window.confirm('Are you sure you want to delete this user? This action cannot be undone.');
-  
-  if (confirmation) {
-    const response = await fetch(`/api/users/${localUser.value.id}`, {
-      method: 'DELETE',
-    });
-
-    if (!response.ok) {
-      throw new Error('Failed to delete user');
-    }
-
-    // Exit the modal, "refreshing the page"
-    const router = useRouter()
-    router.go(0)
-  }
-}
-</script>

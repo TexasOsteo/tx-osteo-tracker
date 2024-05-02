@@ -81,7 +81,7 @@ const menuItemClass =
               </li>
               <li v-if="isAdmin">
                 <NuxtLink
-                  to="/volunteer/list"
+                  to="/admins"
                   class="block px-4 py-2 text-lg hover:bg-gray-200"
                   @click="isAdminMenuOpen = false"
                 >
@@ -184,7 +184,7 @@ const menuItemClass =
               </li>
               <li>
                 <NuxtLink
-                  to="/volunteer/list"
+                  to="/admins"
                   class="block px-4 py-2 text-lg hover:bg-gray-200"
                   @click="isMenuOpen = !isMenuOpen"
                 >

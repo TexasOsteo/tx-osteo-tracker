@@ -1,31 +1,20 @@
 <script setup lang="ts">
-interface User {
-  id: string
-  name: string
-  email: string
-  // add other properties as needed
-}
-
-const users = ref<User[]>([])
+const { data: users } = await useFetch('/api/users')
 const selectedUserId = ref<string | null>(null)
-
-onMounted(async () => {
-  const response = await fetch(`/api/users/`)
-  if (!response.ok) {
-    throw new Error('Failed to fetch user details')
-  }
-  users.value = await response.json()
-})
 
 // Search based on name or email, fuzzy
 const search = ref('')
 
 const filteredUsers = computed(() => {
+  // Make copy to sort in place
+  const usersCopy = [...(users.value ?? [])]
+  usersCopy.sort((a, b) => (a.name + a.email).localeCompare(b.name + b.email))
+
   if (!search.value) {
-    return users.value
+    return usersCopy
   }
   const lowerCaseSearch = search.value.toLowerCase()
-  return users.value.filter(
+  return usersCopy.filter(
     (user) =>
       user.name.toLowerCase().includes(lowerCaseSearch) ||
       user.email.toLowerCase().includes(lowerCaseSearch),
@@ -52,14 +41,14 @@ const closeDetail = () => {
         v-model="search"
         type="text"
         placeholder="Search for a user by name or email"
-        class="w-1/3 p-2 mb-4 text-center hidden sm:block bg-slate-200 p-2 m-2 rounded-lg"
+        class="w-1/3 p-2 mb-4 text-center hidden sm:block bg-slate-200 m-2 rounded-lg"
       />
 
       <input
         v-model="search"
         type="text"
         placeholder="Search"
-        class="w-1/3 p-2 mb-4 text-center block sm:hidden bg-slate-200 p-2 m-2 rounded-lg"
+        class="w-1/3 p-2 mb-4 text-center block sm:hidden bg-slate-200 m-2 rounded-lg"
       />
     </div>
     <!-- User Profile Cards -->

@@ -1,9 +1,9 @@
 <script setup lang="ts">
-const props = defineProps({
-  id: String,
-  name: String,
-  email: String,
-})
+const props = defineProps<{
+  id: string
+  name: string
+  email: string
+}>()
 
 const emit = defineEmits(['showDetail'])
 
@@ -15,8 +15,8 @@ const showModal = () => {
 <template>
   <div>
     <button
-      @click="showModal"
       class="flex flex-wrap items-center justify-center p-4 mb-4 rounded-md shadow-lg w-64 h-72"
+      @click="showModal"
     >
       <div class="w-full">
         <div
