@@ -91,7 +91,11 @@ export default defineEventHandler(async (event) => {
     })
   }
 
+  // manual override: checks user making the request is an admin, if so they can register the user for any position regardless
+  const isAdmin = event.context.txOsteoClaims?.admin
+
   if (
+    !isAdmin &&
     position.prerequisites.some(
       (p) => !user.verifiedQualifications.find((q) => q.id === p.id),
     )

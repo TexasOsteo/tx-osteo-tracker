@@ -1,5 +1,5 @@
 import { string, object } from 'yup'
-import { validateBody } from '~/utils/validation'
+import { ensureRouteParam, validateBody } from '~/utils/validation'
 import { throwErrorIfNotAdmin } from '~/utils/auth'
 
 /**
@@ -12,21 +12,14 @@ export default defineEventHandler(async (event) => {
   throwErrorIfNotAdmin(event) // Check if user is admin
 
   // Get the id parameter (the last part of this url)
-  const adminNoteId = getRouterParam(event, 'id')
-  if (!adminNoteId) {
-    // If there is no id, throw a 400 (BAD REQUEST) error
-    throw createError({
-      status: 400,
-      message: 'No adminNote id provided',
-    })
-  }
+  const adminNoteId = ensureRouteParam(event, 'id')
 
   // Validate the request body
   const body = await validateBody(
     event,
     object({
-      note: string().required(),
-      userId: string().required(),
+      note: string().optional(),
+      userId: string().optional(),
     }),
   )
 
@@ -49,9 +42,11 @@ export default defineEventHandler(async (event) => {
     data: {
       note: body.note,
       user: {
-        connect: {
-          id: body.userId,
-        },
+        connect: body.userId
+          ? {
+              id: body.userId,
+            }
+          : undefined,
       },
     },
   })

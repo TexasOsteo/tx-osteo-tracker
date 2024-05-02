@@ -23,12 +23,24 @@ export default defineEventHandler(async (event) => {
   const data = await prisma.event.findFirst({
     where: { id },
     include: {
-      attendees: true,
-      signedUpUsers: true,
+      attendees: {
+        include: {
+          // Only admins can see users anyway
+          adminNotes: true,
+        },
+      },
+      signedUpUsers: {
+        include: {
+          adminNotes: true,
+        },
+      },
       positions: {
         include: {
           // get the qualifictions for each position
           prerequisites: true,
+          users: {
+            select: { id: true },
+          },
         },
       },
     },

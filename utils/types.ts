@@ -31,6 +31,22 @@ export type UserWithEvents = Prisma.UserGetPayload<{
     signedUpEvents: true
   }
 }>
+export type UserWithAdminNotes = Prisma.UserGetPayload<{
+  include: {
+    adminNotes: true
+  }
+}>
+
+export type FullUser = Prisma.UserGetPayload<{
+  include: {
+    eventHistory: true
+    signedUpEvents: true
+    adminNotes: true
+    verifiedQualifications: true
+    qualificationUploads: true
+    signedUpPositions: true
+  }
+}>
 
 export type PositionWithPrereqs = Prisma.EventPositionGetPayload<{
   include: { prerequisites: true }
