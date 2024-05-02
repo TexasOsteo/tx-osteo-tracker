@@ -53,11 +53,11 @@ async function handleSubmit(fields: any) {
 </script>
 
 <template>
-  <div class="py-20 flex justify-center flex-wrap items-center">
+  <div class="py-20 flex justify-center flex-wrap items-center mx-2 md:mx-4">
     <CurveBackground />
 
     <div
-      class="max-w-screen-lg bg-gray-100 opacity-95 rounded-3xl shadow-xl p-10 flex justify-center flex-wrap items-center"
+      class="max-w-screen-lg bg-white bg-opacity-95 md:bg-opacity-80 backdrop-blur-none md:backdrop-blur-md z-0 rounded-3xl shadow-xl p-10 flex justify-center flex-wrap items-center"
     >
       <h1 class="title font-sans font-bold text-5xl text-center mb-10 w-full">
         Edit Settings
