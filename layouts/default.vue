@@ -52,7 +52,7 @@ const menuItemClass =
           <Icon name="mdi:logout-variant" />
           <span class="hidden lg:block">Log Out</span>
         </a>
-        <div class="relative">
+        <div v-if="isAdmin" class="relative">
           <button
             :class="menuItemClass"
             type="button"
@@ -65,11 +65,11 @@ const menuItemClass =
           <!-- Dropdown menu -->
           <div
             v-show="isAdminMenuOpen"
-            class="z-10 absolute right-0 bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700"
+            class="z-10 absolute right-0 bg-white divide-y divide-gray-100 rounded-lg shadow w-44 first-letter text-black"
             @mouseenter="isAdminMenuOpen = true"
             @mouseleave="isAdminMenuOpen = false"
           >
-            <ul class="py-2 text-sm text-gray-700 dark:text-gray-200">
+            <ul class="py-2 text-sm  ">
               <li v-if="isAdmin">
                 <NuxtLink
                   to="/email/newsletter"

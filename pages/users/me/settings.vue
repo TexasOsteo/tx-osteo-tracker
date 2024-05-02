@@ -69,7 +69,7 @@ function displayDate(dateTime: string) {
 <template>
   <div id="WholePage" class="min-h-screen flex text-center">
     <div
-      :class="isSidebar ? 'block md:hidden z-20 fixed' : 'hidden md:block z-0'"
+      :class="isSidebar ? 'block md:hidden z-10 fixed' : 'hidden md:block z-0'"
     >
       <UserSideNavbar />
     </div>
@@ -88,7 +88,7 @@ function displayDate(dateTime: string) {
             <Icon name="mdi:account" />
           </button>
         </div>
-        <div class="z-[0]">
+        <div class="">
           <button
             class="flex items-center w-full sticky top-0 border-2 border-gray-200 border-t-gray-100 bg-[#FFF] rounded-sm p-2"
             @click="togglePresentUpcoming"
