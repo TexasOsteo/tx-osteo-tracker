@@ -58,8 +58,8 @@ const defaultQualification = computed(
           </h1>
 
           <p class="text-sm">
-            No qualifications have been created. Please add them
-            <NuxtLink to="/qualifications/list" class="underline text-blue-500">
+            No qualifications have been created. Please one
+            <NuxtLink to="/qualifications/new" class="underline text-blue-500">
               here.
             </NuxtLink>
           </p>
