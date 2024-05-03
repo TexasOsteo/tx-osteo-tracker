@@ -1,18 +1,12 @@
 import { array, object, string } from 'yup'
 import { uploadBlob } from '~/utils/blob'
 import { parseIDsToPrismaConnectObject } from '~/utils/prisma-parsing'
-import {
-  createFileValidator,
-  validateBody,
-  stringified,
-} from '~/utils/validation'
+import { createFileValidator, validateBody } from '~/utils/validation'
 
 /**
  * --- API INFO
  * POST /api/qualifications/uploads
- * Body is a multipart form.
  * If included, uploads a qualification file to Azure CDN storage.
- * The qualifications field is a stringified array of qualification IDs.
  */
 
 const schema = object({
@@ -28,9 +22,7 @@ const schema = object({
     5 * 1024 * 1024,
   ),
   description: string().required(),
-  qualifications: stringified(
-    array(string().required()).min(1).required(),
-  ).required(),
+  qualifications: array(string().required()).min(1).required(),
 })
 
 export default defineEventHandler(async (event) => {
@@ -60,7 +52,7 @@ export default defineEventHandler(async (event) => {
     }
   }
 
-  const body = await validateBody(event, schema, true)
+  const body = await validateBody(event, schema)
 
   let qUpload = await event.context.prisma.qualificationUpload.create({
     data: {

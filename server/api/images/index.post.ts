@@ -21,7 +21,7 @@ const schema = object({
 export default defineEventHandler(async (event) => {
   throwErrorIfNotAdmin(event)
 
-  const { file, type } = await validateBody(event, schema, true)
+  const { file, type } = await validateBody(event, schema)
 
   return uploadBlob({
     blob: file,

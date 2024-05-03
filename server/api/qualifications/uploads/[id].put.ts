@@ -1,20 +1,16 @@
 import { array, object, string } from 'yup'
 import { throwErrorIfNotAdmin } from '~/utils/auth'
 import { uploadBlob } from '~/utils/blob'
-// import { parseIDsToPrismaSetObject } from '~/utils/prisma-parsing'
 import {
   createFileValidator,
   validateBody,
-  stringified,
   ensureRouteParam,
 } from '~/utils/validation'
 
 /**
  * --- API INFO
  * PUT /api/qualifications/uploads/[id]
- * Body is a multipart form.
  * If included, uploads a qualification file to Azure CDN storage.
- * The qualifications field is a stringified array of qualification IDs.
  */
 
 const schema = object({
@@ -30,7 +26,7 @@ const schema = object({
     5 * 1024 * 1024,
   ),
   description: string(),
-  qualifications: stringified(array(string().required())),
+  qualifications: array(string().required()),
 })
 
 export default defineEventHandler(async (event) => {
@@ -40,7 +36,7 @@ export default defineEventHandler(async (event) => {
 
   const id = ensureRouteParam(event, 'id')
 
-  const body = await validateBody(event, schema, true)
+  const body = await validateBody(event, schema)
 
   // Upload file if included
   let hasFile: true | undefined
