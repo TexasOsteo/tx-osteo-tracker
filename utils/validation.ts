@@ -20,14 +20,10 @@ import type { DefaultEvent } from './types'
 export async function validateBody<T extends AnyObject>(
   event: DefaultEvent,
   schema: ObjectSchema<T>,
+  formData = false,
 ): ReturnType<typeof schema.validate> {
   let rawBody: any
-  const headers = getRequestHeaders(event)
-  const contentType = headers['content-type'] ?? headers['Content-Type'] ?? ''
-  if (
-    contentType.includes('form-data') ||
-    contentType.includes('www-form-urlencoded')
-  ) {
+  if (formData) {
     const formData = await readFormData(event)
     rawBody = Object.fromEntries(formData.entries())
   } else {

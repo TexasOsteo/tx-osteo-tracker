@@ -22,9 +22,6 @@ const router = useRouter()
 const formErrors = ref<string[]>()
 
 async function handleSubmit(fields: any) {
-  const data = new FormData()
-  data.set('qualifications', JSON.stringify(fields.qualifications))
-  data.set('description', fields.description)
   const file =
     Array.isArray(fields.file) && fields.file.length > 0
       ? await fileToBase64(fields.file[0].file)
