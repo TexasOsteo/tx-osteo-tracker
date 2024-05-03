@@ -9,7 +9,7 @@ export default defineEventHandler(async (event) => {
   const auth0Id = event.context.auth0Claims?.sub
   if (!auth0Id) {
     throw createError({
-      statusCode: 402,
+      statusCode: 401,
       statusMessage: 'You must be authorzied to use this endpoint',
     })
   }

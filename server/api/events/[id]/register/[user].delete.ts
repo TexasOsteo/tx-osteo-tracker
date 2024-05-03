@@ -15,7 +15,7 @@ export default defineEventHandler(async (event) => {
   const cookieUserId = event.context.txOsteoClaims?.sub
   if (!cookieUserId) {
     throw createError({
-      statusCode: 402,
+      statusCode: 401,
       statusMessage: 'You must be authenticated.',
     })
   }

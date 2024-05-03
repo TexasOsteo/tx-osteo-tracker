@@ -14,7 +14,7 @@ async function removeAttendee(userId: string) {
     },
   )
 
-  if (data) {
+  if (data.value) {
     currentUsers.value = currentUsers.value.filter((user) => user.id !== userId)
   }
 }
@@ -24,15 +24,15 @@ async function removeAttendee(userId: string) {
   <div class="w-full mb-20">
     <div class="mb-4">
       <h1 class="text-3xl font-bold text-center">Attendees</h1>
+      <h2 v-if="currentUsers.length === 0" class="text-center mt-2">
+        No attendees yet!
+      </h2>
+      <h2 class="text-center">
+        You can manually mark attendance
+        <NuxtLink to="/admins" class="underline">here.</NuxtLink>
+      </h2>
     </div>
     <div class="w-full">
-      <div v-if="currentUsers.length === 0">
-        <h1>
-          No attendees yet! Volunteers can check-in using a code, or you can
-          manually override attendance
-          <NuxtLink to="/admins" class="underline">here.</NuxtLink>
-        </h1>
-      </div>
       <div v-if="currentUsers.length > 0" class="flex flex-row">
         <h1 class="text-lg flex-1 font-bold">Name</h1>
         <h1 class="text-lg flex-1 font-bold">User Notes</h1>

@@ -58,7 +58,7 @@ export default defineEventHandler(async (event) => {
 
   if (currentEvent.attendees.find((attendee) => attendee.id === userId)) {
     throw createError({
-      statusCode: 400,
+      statusCode: 409,
       statusMessage: 'User is already an attendee',
     })
   }

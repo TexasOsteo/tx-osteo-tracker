@@ -16,6 +16,11 @@ type FormKitEventData = Partial<
   SerializeObject<Event> & { positions: FormKitPosition[] }
 >
 
+const eventAfterDate = format(
+  new Date(new Date() - 24 * 60 * 60 * 1000),
+  'MM-dd-yyyy',
+)
+
 const router = useRouter()
 const route = useRoute()
 const eventId = route.params.id as string
@@ -88,7 +93,7 @@ async function patchEvent(fields: any) {
     <CurveBackground />
 
     <div
-      class="max-w-screen-lg bg-white bg-opacity-95  md:bg-opacity-80 backdrop-blur-none md:backdrop-blur-md z-0 rounded-3xl shadow-2xl p-10 flex justify-center flex-wrap items-center mx-4"
+      class="max-w-screen-lg bg-white bg-opacity-95 md:bg-opacity-80 backdrop-blur-none md:backdrop-blur-md z-0 rounded-3xl shadow-2xl p-10 flex justify-center flex-wrap items-center mx-4"
     >
       <div class="">
         <h1 class="title font-lexend font-bold text-5xl text-center mb-10">
@@ -142,7 +147,7 @@ async function patchEvent(fields: any) {
               name="dateAndTime"
               label="Date and Time"
               help="Enter the date and time of the event"
-              validation="required|date_after"
+              :validation="`required|date_after:${eventAfterDate}`"
               outer-class="mb-5 w-4/5"
               :validation-messages="{
                 date_after: 'Enter a date that has not yet occurred',
