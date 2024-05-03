@@ -8,6 +8,7 @@ const props = defineProps<{
 }>()
 
 const modalOpen = ref(false)
+const closedRegistration = ref(false)
 const positions = ref<PositionWithPrereqs[] | null>(null)
 
 const userStore = useCurrentUserStore()
@@ -30,6 +31,10 @@ async function mainButtonPress() {
     if (error.value || !data.value) {
       alert('There was an error fetching the positions for this event.')
       modalOpen.value = false
+    } else if (
+      new Date(data.value.dateAndTime).getTime() < new Date().getTime()
+    ) {
+      closedRegistration.value = true
     } else {
       positions.value = data.value.positions
     }
@@ -82,7 +87,10 @@ async function registerPosition(pos: PositionWithPrereqs) {
     content-class="flex flex-col lg:6/12 sm:w-8/12 w-full max-h-[90vh] mx-4 p-4 bg-white border rounded-lg space-y-2"
   >
     <h1 class="text-xl font-bold">Choose a position</h1>
-    <div v-if="positions === null">Loading...</div>
+    <div v-if="positions === null && !closedRegistration">Loading...</div>
+    <h1 v-if="closedRegistration">
+      Sorry, but registration has closed for this event
+    </h1>
     <div v-if="positions !== null && positions.length == 0">
       There are no available positions for this event.
     </div>

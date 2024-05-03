@@ -323,7 +323,9 @@ function toggleExpanded() {
                     />
                   </svg>
                 </div>
-                <h3>{{ event.positions.map((p) => p.name).join(', ') }}</h3>
+                <h3 class="ml-3">
+                  {{ event.positions.map((p) => p.name).join(', ') }}
+                </h3>
               </div>
             </li>
 
@@ -377,14 +379,14 @@ function toggleExpanded() {
               <div
                 class="w-full p-3 text-center bg-indigo-600 text-white rounded-md hover:bg-white hover:text-black shadow mt-3"
               >
-                <button >CHECK IN</button>
+                <button>CHECK IN</button>
               </div>
             </NuxtLink>
             <NuxtLink v-if="isAdmin" :to="`/event/code/${event.id}`">
               <div
                 class="w-full p-3 text-center bg-indigo-600 text-white rounded-md hover:bg-white hover:text-black shadow mt-3"
               >
-                <button >GENERATE CODE</button>
+                <button>VIEW CHECKIN CODE</button>
               </div>
             </NuxtLink>
             <NuxtLink v-if="isAdmin" :to="`/event/${event.id}/volunteers`">

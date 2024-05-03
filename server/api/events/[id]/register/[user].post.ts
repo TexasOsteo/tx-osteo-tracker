@@ -19,7 +19,7 @@ export default defineEventHandler(async (event) => {
   const cookieUserId = event.context.txOsteoClaims?.sub
   if (!cookieUserId) {
     throw createError({
-      statusCode: 402,
+      statusCode: 401,
       statusMessage: 'You are unauthenticated',
     })
   }
@@ -101,7 +101,7 @@ export default defineEventHandler(async (event) => {
     )
   ) {
     throw createError({
-      statusCode: 402,
+      statusCode: 401,
       statusMessage: 'You do not have the qualifications for this position.',
     })
   }

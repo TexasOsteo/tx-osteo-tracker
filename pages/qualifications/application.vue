@@ -22,16 +22,18 @@ const router = useRouter()
 const formErrors = ref<string[]>()
 
 async function handleSubmit(fields: any) {
-  const data = new FormData()
-  data.set('qualifications', JSON.stringify(fields.qualifications))
-  data.set('description', fields.description)
-  if (Array.isArray(fields.file) && fields.file.length > 0) {
-    data.set('file', fields.file[0].file)
-  }
+  const file =
+    Array.isArray(fields.file) && fields.file.length > 0
+      ? await fileToBase64(fields.file[0].file)
+      : undefined
 
   const { error } = await useFetch('/api/qualifications/uploads', {
     method: 'POST',
-    body: data,
+    body: {
+      qualifications: fields.qualifications,
+      description: fields.description,
+      file,
+    },
   })
 
   if (error.value) {

@@ -67,7 +67,7 @@ const schema = object({
           }).isValidSync(v)
         },
       ),
-  ).defined(),
+  ),
 })
 
 export default defineEventHandler(async (event) => {
@@ -92,55 +92,65 @@ export default defineEventHandler(async (event) => {
 
   const { positions, ...body } = await validateBody(event, schema)
 
-  // Initially, get all positions. They will then be removed when iterating over the given ones
-  const positionsToRemove = await event.context.prisma.eventPosition.findMany({
-    where: {
-      eventId: id,
-    },
-  })
+  let signedUpUsers: string[] | null = null
 
-  const signedUpUsers: string[] = []
+  if (Array.isArray(positions)) {
+    signedUpUsers = []
 
-  for (const pos of positions) {
-    if ('id' in pos) {
-      const i = positionsToRemove.findIndex((p) => p.id === pos.id)
-      if (i >= 0) positionsToRemove.splice(i, 1)
-      const updatedPosition = await event.context.prisma.eventPosition.update({
-        where: { id: pos.id },
-        data: {
-          ...pos,
-          currentCapacity: undefined, // Make sure that the currentCapacity is not overwritten
-          prerequisites: parseIDsToPrismaSetObject(pos.prerequisites),
+    // Initially, get all positions. They will then be removed when iterating over the given ones
+    const positionsToRemove = await event.context.prisma.eventPosition.findMany(
+      {
+        where: {
+          eventId: id,
         },
-        include: {
-          users: {
-            select: {
-              id: true,
+      },
+    )
+
+    for (const pos of positions) {
+      if ('id' in pos) {
+        const i = positionsToRemove.findIndex((p) => p.id === pos.id)
+        if (i >= 0) positionsToRemove.splice(i, 1)
+        const updatedPosition = await event.context.prisma.eventPosition.update(
+          {
+            where: { id: pos.id },
+            data: {
+              ...pos,
+              currentCapacity: undefined, // Make sure that the currentCapacity is not overwritten
+              prerequisites: parseIDsToPrismaSetObject(pos.prerequisites),
+            },
+            include: {
+              users: {
+                select: {
+                  id: true,
+                },
+              },
             },
           },
-        },
-      })
-      updatedPosition.users.forEach((u) => signedUpUsers.push(u.id))
-    } else {
-      await event.context.prisma.eventPosition.create({
-        data: {
-          ...pos,
-          currentCapacity: 0,
-          event: {
-            connect: {
-              id,
+        )
+        updatedPosition.users.forEach((u) => signedUpUsers!.push(u.id))
+      } else {
+        await event.context.prisma.eventPosition.create({
+          data: {
+            ...pos,
+            currentCapacity: 0,
+            event: {
+              connect: {
+                id,
+              },
             },
+            prerequisites: parseIDsToPrismaConnectObject(
+              pos.prerequisites ?? [],
+            ),
           },
-          prerequisites: parseIDsToPrismaConnectObject(pos.prerequisites ?? []),
-        },
-      })
+        })
+      }
     }
-  }
 
-  const positionIdsToRemove = positionsToRemove.map((p) => p.id)
-  await event.context.prisma.eventPosition.deleteMany({
-    where: { id: { in: positionIdsToRemove } },
-  })
+    const positionIdsToRemove = positionsToRemove.map((p) => p.id)
+    await event.context.prisma.eventPosition.deleteMany({
+      where: { id: { in: positionIdsToRemove } },
+    })
+  }
 
   const updated = await event.context.prisma.event.update({
     where: {
@@ -149,7 +159,9 @@ export default defineEventHandler(async (event) => {
     data: {
       ...body,
       attendees: parseIDsToPrismaSetObject(body.attendees),
-      signedUpUsers: parseIDsToPrismaSetObject(signedUpUsers),
+      signedUpUsers: signedUpUsers
+        ? parseIDsToPrismaSetObject(signedUpUsers)
+        : undefined,
     },
     include: {
       positions: true,

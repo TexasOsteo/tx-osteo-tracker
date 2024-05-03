@@ -4,6 +4,8 @@ import {
   type ObjectSchema,
   mixed,
   type AnySchema,
+  object,
+  string,
 } from 'yup'
 import type { DefaultEvent } from './types'
 
@@ -51,10 +53,7 @@ export function createFileValidator(
   allowedTypes: string[] | null,
   maxFileSize: number | null,
 ) {
-  return mixed(
-    (value): value is File =>
-      typeof value === 'object' && 'type' in value && 'size' in value,
-  )
+  return mixed((value): value is File => value instanceof File)
     .test(
       'fileType',
       (info) => `Invalid file type: ${info.value.type}`,
@@ -66,6 +65,21 @@ export function createFileValidator(
       (info) => `Invalid file size: ${info.value.size} > ${maxFileSize}`,
       (value) => !value || maxFileSize === null || value.size <= maxFileSize,
     )
+    .transform((value) => {
+      try {
+        if (value instanceof File) return value
+        const obj = object({
+          name: string().required(),
+          type: string().required(),
+          data: string().required(),
+        }).validateSync(value)
+        return new File([Buffer.from(obj.data, 'base64')], obj.name, {
+          type: obj.type,
+        })
+      } catch (_) {
+        return value
+      }
+    })
 }
 
 /**

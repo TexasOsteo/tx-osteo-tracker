@@ -410,21 +410,21 @@ const canCheckIn = computed(() => {
         <div
           class="w-full p-3 text-center bg-indigo-600 text-white rounded-md hover:bg-white hover:text-black shadow mt-3"
         >
-          <button >CHECK IN</button>
+          <button>CHECK IN</button>
         </div>
       </NuxtLink>
       <NuxtLink v-if="isAdmin" :to="`/event/code/${event.id}`">
         <div
           class="w-full p-3 text-center bg-indigo-600 text-white rounded-md hover:bg-white hover:text-black shadow mt-3"
         >
-          <button >GENERATE CODE</button>
+          <button>VIEW CHECKIN CODE</button>
         </div>
       </NuxtLink>
       <NuxtLink v-if="isAdmin" :to="`/event/${event.id}/volunteers`">
         <div
           class="w-full p-3 text-center bg-emerald-300 text-white rounded-md hover:bg-white hover:text-black shadow mt-3"
         >
-          <button >VOLUNTEER LIST</button>
+          <button>VOLUNTEER LIST</button>
         </div>
       </NuxtLink>
 

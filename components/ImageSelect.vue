@@ -56,13 +56,12 @@ async function getImages() {
 async function uploadImage() {
   if (!uploadedImage.value) return
 
-  const body = new FormData()
-  body.set('type', props.type)
-  body.set('file', uploadedImage.value.file)
-
   const { data, error } = await useFetch(`/api/images?type=${props.type}`, {
     method: 'POST',
-    body,
+    body: {
+      type: props.type,
+      file: await fileToBase64(uploadedImage.value.file),
+    },
   })
   if (!data.value) {
     errorText.value =
