@@ -1,32 +1,34 @@
 import { format } from 'date-fns'
-import { object, string } from 'yup'
+import { boolean, object, string } from 'yup'
 import { AdminEmailCategories } from '~/utils/constants'
 import { renderEmail, sendEmail, usersToRecipients } from '~/utils/email'
 import { validateJWT } from '~/utils/jwt'
+import { validateBody } from '~/utils/validation'
 
 /**
  * --- API INFO
  * POST /api/email/new-event
  * Send an digest email to all admins.
- * Authentication requires bearer token.
  * This endpoint is meant for Azure function use.
  */
 export default defineEventHandler(async (event) => {
-  const authHeader = event.headers.get('Authorization')
+  const { token: rawToken } = await validateBody(
+    event,
+    object({ token: string().required() }),
+  )
 
-  if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    throw createError({
-      statusCode: 401,
-      statusMessage: 'Bad Authorization Bearer Token Header',
-    })
-  }
-
-  const rawToken = authHeader.split('Bearer ')[1]
-  const token = validateJWT(rawToken, object({ sub: string() }))
+  const token = validateJWT(rawToken, object({ admin: boolean().defined() }))
   if (!token) {
     throw createError({
       statusCode: 401,
       statusMessage: 'Invalid JWT',
+    })
+  }
+
+  if (!token.admin) {
+    throw createError({
+      statusCode: 401,
+      statusMessage: 'Must have admin permissions',
     })
   }
 
