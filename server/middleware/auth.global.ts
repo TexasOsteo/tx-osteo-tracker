@@ -67,14 +67,17 @@ export default defineEventHandler(async (event) => {
     }
 
     await sendRedirect(event, getLoginRedirect(event))
+    return
   }
 
   if (!txOsteoClaims) {
     await sendRedirect(event, '/users/new')
+    return
   }
 
   if (!auth0Claims?.email_verified) {
     await sendRedirect(event, '/email/unverified')
+    return
   }
 })
 
