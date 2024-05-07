@@ -94,7 +94,7 @@ const menuItemClass =
                   class="block px-4 py-2 text-lg hover:bg-gray-200"
                   @click="isAdminMenuOpen = false"
                 >
-                  Qualifications List
+                  Pending Qualifications
                 </NuxtLink>
               </li>
               <li v-if="isAdmin">
@@ -103,7 +103,7 @@ const menuItemClass =
                   class="block px-4 py-2 text-lg hover:bg-gray-200"
                   @click="isAdminMenuOpen = false"
                 >
-                  Add Qualifications
+                  Manage Qualifications
                 </NuxtLink>
               </li>
             </ul>
@@ -206,7 +206,7 @@ const menuItemClass =
                   class="block px-4 py-2 text-lg hover:bg-gray-200"
                   @click="isMenuOpen = !isMenuOpen"
                 >
-                  Qualifications
+                  Pending Qualifications
                 </NuxtLink>
               </li>
               <li>
@@ -215,7 +215,7 @@ const menuItemClass =
                   class="block px-4 py-2 text-lg hover:bg-gray-200"
                   @click="isMenuOpen = !isMenuOpen"
                 >
-                  Add Qualification
+                  Manage Qualifications
                 </NuxtLink>
               </li>
             </ul>
