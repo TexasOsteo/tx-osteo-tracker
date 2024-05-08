@@ -8,6 +8,7 @@ async function handleSubmit(fields: any) {
       ...fields,
       attendees: [],
       code: generateEventCode(),
+      dateAndTime: formkitDateToISO(fields.dateAndTime),
     },
   })
 
@@ -29,7 +30,7 @@ async function handleSubmit(fields: any) {
     <CurveBackground />
 
     <div
-      class="max-w-screen-lg bg-white bg-opacity-95  md:bg-opacity-80 backdrop-blur-none md:backdrop-blur-md z-0 rounded-3xl shadow-2xl p-10 flex justify-center flex-wrap items-center mx-2"
+      class="max-w-screen-lg bg-white bg-opacity-95 md:bg-opacity-80 backdrop-blur-none md:backdrop-blur-md z-0 rounded-3xl shadow-2xl p-10 flex justify-center flex-wrap items-center mx-2"
     >
       <h1 class="title font-lexend font-bold text-5xl text-center mb-10">
         CREATE EVENT
@@ -41,7 +42,7 @@ async function handleSubmit(fields: any) {
         @submit="handleSubmit"
       >
         <!--Title of Event -->
-        <div class="flex justify-center items-center flex-wrap ">
+        <div class="flex justify-center items-center flex-wrap">
           <FormKit
             id="title"
             type="text"

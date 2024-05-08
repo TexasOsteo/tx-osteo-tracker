@@ -105,8 +105,27 @@ export async function updateUserRateLimit(event: DefaultEvent) {
 }
 
 export async function throwErrorIfRateLimited(event: DefaultEvent) {
-  const isRateLimited = await isUserRateLimited(event)
-  if (isRateLimited) {
+  const userId = event.context.txOsteoClaims?.sub
+  const auth0Id = event.context.auth0Claims?.sub
+  if (!userId && !auth0Id) {
+    throw createError({
+      statusCode: 400,
+      message: 'User is not authenticated',
+    })
+  }
+
+  const user = await event.context.prisma.user.findFirst({
+    where: { OR: [{ id: userId }, { auth0Id }] },
+  })
+  if (!user) {
+    throw createError({
+      statusCode: 400,
+      message: `User does not exist with ID ${userId} or auth0 ID ${auth0Id}`,
+    })
+  }
+
+  if (user.isAdmin) return
+  if (Date.now() - user.lastEmailTriggered.getTime() < 1000 * 60 * 15) {
     throw createError({
       statusCode: 429,
       message: 'Rate limited',

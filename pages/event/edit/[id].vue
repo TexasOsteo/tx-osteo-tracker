@@ -17,7 +17,7 @@ type FormKitEventData = Partial<
 >
 
 const eventAfterDate = format(
-  new Date(new Date() - 24 * 60 * 60 * 1000),
+  new Date(Date.now() - 24 * 60 * 60 * 1000),
   'MM-dd-yyyy',
 )
 
@@ -75,7 +75,10 @@ async function deleteEvent() {
 async function patchEvent(fields: any) {
   const { error } = await useFetch(`/api/events/${eventId}`, {
     method: 'PUT',
-    body: fields,
+    body: {
+      ...fields,
+      dateAndTime: formkitDateToISO(fields.dateAndTime),
+    },
   })
   if (error.value) {
     formErrors.value = [

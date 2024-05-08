@@ -23,3 +23,12 @@ export function fileToBase64(
     reader.readAsDataURL(file)
   })
 }
+
+/**
+ * Converts the default formkit data to an ISO date string
+ * @param date
+ * @returns
+ */
+export function formkitDateToISO(date: string) {
+  return new Date(date).toISOString()
+}
