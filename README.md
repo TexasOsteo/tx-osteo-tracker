@@ -1,5 +1,9 @@
 # Texas Osteoporosis Foundation Volunteer Management System
 
+Visit us at [volunteer.texasosteo.org](https://volunteer.texasosteo.org/)
+
+# Documentation
+
 [User Manual](./docs/manual.md)
 
 [How to setup project](./docs/setup.md)
@@ -12,7 +16,7 @@
 
 [Functional Requirements](./docs/requirements.md)
 
-[Where it is deployed](./deployment.md)
+[Where it is deployed](./docs/deployment.md)
 
 # About
 

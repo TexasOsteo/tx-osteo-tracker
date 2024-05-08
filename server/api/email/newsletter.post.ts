@@ -2,12 +2,7 @@ import { string, object } from 'yup'
 import { format } from 'date-fns'
 import { throwErrorIfNotAdmin } from '~/utils/auth'
 import { UserEmailCategories } from '~/utils/constants'
-import {
-  renderEmail,
-  sendEmail,
-  updateUserRateLimit,
-  usersToRecipients,
-} from '~/utils/email'
+import { renderEmail, sendEmail, usersToRecipients } from '~/utils/email'
 import { validateBody } from '~/utils/validation'
 
 const schema = object({
