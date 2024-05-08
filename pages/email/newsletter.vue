@@ -28,7 +28,7 @@ async function handleSubmit(fields: any) {
       class="max-w-screen-lg bg-white bg-opacity-95 md:bg-opacity-80 shadow-2xl backdrop-blur-none md:backdrop-blur-md rounded-3xl shadow-xl p-10 flex justify-center flex-wrap items-center"
     >
       <h1 class="title font-sans font-bold text-5xl text-center mb-10">
-        CREATE WEEKLY DIGEST
+        CREATE NEWSLETTER
       </h1>
       <FormKit
         type="form"
@@ -42,9 +42,9 @@ async function handleSubmit(fields: any) {
             id="title"
             type="text"
             name="title"
-            label="Digest Title"
-            help="Type Digest Title Here"
-            placeholder="Digest Title"
+            label="Newsletter Title"
+            help="Type Newsletter Title Here"
+            placeholder="Newsletter Title"
             outer-class="mb-5 w-4/5"
           />
 
@@ -61,7 +61,7 @@ async function handleSubmit(fields: any) {
             type="textarea"
             name="content"
             label="Description"
-            help="Type a description of the Digest"
+            help="Type the body of the Newsletter here"
             outer-class="mb-5 w-4/5"
           />
         </div>
