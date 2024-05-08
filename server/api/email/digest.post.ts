@@ -9,7 +9,7 @@ import { validateBody } from '~/utils/validation'
  * --- API INFO
  * POST /api/email/new-event
  * Send an digest email to all admins.
- * This endpoint is meant for Azure function use.
+ * This endpoint is meant for Azure function use, so it takes the JWT token in the body.
  */
 export default defineEventHandler(async (event) => {
   const { token: rawToken } = await validateBody(

@@ -91,34 +91,6 @@ export function usersToRecipients(users: User[]) {
 }
 
 /**
- * Returns true of the user is rate limited (sent an email in the last 15min)
- * @param event
- * @returns
- */
-export async function isUserRateLimited(event: DefaultEvent) {
-  const userId = event.context.txOsteoClaims?.sub
-  if (!userId) {
-    throw createError({
-      statusCode: 400,
-      message: 'User is not authenticated',
-    })
-  }
-
-  const user = await event.context.prisma.user.findUnique({
-    where: { id: userId },
-  })
-  if (!user) {
-    throw createError({
-      statusCode: 400,
-      message: 'User does not exist',
-    })
-  }
-
-  if (user.isAdmin) return false
-  return Date.now() - user.lastEmailTriggered.getTime() < 1000 * 60 * 15 // 15min
-}
-
-/**
  * Update the time a user sent an email
  * @param event
  */
