@@ -14,5 +14,6 @@ module.exports = {
     'vue/no-multiple-template-root': 0,
     'prettier/prettier': 1,
     '@typescript-eslint/no-unused-vars': 1,
+    'no-useless-return': 0,
   },
 }
