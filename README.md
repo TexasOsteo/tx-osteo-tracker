@@ -1,5 +1,7 @@
 # Texas Osteoporosis Foundation Volunteer Management System
 
+[User Manual](./docs/manual.md)
+
 [How to setup project](./docs/setup.md)
 
 [About our tech stack](./docs/techstack.md)
@@ -10,7 +12,7 @@
 
 [Functional Requirements](./docs/requirements.md)
 
-[User Manual](./docs/manual.md)
+[Where it is deployed](./deployment.md)
 
 # About
 

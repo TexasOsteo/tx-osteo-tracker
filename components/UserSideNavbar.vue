@@ -124,6 +124,12 @@ async function deleteUser() {
       class="flex flex-col items-center bg-white rounded-sm"
     >
       <NuxtLink
+        to="/email/report"
+        class="rounded-lg bg-yellow-500 w-full p-3 mb-4 text-white text-lg hover:bg-yellow-600"
+      >
+        Send Report
+      </NuxtLink>
+      <NuxtLink
         to="/qualifications/application"
         class="rounded-lg bg-yellow-500 w-full p-3 mb-4 text-white text-lg hover:bg-yellow-600"
       >

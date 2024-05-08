@@ -5,7 +5,6 @@ import { UserEmailCategories } from '~/utils/constants'
 import {
   renderEmail,
   sendEmail,
-  throwErrorIfRateLimited,
   updateUserRateLimit,
   usersToRecipients,
 } from '~/utils/email'
@@ -22,7 +21,6 @@ const schema = object({
  */
 export default defineEventHandler(async (event) => {
   throwErrorIfNotAdmin(event)
-  await throwErrorIfRateLimited(event)
 
   const { id } = await validateBody(event, schema)
 
@@ -64,8 +62,6 @@ export default defineEventHandler(async (event) => {
       bcc: usersToRecipients(recipients),
     },
   })
-
-  await updateUserRateLimit(event)
 
   return returnObj
 })

@@ -97,15 +97,24 @@ export function usersToRecipients(users: User[]) {
  */
 export async function isUserRateLimited(event: DefaultEvent) {
   const userId = event.context.txOsteoClaims?.sub
-  if (!userId) return true
+  if (!userId) {
+    throw createError({
+      statusCode: 400,
+      message: 'User is not authenticated',
+    })
+  }
 
   const user = await event.context.prisma.user.findUnique({
     where: { id: userId },
   })
-  if (!user) return true
+  if (!user) {
+    throw createError({
+      statusCode: 400,
+      message: 'User does not exist',
+    })
+  }
 
   if (user.isAdmin) return false
-
   return Date.now() - user.lastEmailTriggered.getTime() < 1000 * 60 * 15 // 15min
 }
 
@@ -124,7 +133,8 @@ export async function updateUserRateLimit(event: DefaultEvent) {
 }
 
 export async function throwErrorIfRateLimited(event: DefaultEvent) {
-  if (await isUserRateLimited(event)) {
+  const isRateLimited = await isUserRateLimited(event)
+  if (isRateLimited) {
     throw createError({
       statusCode: 429,
       message: 'Rate limited',

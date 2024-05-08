@@ -4,5 +4,6 @@ For all other documentation:
 
 - [How to setup project](./setup.md)
 - [How authentication works](./authentication.md)
+- [Where it is deployed](./deployment.md)
 - [Formatting and styling guide](./formatting.md)
 - [Functional Requirements](./requirements.md)
